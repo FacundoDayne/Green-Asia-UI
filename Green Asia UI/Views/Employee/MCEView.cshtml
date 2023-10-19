@@ -1,0 +1,156 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Employee_MCE
+<head>
+	<script>
+		.field-validation-valid {
+			display: none;
+		}
+
+		.validation-summary-valid {
+			display: none;
+		}
+	</script>
+</head>
+
+<body>
+	@Html.ActionLink("Back", "BOMList")
+		<div style="border-color:black;">
+			<p>Project ID: @Model.ProjectID</p>
+			<p>Project Title: @Model.Title</p>
+			<p>Project Client: @Model.ClientName</p>
+			<p>Project Client Contacts: @Model.ClientContact</p>
+			<p>Project Date: @Model.Date</p>
+			<p>Project Address: <span>@Model.Address</span>,<span>@Model.City</span>,<span>@Model.Region</span>,<span>@Model.Country</span></p>
+			<p>Building Type: @Model.BuildingType</p>
+			<p>Number of Storeys: @Model.NumberOfStoreys</p>
+			<p>Floor height: @Model.FloorHeight</p>
+			<p>Building Length: @Model.BuildingLength</p>
+			<p>Building Width:@Model.BuildingWidth</p>
+			<p>Template ID: @Model.TemplateID</p>
+		</div>
+		
+			
+		@Html.HiddenFor(m=>m.totalIndirectCost)
+		@Html.HiddenFor(m=>m.OCM)
+		@Html.HiddenFor(m=>m.profit)
+		@Html.HiddenFor(m=>m.subtotalCost)
+		@Html.HiddenFor(m=>m.tax)
+		@Html.HiddenFor(m=>m.totalCost)
+		@Html.HiddenFor(m=>m.FormulaID)
+		@Html.HiddenFor(m=>m.ProjectID)
+		@Html.HiddenFor(m=>m.Provisions)
+		@Html.HiddenFor(m=>m.BOMCreationDate)
+		@Html.HiddenFor(m=>m.ProjectID)
+		@Html.HiddenFor(m=>m.Title)
+		@Html.HiddenFor(m=>m.ClientName)
+		@Html.HiddenFor(m=>m.ClientContact)
+		@Html.HiddenFor(m=>m.Date)
+		@Html.HiddenFor(m=>m.Address)
+		@Html.HiddenFor(m=>m.City)
+		@Html.HiddenFor(m=>m.Region)
+		@Html.HiddenFor(m=>m.BuildingType)
+		@Html.HiddenFor(m=>m.Country)
+		@Html.HiddenFor(m=>m.Longtitude)
+		@Html.HiddenFor(m=>m.Latitude)
+		@Html.HiddenFor(m=>m.NumberOfStoreys)
+		@Html.HiddenFor(m=>m.FloorHeight)
+		@Html.HiddenFor(m=>m.BuildingLength)
+		@Html.HiddenFor(m=>m.BuildingWidth)
+		@Html.HiddenFor(m=>m.TemplateID)
+		@Html.HiddenFor(m=>m.BOMID)
+		@Html.HiddenFor(m=>m.Markup)
+
+		<div style="display: none">
+			@Html.DisplayFor(m=>m.materials)
+
+			@for (int i = 0; i < Model.materials.Count; i++)
+			{
+				@Html.HiddenFor(m=>m.materials[i])
+				@Html.HiddenFor(m=>m.materials[i].SubitemNumber)
+				@Html.HiddenFor(m=>m.materials[i].MaterialID)
+				@Html.HiddenFor(m=>m.materials[i].MaterialDesc)
+				@Html.HiddenFor(m=>m.materials[i].MaterialQuantity)
+				@Html.HiddenFor(m=>m.materials[i].MaterialQuantityWastage)
+				@Html.HiddenFor(m=>m.materials[i].MaterialQuantityProvisions)
+				@Html.HiddenFor(m=>m.materials[i].MaterialUoM)
+				@Html.HiddenFor(m=>m.materials[i].MaterialCost)
+				@Html.HiddenFor(m=>m.materials[i].SupplierMaterialID)
+				@Html.HiddenFor(m=>m.materials[i].Supplier)
+				@Html.HiddenFor(m=>m.materials[i].TotalUnitRate)
+				@Html.HiddenFor(m=>m.materials[i].MaterialAmount)
+			@Html.HiddenFor(m=>m.materials[i].MarkedUpCost)
+			@Html.HiddenFor(m=>m.materials[i].LabourCost)
+			}
+		</div>
+		@Html.LabelFor(m=>m.Markup)
+		<div>
+			<div>
+				<p>%@(@Model.Markup * 100)</p>
+			</div>
+		</div>
+		
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<th colspan="4">Proposed Materials</th>
+					<th colspan="4">Cost Estimate</th>
+				</tr>
+				<tr>
+					<th>Item No.</th>
+					<th>Material Name</th>
+					<th>Quantity</th>
+					<th>UoM</th>
+					<th>Cost per unit</th>
+					<th>Marked Up Cost</th>
+					<th>Labour cost</th>
+					<th>Total unit rate</th>
+					<th>Total Amount</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (int x = 0; x < Model.materials.Count; x++)
+				{
+					<tr>
+						<td>@Model.materials[x].SubitemNumber</td>
+						<td>@Model.materials[x].MaterialDesc</td>
+						<td>@Model.materials[x].MaterialQuantityProvisions</td>
+						<td>@Model.materials[x].MaterialUoM</td>
+						<td>@string.Format("{0:N2}", @Model.materials[x].MaterialCost)</td>
+						<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MarkedUpCost))</td>
+						<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].LabourCost))</td>
+						<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].TotalUnitRate))</td>
+						<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MaterialAmount))</td>
+					</tr>
+				}
+				<tr style="background: #BBBBBB;font-weight:bold">
+					<td colspan="7" style="text-align:right">Total Cost of Items:</td>
+					<td colspan ="2">P @string.Format("{0:N2}", @Model.totalIndirectCost)</td>
+				</tr>
+				<tr style="background: #BBBBBB">
+					<td colspan="7" style="text-align:right">OCM:</td>
+					<td colspan="2">@string.Format("{0:N2}", @Model.OCM)</td>
+				</tr>
+				<tr style="background: #BBBBBB">
+					<td colspan="7" style="text-align:right">Profit:</td>
+					<td colspan="2">@string.Format("{0:N2}", @Model.profit)</td>
+				</tr>
+				<tr style="background: #BBBBBB;font-weight:bold">
+					<td colspan="7" style="text-align:right">Sub-Total:</td>
+					<td colspan ="2">P @string.Format("{0:N2}", @Model.subtotalCost)</td>
+				</tr>
+				<tr style="background: #BBBBBB">
+					<td colspan="7" style="text-align:right">VAT(5%):</td>
+					<td colspan ="2">@string.Format("{0:N2}", @Model.tax)</td>
+				</tr>
+				<tr style="background: #BBBBBB;font-weight:bold">
+					<td colspan="7" style="text-align:right">Total Estimated Cost:</td>
+					<td colspan="2">P @string.Format("{0:N2}", @Model.totalCost)</td>
+				</tr>
+			</tbody>
+		</table>
+</body>

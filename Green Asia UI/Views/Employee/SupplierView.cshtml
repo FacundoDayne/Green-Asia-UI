@@ -1,0 +1,50 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model SupplierInfoModel
+<head>
+	<style>
+		p{
+			text-indent:20pt;
+		}
+	</style>
+</head>
+
+<body>
+	@Html.ActionLink("Back", "SupplierList")
+
+	@using (Html.BeginForm("SupplierView", "Employee", FormMethod.Post))
+	{
+		@Html.HiddenFor(m=>m.ID)
+		@Html.HiddenFor(m=>m.CredentialsID)
+		@Html.HiddenFor(m=>m.EmployeeID)
+		@Html.HiddenFor(m=>m.Description)
+		@Html.HiddenFor(m=>m.Address)
+		@Html.HiddenFor(m=>m.City)
+		@Html.HiddenFor(m=>m.Region)
+		@Html.HiddenFor(m=>m.Country)
+		@Html.HiddenFor(m=>m.Latitude)
+		@Html.HiddenFor(m=>m.Longtitude)
+		@Html.HiddenFor(m=>m.ContactName)
+		@Html.HiddenFor(m=>m.ContactNumber)
+		@Html.HiddenFor(m=>m.Username)
+		@Html.HiddenFor(m=>m.Password)
+
+		@Html.AntiForgeryToken();
+		
+		<h2>Supplier Info</h2>
+		<h4>Name</h4>
+		<p>@Model.Description</p>
+		<h4>Address</h4>
+		<p>@Model.Address, @Model.City, @Model.Region, @Model.Country</p>
+		<h4>Contact Name</h4>
+		<p>@Model.ContactName</p>
+		<h4>Contact Information</h4>
+		<p>@Model.ContactNumber</p>
+
+		<input type="submit" value="Edit" class="button button2" />
+		<!--Html.ActionLink("Edit supplier", "SupplierEdit", "Employee", new { id = Model.ID })-->
+	}
+</body>

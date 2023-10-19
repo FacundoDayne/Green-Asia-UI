@@ -1,0 +1,89 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model EmployeeBOMModel
+<head>
+	<script>
+			.field - validation - valid {
+			display: none;
+		}
+
+			.validation - summary - valid {
+			display: none;
+		}
+	</script>
+</head>
+
+<body>
+	@Html.ActionLink("Back", "Index")
+	<div style="border-color:black;">
+	<p>Project Title: @Model.Title</p>
+	<p>Project Client: @Model.ClientName</p>
+	<p>Project Client Contacts: @Model.ClientContact</p>
+	<p>Project Date: @Model.Date</p>
+	<p>Project Address: <span>@Model.Address</span>,<span>@Model.City</span>,<span>@Model.Region</span>,<span>@Model.Country</span></p>
+	<p>Building Type: @Model.BuildingType</p>
+	<p>Number of Storeys: @Model.NumberOfStoreys</p>
+	<p>Floor height: @Model.FloorHeight</p>
+	<p>Building Length: @Model.BuildingLength</p>
+	<p>Building Width: @Model.BuildingWidth</p>
+		<p>Lon: @Model.Longtitude</p>
+		<p>Lat: @Model.Latitude</p>
+	</div>
+	@using (Html.BeginForm("BOMGenerate", "Employee", FormMethod.Post))
+	{
+
+		<div style="display: none">
+			@Html.EditorFor(m=>m.templates)
+			@Html.EditorFor(m=>m.materialpicker)
+			@for (int x = 0; x < Model.materialpicker.Count; x++)
+			{
+				@Html.HiddenFor(m=>m.materialpicker[x])
+				@Html.HiddenFor(m=>m.materialpicker[x].ID)
+				@Html.HiddenFor(m=>m.materialpicker[x].Description)
+			}
+			@for (int x = 0; x < Model.templates.Count; x++)
+			{
+				@Html.EditorFor(m=>m.templates[x])
+				@Html.EditorFor(m=>m.templates[x].ID)
+				@Html.EditorFor(m=>m.templates[x].Description)
+			}
+			@Html.EditorFor(m=>m.Title)
+			@Html.EditorFor(m=>m.ClientName)
+			@Html.EditorFor(m=>m.ClientContact)
+			@Html.EditorFor(m=>m.Date)
+			@Html.EditorFor(m=>m.Address)
+			@Html.EditorFor(m=>m.City)
+			@Html.EditorFor(m=>m.Region)
+			@Html.EditorFor(m=>m.BuildingType)
+			@Html.EditorFor(m=>m.Country)
+			@Html.EditorFor(m=>m.Longtitude)
+			@Html.EditorFor(m=>m.Latitude)
+			@Html.EditorFor(m=>m.NumberOfStoreys)
+			@Html.EditorFor(m=>m.FloorHeight)
+			@Html.EditorFor(m=>m.BuildingLength)
+			@Html.EditorFor(m=>m.BuildingWidth)
+			@Html.EditorFor(m=>m.ProjectID)
+			@Html.EditorFor(m=>m.FormulaID)
+			@Html.EditorFor(m=>m.TemplateID)
+		</div>
+
+		<input type="submit" name="submitButton" value="Templates" class="button button2" />
+
+		<div class="">
+			<h4>Materials</h4>
+			<table>
+				@for(int x = 0; x < Model.materialpicker.Count; x++)
+				{
+					<tr>
+						<td>@Model.materialpicker[x].Description</td>
+						<td>@Html.CheckBoxFor(m=>m.materialpicker[x].IsChecked)</td>
+					</tr>
+				}
+			</table>
+		</div>
+		<input type="submit" name="submitButton" value="Continue" class="button button2" />
+	}
+</body>

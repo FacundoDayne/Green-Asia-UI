@@ -1,0 +1,193 @@
+﻿@model SupplierInfoModel
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<head>
+	<script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol?key=ApFkiZUGSuNuTphyHstPFnkvL0IGwOKelabezyQVt4RwYTD-yE5n5dMgmeHugQgN"></script>
+	<style>
+		.field-validation-valid {
+			display: none;
+		}
+
+		.validation-summary-valid {
+			display: none;
+		}
+
+		table {
+			width: 100%; /* Set the table width to 100% of the container */
+		}
+
+			table td {
+				padding: 5px;
+			}
+
+		td.column2 {
+			width: 50%; /* Set the second column to occupy 50% of the table's width */
+			vertical-align: top; /* Align content to the top of the cell */
+		}
+
+		#map {
+			height: 100%; /* Fit the image to the height of the four rows */
+			width: 100%; /* Fit the image to the width of its container */
+		}
+	</style>
+</head>
+
+<body>
+	@Html.ActionLink("Back", "SupplierList")
+	<h3>Add Supplier</h3>
+
+	<main class="inputGrid">
+		@using (Html.BeginForm("SupplierAdd", "Employee", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+		{
+			@Html.AntiForgeryToken()
+
+			@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+			<div class="form-group">
+				@Html.LabelFor(m => m.Username, new { @class = "col-md-2 control-label" })
+				<div class="col-md-10">
+					@Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+					@Html.ValidationMessageFor(m => m.Username, "Enter a Username", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+				<div class="col-md-10">
+					@Html.TextBoxFor(m => m.Password, new { @class = "form-control" })
+					@Html.ValidationMessageFor(m => m.Password, "Enter a Password", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+				<div class="col-md-10">
+					@Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+					@Html.ValidationMessageFor(m => m.Description, "Enter a name", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<br />
+			<table>
+				<tr>
+					<td>
+						<div>
+							@Html.LabelFor(m=>m.Address, new { @class = "control-label" })
+							<div>
+								@Html.TextBoxFor(m=>m.Address, new { @class = "form-control", @id="address"  })
+								@Html.ValidationMessageFor(m=>m.Address, "Enter supplier address", new { @class = "text-danger" })
+							</div>
+						</div>
+					</td>
+					<td class="column2" rowspan="4">
+						<!-- Use rowspan to make this cell span 4 rows -->
+						<div class="map" id="myMap" style="position:relative;width:100%;height:600px;">
+							@Html.HiddenFor(m=>m.Latitude, new { @class = "form-control", @id="latitude"})
+							@Html.HiddenFor(m=>m.Longtitude, new { @class = "form-control", @id="longtitude" })
+							@Html.ValidationMessageFor(m=>m.Latitude, "Select from map", new { @class = "text-danger" })
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div>
+							@Html.LabelFor(m=>m.City, new { @class = "control-label" })
+							<div>
+								@Html.TextBoxFor(m=>m.City, new { @class = "form-control", @id="city"  })
+								@Html.ValidationMessageFor(m=>m.City, "Enter supplier City", new { @class = "text-danger" })
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div>
+							@Html.LabelFor(m=>m.Region, new { @class = "control-label" })
+							<div>
+								@Html.TextBoxFor(m=>m.Region, new { @class = "form-control" , @id="AdminDistrict" })
+								@Html.ValidationMessageFor(m=>m.Region, "Enter supplier Region", new { @class = "text-danger" })
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div>
+							@Html.LabelFor(m=>m.Country, new { @class = "control-label" })
+							<div>
+								@Html.TextBoxFor(m=>m.Country, new { @class = "form-control", @id="Country" })
+								@Html.ValidationMessageFor(m=>m.Country, "Enter supplier Country", new { @class = "text-danger" })
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<br />
+
+
+			<div class="form-group">
+				@Html.LabelFor(m => m.ContactName, new { @class = "col-md-2 control-label" })
+				<div class="col-md-10">
+					@Html.TextBoxFor(m => m.ContactName, new { @class = "form-control" })
+					@Html.ValidationMessageFor(m => m.ContactName, "Enter supplier contact person name", new { @class = "text-danger" })
+				</div>
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(m => m.ContactNumber, new { @class = "col-md-2 control-label" })
+				<div class="col-md-10">
+					@Html.TextBoxFor(m => m.ContactNumber, new { @class = "form-control" })
+					@Html.ValidationMessageFor(m => m.ContactNumber, "Enter supplier contact number", new { @class = "text-danger" })
+				</div>
+			</div>
+			<input type="submit" value="Submit" class="button button2" />
+		}
+	</main>
+	<br>
+	<script>
+		function loadMapScenario() {
+			var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+				credentials: 'ApFkiZUGSuNuTphyHstPFnkvL0IGwOKelabezyQVt4RwYTD-yE5n5dMgmeHugQgN',
+				center: new Microsoft.Maps.Location(14.552120, 121.056068), // Initial location (latitude, longitude)
+				zoom: 12 // Initial zoom level
+
+			});
+			Microsoft.Maps.Events.addHandler(map, 'click', function (e) {
+				var point = new Microsoft.Maps.Point(e.getX(), e.getY());
+				var location = e.target.tryPixelToLocation(point);
+				reverseGeocode(location);
+			});
+			function reverseGeocode(location) {
+				var apiUrl = `https://dev.virtualearth.net/REST/v1/Locations/${location.latitude},${location.longitude}?key=ApFkiZUGSuNuTphyHstPFnkvL0IGwOKelabezyQVt4RwYTD-yE5n5dMgmeHugQgN`;
+
+				fetch(apiUrl)
+					.then(response => response.json())
+					.then(data => {
+						if (data.resourceSets.length > 0 && data.resourceSets[0].resources.length > 0) {
+							var address = data.resourceSets[0].resources[0].address.formattedAddress;
+
+							document.getElementById('address').value = data.resourceSets[0].resources[0].address.addressLine;
+							document.getElementById('city').value = data.resourceSets[0].resources[0].address.locality;
+							document.getElementById('AdminDistrict').value = data.resourceSets[0].resources[0].address.adminDistrict;
+							document.getElementById('Country').value = data.resourceSets[0].resources[0].address.countryRegion;
+							document.getElementById('longtitude').value = location.longitude;
+							document.getElementById('latitude').value = location.latitude;
+
+							map.entities.removeAt(0);
+							var pushpin = new Microsoft.Maps.Pushpin(location);
+							map.entities.push(pushpin);
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					});
+			}
+		}
+		const body = document.querySelector('body');
+		body.onload = loadMapScenario;
+	</script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+
+
+</body>
