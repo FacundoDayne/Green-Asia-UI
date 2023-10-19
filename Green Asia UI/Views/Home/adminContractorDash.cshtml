@@ -1,0 +1,200 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title> Contractors </title>
+    <link rel="icon" type="images/png" href="images/green asia logo.png" />
+
+    <link rel="stylesheet" href="~/css/contractor.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li>
+                    
+                    <a class="logo" asp-area="" asp-controller="Home" asp-action="adminDashboard">
+                        <img src="../../Images/greenAsiaLogo.png" alt="logo">
+                        <span class="nav-item">GACTC</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminDashboard">
+                        <i class="fas fa-menorah"></i>
+                        <span class="nav-item">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminProjectDash">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-item">Projects</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminContractorDash">
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Contractors</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminSupplierDash">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Suppliers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="nav-item">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="main">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminAddContractor">
+                <div class="main-top">
+                    <h1>Add Contractors</h1>
+                    <i class="fas fa-user-plus"></i>
+                </div>
+            </a>
+            <div class="users">
+                <div class="card">
+                    <img src="./images/profile.jpg" alt="">
+                    <h4>Sam David</h4>
+                    <p>Contractor</p>
+                    <div class="per">
+                        <table>
+                            <tr>
+                                <td><span>July</span></td>
+                                <td><span>2017</span></td>
+                            </tr>
+                            <tr>
+                                <td>Month</td>
+                                <td>Year</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button>Profile</button>
+                </div>
+                <div class="card">
+                    <img src="./images/profile.jpg">
+                    <h4>Baron Gomez</h4>
+                    <p>Contractor</p>
+                    <div class="per">
+                        <table>
+                            <tr>
+                                <td><span>April</span></td>
+                                <td><span>2003</span></td>
+                            </tr>
+                            <tr>
+                                <td>Month</td>
+                                <td>Year</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button>Profile</button>
+                </div>
+                <div class="card">
+                    <img src="./images/profile.jpg">
+                    <h4>Juan Dela Cruz</h4>
+                    <p>Contractor</p>
+                    <div class="per">
+                        <table>
+                            <tr>
+                                <td><span>February</span></td>
+                                <td><span>2002</span></td>
+                            </tr>
+                            <tr>
+                                <td>Month</td>
+                                <td>Year</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button>Profile</button>
+                </div>
+                <div class="card">
+                    <img src="./images/profile.jpg">
+                    <h4>Michael Solis</h4>
+                    <p>Contractor</p>
+                    <div class="per">
+                        <table>
+                            <tr>
+                                <td><span>September</span></td>
+                                <td><span>1992</span></td>
+                            </tr>
+                            <tr>
+                                <td>Month</td>
+                                <td>Year</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button>Profile</button>
+                </div>
+            </div>
+            <section class="attendance">
+                <div class="attendance-list">
+                    <h1>Contractor List</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Date of Birth</th>
+                                <th>Position</th>
+                                <th>Address</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01</td>
+                                <td>Sam David</td>
+                                <td>Unavailable</td>
+                                <td>07-24-17</td>
+                                <td>Contractor</td>
+                                <td>Makati City</td>
+                                <td><button>Remove</button></td>
+                            </tr>
+                            <tr class="active">
+                                <td>02</td>
+                                <td>Baron Gomez</td>
+                                <td>Available</td>
+                                <td>03-24-1968</td>
+                                <td>Contractor</td>
+                                <td>Pasig City</td>
+                                <td><button>Remove</button></td>
+                            </tr>
+                            <tr>
+                                <td>03</td>
+                                <td>Juan Dela Cruz</td>
+                                <td>Unavailable</td>
+                                <td>07-04-1982</td>
+                                <td>Contractor</td>
+                                <td>Quezon City</td>
+                                <td><button>Remove</button></td>
+                            </tr>
+                            <tr class="active">
+                                <td>04</td>
+                                <td>Michael Solis</td>
+                                <td>Available</td>
+                                <td>09-24-2002</td>
+                                <td>Contractor</td>
+                                <td>Cavite</td>
+                                <td><button>Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </div>
+</body>
+</html>

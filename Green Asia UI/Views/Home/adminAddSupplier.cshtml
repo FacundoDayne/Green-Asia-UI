@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title> Add Supplier </title>
+    <link rel="stylesheet" href="~/css/addProject.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <a class="dashboard-link" asp-area="" asp-controller="Home" asp-action="adminDashboard">
+            <div class="main-top">
+                <i class="fas fa-user"></i>
+            </div>
+        </a>
+        <div class="title">Add Supplier</div>
+        <div class="content">
+            <form action="#">
+                <div class="user-details">
+                    <div class="input-box">
+                        <span class="details">Supplier ID</span>
+                        <input type="text" placeholder="Enter ID" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Supplier Name</span>
+                        <input type="text" placeholder="Enter name" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Location</span>
+                        <input type="text" placeholder="Enter location" required>
+                    </div>
+                    <div class="button">
+                        <input type="submit" value="Add Supplier">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

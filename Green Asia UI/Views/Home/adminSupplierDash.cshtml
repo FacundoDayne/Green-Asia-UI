@@ -1,0 +1,106 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title> Suppliers </title>
+    <link rel="icon" type="images/png" href="images/green asia logo.png" />
+
+    <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li>
+                    <a class="logo" asp-area="" asp-controller="Home" asp-action="adminDashboard">
+                        <img src="../../Images/greenAsiaLogo.png" alt="logo">
+                        <span class="nav-item">GACTC</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminDashboard">
+                        <i class="fas fa-menorah"></i>
+                        <span class="nav-item">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminProjectDash">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-item">Projects</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminContractorDash">
+                        <i class="fas fa-user"></i>
+                        <span class="nav-item">Contractors</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminSupplierDash">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Suppliers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="nav-item">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="main">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminAddSupplier">
+                <div class="main-top">
+                    <h1>Add Suppliers</h1>
+                    <i class="fas fa-wrench"></i>
+                </div>
+            </a>
+
+            <section class="attendance">
+                <div class="attendance-list">
+                    <h1>Supplier List</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01</td>
+                                <td>Ace Hardware</td>
+                                <td>Makati City</td>
+                            </tr>
+                            <tr>
+                                <td>02</td>
+                                <td>Vegas Hardware</td>
+                                <td>Pasig City</td>
+                            </tr>
+                            <tr>
+                                <td>03</td>
+                                <td>Juan Supply</td>
+                                <td>Quezon City</td>
+                            </tr>
+                            <tr>
+                                <td>04</td>
+                                <td>Michael Solis Hardwares</td>
+                                <td>Cavite</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </div>
+</body>
+</html>

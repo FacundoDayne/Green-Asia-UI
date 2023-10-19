@@ -1,0 +1,77 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title> Add Project </title>
+    <link rel="stylesheet" href="~/css/addContractor.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <a class="dashboard-link" asp-area="" asp-controller="Home" asp-action="adminProjectDash">
+            <div class="main-top">
+                <i class="fas fa-user"></i>
+            </div>
+        </a>
+        <div class="title">Add Project</div>
+        <div class="content">
+            <form action="#">
+                <div class="user-details">
+                    <div class="input-box">
+                        <span class="details">Project ID</span>
+                        <input type="text" placeholder="Enter ID" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Project Title</span>
+                        <input type="text" placeholder="Enter title" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Contractor in charge</span>
+                        <select required>
+                            <option value="" disabled selected>Assign contractor</option>
+                            <option value="contractor1">Contractor 1</option>
+                            <option value="contractor2">Contractor 2</option>
+                            <option value="contractor3">Contractor 3</option>
+                        </select>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Residential Type</span>
+                        <input type="text" placeholder="Enter type" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Street Name</span>
+                        <input type="text" placeholder="Enter street name" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Lot and Block number</span>
+                        <input type="text" placeholder="Enter lot and Block number" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">District</span>
+                        <input type="text" placeholder="Enter district name" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Barangay</span>
+                        <input type="text" placeholder="Enter barangay name" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Region</span>
+                        <input type="text" placeholder="Enter region" required>
+                    </div>
+                </div>
+                <div class="button">
+                    <input type="submit" value="Add Contractor">
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
