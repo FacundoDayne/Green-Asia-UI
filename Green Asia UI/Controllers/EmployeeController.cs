@@ -32,8 +32,8 @@ namespace Green_Asia_UI.Controllers
 	public class EmployeeController : Controller
 	{
 		private readonly string oldconnectionstring = "Data Source=localhost;port=3306;Initial Catalog=bom_mce_db;User Id=root;password=password123;";
-		//private readonly string connectionstring = @"Server=LAPTOP-HJA4M31O\SQLEXPRESS;Database=bom_mce_db;User Id=bom_debug;Password=password123;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
-		private readonly string connectionstring = @"Server=68.71.129.120,1533;Database=bomgreen_db;User Id=bomgreen;Password=~Ni94tt39;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
+		private readonly string connectionstring = @"Server=LAPTOP-HJA4M31O\SQLEXPRESS;Database=bom_mce_db;User Id=bom_debug;Password=password123;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
+		//private readonly string connectionstring = @"Server=68.71.129.120,1533;Database=bomgreen_db;User Id=bomgreen;Password=~Ni94tt39;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
 
 		public IActionResult Index()
 		{
@@ -1503,9 +1503,9 @@ namespace Green_Asia_UI.Controllers
 				{
 					model.totalIndirectCost += x.MaterialAmount;
 				}
-				model.OCM = model.totalIndirectCost * 0.07;
+				//model.OCM = model.totalIndirectCost * 0.07;
 				model.profit = model.totalIndirectCost * 0.07;
-				model.subtotalCost = model.totalIndirectCost + model.OCM + model.profit;
+				model.subtotalCost = model.totalIndirectCost /*+ model.OCM */+ model.profit;
 				model.tax = model.subtotalCost * 0.05;
 				model.totalCost = model.subtotalCost + model.tax;
 				return View(model);
@@ -1733,9 +1733,9 @@ namespace Green_Asia_UI.Controllers
 			{
 				model.totalIndirectCost += (x.MaterialCost * Math.Ceiling((double)x.MaterialQuantity));
 			}
-			model.OCM = model.totalIndirectCost * 0.07;
+			//model.OCM = model.totalIndirectCost * 0.07;
 			model.profit = model.totalIndirectCost * 0.07;
-			model.subtotalCost = model.totalIndirectCost + model.OCM + model.profit;
+			model.subtotalCost = model.totalIndirectCost + model.profit; //+ model.OCM + ;
 			model.tax = model.subtotalCost * 0.05;
 			model.totalCost = model.subtotalCost + model.tax;
 
@@ -1840,9 +1840,9 @@ namespace Green_Asia_UI.Controllers
 			{
 				model.totalIndirectCost += x.MaterialAmount;
 			}
-			model.OCM = model.totalIndirectCost * 0.07;
+			//model.OCM = model.totalIndirectCost * 0.07;
 			model.profit = model.totalIndirectCost * 0.07;
-			model.subtotalCost = model.totalIndirectCost + model.OCM + model.profit;
+			model.subtotalCost = model.totalIndirectCost + /*model.OCM + */model.profit;
 			model.tax = model.subtotalCost * 0.05;
 			model.totalCost = model.subtotalCost + model.tax;
 			return View(model);
