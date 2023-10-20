@@ -103,7 +103,7 @@
 											<span>@Html.ActionLink("BOM Client View", "BOMViewClient", "Employee", new { id = Model[x].ID } ) </span>
 											@if (Model[x].MCEID == 0)
 											{
-												<span>@Html.ActionLink("View MCE", "MCEAdd_New", "Employee", new { id = Model[x].ID } ) </span>
+												<span>@Html.ActionLink("Create MCE", "MCEAdd_New", "Employee", new { id = Model[x].ID } ) </span>
 											}
 											else if (Model[x].MCEID != 0)
 											{
