@@ -6,6 +6,8 @@ namespace Green_Asia_UI.Models
 	public class ClientDataModel
 	{
 		public int ID { get; set; }
+		public int BOMID { get; set; }
+		public int MCEID { get; set; }
 		public int Status { get; set; }
 		public DateTime date { get; set; }
 		public string ClientName { get; set; }

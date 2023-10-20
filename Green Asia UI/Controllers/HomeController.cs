@@ -95,7 +95,7 @@ namespace Green_Asia_UI.Controllers
 						HttpContext.Session.SetInt32("EmployeeID", Convert.ToInt32(command.ExecuteScalar()));
 					}
 					HttpContext.Session.SetInt32("UserRole", 2);
-					return RedirectToAction("index", "Employee");
+					return RedirectToAction("employeeDashboard", "Employee");
 				}
 				else if (role == 3) //supplier
 				{

@@ -2108,6 +2108,230 @@ namespace Green_Asia_UI.Controllers
 
 
 
+
+
+
+		public IActionResult employeeDashboard()
+		{
+			NewEmployeeDashboardModel model = new NewEmployeeDashboardModel();
+			model.projects = new List<EmployeeDashboardProjects>();
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT " +
+					"(SELECT COUNT(a.project_id) as pending FROM projects a " +
+					"LEFT JOIN bom b ON a.project_id = b.project_id " +
+					"LEFT JOIN mce c ON b.bom_id = c.bom_id " +
+					"WHERE a.project_engineer_id = @id " +
+					"AND c.mce_id IS NOT NULL) AS processed, " +
+					"(SELECT COUNT(a.project_id) as pending FROM projects a " +
+					"LEFT JOIN bom b ON a.project_id = b.project_id " +
+					"LEFT JOIN mce c ON b.bom_id = c.bom_id " +
+					"WHERE a.project_engineer_id = @id " +
+					"AND c.mce_id IS NULL) AS Pending, " +
+					"(SELECT COUNT(a.project_id) as pending FROM projects a " +
+					"WHERE a.project_engineer_id = @id) AS total;"))
+				{
+					command.Parameters.AddWithValue("@id", (int)HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.NumOfPending = Convert.ToInt32(sdr["Pending"]);
+							model.NumOfProjects= Convert.ToInt32(sdr["total"]);
+							model.NumOfComplete = Convert.ToInt32(sdr["processed"]);
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT a.* FROM projects a " +
+					"LEFT JOIN bom b ON a.project_id = b.project_id " +
+					"WHERE a.project_engineer_id = @id " +
+					"AND b.bom_id IS NULL " +
+					"ORDER BY a.project_id DESC;"))
+				{
+					command.Parameters.AddWithValue("@id", (int)HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.projects.Add(new EmployeeDashboardProjects()
+							{
+								ID = Convert.ToInt32(sdr["project_id"]),
+								Description = sdr["project_title"].ToString()
+							});
+						}
+					}
+				}
+			}
+
+			return View(model);
+		}
+
+		public IActionResult employeeProjectDash()
+		{
+			List<ClientDataModel> model = new List<ClientDataModel>();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand(
+					"SELECT a.project_id, a.project_date, a.project_client_name, a.project_title, " +
+					"SUM(d.mce_subitem_quantity * e.supplier_material_price) AS price, f.description, " +
+					"CASE " +
+					"\tWHEN b.bom_id IS NULL THEN 0 " +
+					"\tWHEN c.mce_id IS NULL THEN 1 " +
+					"\tELSE 2 " +
+					"END AS project_status " +
+					", a.project_city, CONCAT(g.employee_info_firstname,' ',LEFT(g.employee_info_middlename,1),' ',g.employee_info_lastname) AS contractor_name " +
+					", b.bom_id, c.mce_id " +
+					"FROM projects a " +
+					"LEFT JOIN bom b ON a.project_id = b.project_id " +
+					"LEFT JOIN mce c ON b.bom_id = c.bom_id " +
+					"LEFT JOIN mce_subitems d ON c.mce_id = d.mce_id " +
+					"LEFT JOIN supplier_materials e ON d.supplier_material_id = e.supplier_material_id " +
+					"INNER JOIN building_types f ON f.building_types_id = a.building_types_id " +
+					"INNER JOIN employee_info g ON a.project_engineer_id = g.employee_info_id " +
+					"WHERE a.project_engineer_id = @id " +
+					"GROUP BY a.project_id, a.project_date, a.project_client_name, a.project_title, f.description, a.project_city, b.bom_id, c.mce_id, " +
+					"g.employee_info_firstname, g.employee_info_middlename, g.employee_info_lastname ORDER BY a.project_id DESC;"))
+				{
+					command.Parameters.AddWithValue("@id", (int)HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							double amount = 0;
+							int bom = 0, mce = 0;
+							if (!Convert.IsDBNull(sdr["price"]))
+							{
+								amount = Convert.ToDouble(sdr["price"]) / 100;
+							}
+							if (!Convert.IsDBNull(sdr["bom_id"]))
+							{
+								bom = Convert.ToInt32(sdr["bom_id"]);
+							}
+							if (!Convert.IsDBNull(sdr["mce_id"]))
+							{
+								mce = Convert.ToInt32(sdr["mce_id"]);
+							}
+							model.Add(new ClientDataModel()
+							{
+								ID = Convert.ToInt32(sdr["project_id"]),
+								ClientName = sdr["project_client_name"].ToString(),
+								date = Convert.ToDateTime(sdr["project_date"].ToString()),
+								Description = sdr["project_title"].ToString(),
+								Amount = amount,
+								Category = sdr["description"].ToString(),
+								Address = sdr["project_city"].ToString(),
+								ContractorName = sdr["contractor_name"].ToString(),
+								Status = Convert.ToInt32(sdr["project_status"]),
+								BOMID = bom,
+								MCEID = mce
+							});
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+		public IActionResult employeeProjectView(int? id)
+		{
+			ProjectViewModel model = new ProjectViewModel();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM projects a " +
+					"INNER JOIN employee_info b ON a.project_engineer_id = b.employee_info_id " +
+					"INNER JOIN building_types c ON a.building_types_id = c.building_types_id " +
+					"WHERE a.project_id = @project_id"))
+				{
+					command.Parameters.AddWithValue("@project_id", id);
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.Title = sdr["project_title"].ToString();
+							model.ClientName = sdr["project_client_name"].ToString();
+							model.ClientContact = sdr["project_client_contact"].ToString();
+							model.Address = sdr["project_address"].ToString();
+							model.City = sdr["project_city"].ToString();
+							model.Region = sdr["project_region"].ToString();
+							model.Country = sdr["project_country"].ToString();
+							model.Date = DateTime.Parse(sdr["project_date"].ToString());
+							model.Engineer = sdr["employee_info_firstname"].ToString() + " " + sdr["employee_info_middlename"].ToString().ToUpper()[0] + ". " + sdr["employee_info_lastname"].ToString();
+							model.BuildingType = sdr["description"].ToString();
+							model.NumberOfStoreys = Convert.ToInt32(sdr["project_building_storeys"]);
+							model.FloorHeight = Convert.ToDouble(sdr["project_building_floorheight"]);
+							model.BuildingLength = Convert.ToDouble(sdr["project_building_length"]);
+							model.BuildingWidth = Convert.ToDouble(sdr["project_building_width"]);
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT SCOPE_IDENTITY() FROM bom WHERE project_id = @project_id;"))
+				{
+					command.Parameters.AddWithValue("@project_id", id);
+					command.Connection = conn;
+					object result = command.ExecuteScalar();
+					if (result == DBNull.Value)
+					{
+						model.bomCreated = false;
+					}
+					else
+					{
+						model.bomCreated = true;
+					}
+				}
+			}
+			return View(model);
+		}
+
+		public IActionResult employeeSupplierDash()
+		{
+			List<AdminSupplierModel> model = new List<AdminSupplierModel>();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand(
+					"SELECT * FROM supplier_info WHERE employee_id = @id;"))
+				{
+					command.Parameters.AddWithValue("@id", (int)HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.Add(new AdminSupplierModel()
+							{
+								ID = Convert.ToInt32(sdr["supplier_id"]),
+								Desc = sdr["supplier_desc"].ToString(),
+								ContactNum = sdr["supplier_contact_number"].ToString(),
+								ContactName = sdr["supplier_contact_name"].ToString(),
+								Address = sdr["supplier_city"].ToString()
+							});
+
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 		public Employee_BOM_Materials_Subitems GetMaterial(int material_id, double Quantity, string destination, int subitem_num, double cost, double wastage, double provisions, int SupplierMaterialID)
 		{
 			Employee_BOM_Materials_Subitems item = new Employee_BOM_Materials_Subitems();
@@ -2141,6 +2365,7 @@ namespace Green_Asia_UI.Controllers
 			}
 			return item;
 		}
+
 
 		private MaterialsCostComparisonItem GetBestPrice(int MaterialID, string destination)
 		{

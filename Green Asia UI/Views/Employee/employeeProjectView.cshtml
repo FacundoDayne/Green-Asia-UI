@@ -1,0 +1,152 @@
+﻿@{
+    Layout = null;
+}
+
+@model ProjectViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title> Projects </title>
+    <link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
+
+    <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li>
+					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+                        <img src="../../Images/greenAsiaLogo.png" alt="logo">
+                        <span class="nav-item">GACTC</span>
+                    </a>
+                </li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+                        <i class="fas fa-menorah"></i>
+                        <span class="nav-item">Dashboard</span>
+                    </a>
+                </li>
+                <li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-item">Projects</span>
+                    </a>
+                </li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Suppliers</span>
+                    </a>
+                </li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="nav-item">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="main">
+            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddProject">
+                <div class="main-top">
+                    <h1>Add Projects</h1>
+                    <i class="fas fa-wrench"></i>
+                </div>
+            </a>
+
+            <section class="attendance">
+                <div class="attendance-list">
+					<table style="width:100%">
+						<tr>
+							<td>
+								<div style="width:50%">
+									<h4>Project Title</h4>
+									<p style="text-indent:20pt;">@Model.Title</p>
+								</div>
+							</td>
+							<td>
+								<div style="width:50%">
+									<h4>Client Name</h4>
+									<p style="text-indent:20pt;">@Model.ClientName</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Date</h4>
+									<p style="text-indent:20pt;">@Model.Date</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Client Contact</h4>
+									<p style="text-indent:20pt;">@Model.ClientContact</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Address</h4>
+									<p style="text-indent:20pt;"><span>@Model.Address</span>, <span>@Model.City</span>, <span>@Model.Region</span>, <span>@Model.Country</span></p></p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Engineer in charge</h4>
+									<p style="text-indent:20pt;">@Model.Engineer</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building type</h4>
+									<p style="text-indent:20pt;">@Model.BuildingType</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building number of storeys</h4>
+									<p style="text-indent:20pt;">@Model.NumberOfStoreys</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building dimensions</h4>
+									<p style="text-indent:20pt;">@Model.BuildingLength Metres by @Model.BuildingWidth Metres</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building floor height</h4>
+									<p style="text-indent:20pt;">@Model.FloorHeight</p>
+								</div>
+							</td>
+						</tr>
+					</table>
+					<div>
+						<h2>Status</h2>
+					@if (@Model.bomCreated != false)
+					{
+						<p>Pending</p>
+					}
+					else
+					{
+						<p>Processed</p>
+					}
+					</div>
+                </div>
+            </section>
+        </section>
+    </div>
+</body>
+</html>
