@@ -154,7 +154,7 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> Index(BOMListOfMaterials model)
 		{
 			Debug.WriteLine("helvete");
@@ -193,7 +193,7 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> Specifications(BOMSpecifications model)
 		{
 			BOM_Information info = new BOM_Information();
@@ -436,7 +436,7 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> BillOfMaterials(BOM_Information model)
 		{
 			Debug.WriteLine("pMCE: " + model.lists.Count);
@@ -460,7 +460,7 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> MateriaslCostEstimate(MCE_Information model, string submitButton)
 		{
 			

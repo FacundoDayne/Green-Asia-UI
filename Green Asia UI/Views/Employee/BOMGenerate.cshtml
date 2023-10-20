@@ -34,7 +34,7 @@
 	</div>
 	@using (Html.BeginForm("BOMGenerate", "Employee", FormMethod.Post))
 	{
-
+		@Html.AntiForgeryToken()
 		<div style="display: none">
 			@Html.EditorFor(m=>m.templates)
 			@Html.EditorFor(m=>m.materialpicker)

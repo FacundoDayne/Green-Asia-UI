@@ -35,11 +35,19 @@ namespace Green_Asia_UI.Controllers
 		private readonly string connectionstring = @"Server=68.71.129.120,1533;Database=bomgreen_db;User Id=bomgreen;Password=~Ni94tt39;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
 		public IActionResult Index()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			return View();
 		}
 
 		public IActionResult CreateProject()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			ProjectModel model = new ProjectModel();
 			model.EngineerList = GetEngineers();
 			model.BuildingList = GetBuildingTypes();
@@ -48,9 +56,13 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> CreateProject(ProjectModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			uint id = 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -90,6 +102,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult ProjectView(int id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			ProjectViewModel model = new ProjectViewModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -194,6 +210,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult Formulas()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			AdminFormulaDebug model = new AdminFormulaDebug();
 			model.floorThickness = 0.127;
 			model.wallThickness = 0.254;
@@ -238,11 +258,19 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult adminAddContractor()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			return View();
 		}
 
 		public IActionResult adminAddProject()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			ProjectModel model = new ProjectModel();
 			model.EngineerList = GetEngineers();
 			model.BuildingList = GetBuildingTypes();
@@ -251,9 +279,13 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
+		
 		public ActionResult adminAddProject(ProjectModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			uint id = 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -293,16 +325,24 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult adminAddSupplier()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			return View();
 		}
 
 		public IActionResult adminContractorDash()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<ContractorModel> model = new List<ContractorModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
-				using (SqlCommand command = new SqlCommand(
+				/*using (SqlCommand command = new SqlCommand(
 					"SELECT " +
 					"a.employee_info_id, " +
 					"CONCAT(a.employee_info_firstname,' ',LEFT(a.employee_info_middlename,1),' ',a.employee_info_lastname) AS contractor_name, " +
@@ -313,9 +353,16 @@ namespace Green_Asia_UI.Controllers
 					"LEFT JOIN bom c ON b.project_id = c.project_id " +
 					"LEFT JOIN mce d ON c.bom_id = d.bom_id " +
 					"INNER JOIN user_credentials e ON e.user_id = a.user_credentials_id " +
-					"WHERE d.mce_id IS NULL AND e.user_role = 2 " +
+					"WHERE e.user_role = 2 " +
 					"GROUP BY a.employee_info_firstname, a.employee_info_middlename, a.employee_info_lastname, " +
 					"a.employee_info_city, a.employee_info_contactnum, a.employee_info_email, a.employee_info_id;"))
+				{*/
+				using (SqlCommand command = new SqlCommand(
+					"select *," +
+					"CONCAT(a.employee_info_firstname,' ',LEFT(a.employee_info_middlename,1),' ',a.employee_info_lastname) AS contractor_name " +
+					" from employee_info a " +
+					"INNER JOIN user_credentials e ON e.user_id = a.user_credentials_id " +
+					"WHERE e.user_role = 2 ;"))
 				{
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
@@ -329,7 +376,7 @@ namespace Green_Asia_UI.Controllers
 								ContactNum = sdr["employee_info_contactnum"].ToString(),
 								Email = sdr["employee_info_email"].ToString(),
 								Address = sdr["employee_info_city"].ToString(),
-								Pending = Convert.ToInt32(sdr["pending"])
+								Pending = 0
 							});
 
 						}
@@ -341,6 +388,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult adminDashboard()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<ClientDataModel> model = new List<ClientDataModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -396,6 +447,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult adminProjectDash()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<ClientDataModel> model = new List<ClientDataModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -451,6 +506,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult adminSupplierDash()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<AdminSupplierModel> model = new List<AdminSupplierModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -481,6 +540,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult adminProjectView(int id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			ProjectViewModel model = new ProjectViewModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{

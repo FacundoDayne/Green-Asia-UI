@@ -48,13 +48,15 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> HomePage(LoginViewModel model)
 		{
+			Debug.WriteLine("a");
+			/*
 			if (!ModelState.IsValid)
 			{
 				return View(model);
-			}
+			}*/
+			
 			int role = 0;
 			int id = 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -76,6 +78,7 @@ namespace Green_Asia_UI.Controllers
 						{
 							role = Convert.ToInt32(sdr["user_role"]);
 							id = Convert.ToInt32(sdr["user_id"]);
+							Debug.WriteLine("id");
 							HttpContext.Session.SetInt32("UserID", Convert.ToInt32(sdr["user_id"])); //.Session["UserID"] = Convert.ToInt32(sdr["user_id"]);
 						}
 					}
@@ -83,7 +86,14 @@ namespace Green_Asia_UI.Controllers
 
 				if (role == 1) //admin
 				{
+					using (SqlCommand command = new SqlCommand("SELECT employee_info_id FROM employee_info WHERE user_credentials_id = @user_credentials_id;"))
+					{
+						command.Connection = conn;
+						command.Parameters.AddWithValue("@user_credentials_id", id);
+						HttpContext.Session.SetInt32("EmployeeID", Convert.ToInt32(command.ExecuteScalar()));
+					}
 					HttpContext.Session.SetInt32("UserRole", 1);
+					Debug.WriteLine("admin");
 					return RedirectToAction("adminDashboard", "Admin");
 				}
 				else if (role == 2) //employee
@@ -94,6 +104,7 @@ namespace Green_Asia_UI.Controllers
 						command.Parameters.AddWithValue("@user_credentials_id", id);
 						HttpContext.Session.SetInt32("EmployeeID", Convert.ToInt32(command.ExecuteScalar()));
 					}
+					Debug.WriteLine("emp");
 					HttpContext.Session.SetInt32("UserRole", 2);
 					return RedirectToAction("employeeDashboard", "Employee");
 				}
@@ -106,6 +117,7 @@ namespace Green_Asia_UI.Controllers
 						HttpContext.Session.SetInt32("SupplierID", Convert.ToInt32(command.ExecuteScalar()));
 					}
 					HttpContext.Session.SetInt32("UserRole", 3);
+					Debug.WriteLine("sup");
 					return RedirectToAction("SupplierMaterialsView");
 				}
 				conn.Close();
@@ -158,7 +170,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> GenerateBOM(GenerateBOMModel model)
 		{
 
@@ -345,7 +356,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> MaterialCostEstimate(MaterialCostEstimateModel model, string submitButton) //
 		{
 			switch(submitButton)
@@ -367,7 +377,6 @@ namespace Green_Asia_UI.Controllers
 		
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> MCEAddList(MCEAddListModel listmodel)
 		{
 			MaterialCostEstimateModel model = JsonConvert.DeserializeObject<MaterialCostEstimateModel>(TempData["MVCModel"].ToString());
@@ -389,7 +398,6 @@ namespace Green_Asia_UI.Controllers
 		
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> MCEAddItem(MCEAddItemModel itemmodel, int? id)
 		{
 			MaterialCostEstimateModel model = JsonConvert.DeserializeObject<MaterialCostEstimateModel>(TempData["MVCModel"].ToString());
@@ -410,7 +418,6 @@ namespace Green_Asia_UI.Controllers
 		/*
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public Task<ActionResult> MCEAddSubitem()
 		{
 			return View();
@@ -427,7 +434,6 @@ namespace Green_Asia_UI.Controllers
 		}
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult AddProduct(AddMaterialModel model)
 		{
 			if (!ModelState.IsValid)
@@ -514,7 +520,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult EditProduct(MaterialsEditModel model)
 		{
 			if(!ModelState.IsValid)
@@ -723,7 +728,11 @@ namespace Green_Asia_UI.Controllers
 		}
 
 		public IActionResult AddEmployee()
-        {
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			AddEmployeeModel xmodel = new AddEmployeeModel();
 
 			xmodel.roles = new List<RoleList>();
@@ -755,9 +764,12 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult AddEmployee(AddEmployeeModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			if (!ModelState.IsValid)
 			{
 				model.roles = GetUserRolesFromDB();
@@ -813,7 +825,7 @@ namespace Green_Asia_UI.Controllers
 							info_id = Convert.ToInt32(command.ExecuteScalar());
 						}
 
-						using (SqlCommand command = new SqlCommand("INSERT INTO bom_mce_db.employee_info (user_credentials_id, employee_info_firstname, employee_info_middlename, employee_info_lastname, employee_info_contactnum, employee_info_email, employee_info_address, employee_info_city, employee_info_status) " +
+						using (SqlCommand command = new SqlCommand("INSERT INTO employee_info (user_credentials_id, employee_info_firstname, employee_info_middlename, employee_info_lastname, employee_info_contactnum, employee_info_email, employee_info_address, employee_info_city, employee_info_status) " +
 							" VALUES (@user_credentials_id, @FirstName, @MiddleName, @LastName, @Contact, @Email, @Address, @City, @Status); "))
 						{
 							command.Connection = conn;
@@ -849,7 +861,7 @@ namespace Green_Asia_UI.Controllers
 				return View(model);
 			}
 
-			return RedirectToAction("Account");
+			return RedirectToAction("adminContractorDash", "Admin");
 		}
 
 
@@ -865,7 +877,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult AddPartner(AddSupplierModel model)
 		{
 			if (!ModelState.IsValid)
@@ -1126,7 +1137,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> BOMView(BillOfMaterialsModel xmodel)
 		{
 			BillOfMaterialsModel model = JsonConvert.DeserializeObject<BillOfMaterialsModel>(TempData["BOMModel"].ToString());
@@ -1269,7 +1279,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> BOMAddList(BOMAddListModel listmodel)
 		{
 			BillOfMaterialsModel model = JsonConvert.DeserializeObject<BillOfMaterialsModel>(TempData["BOMModel"].ToString());
@@ -1291,7 +1300,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> BOMAddItem(BOMAddItemModel itemmodel, int? id)
 		{
 			BillOfMaterialsModel model = JsonConvert.DeserializeObject<BillOfMaterialsModel>(TempData["BOMModel"].ToString());
@@ -1313,7 +1321,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> BOMAddSubitem(BOMAddSubitemModel itemmodel, string? id)
 		{
 			int[] ids = { Convert.ToInt32(id.Split('s')[0]), Convert.ToInt32(id.Split('s')[1]) };
@@ -1483,7 +1490,6 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> SupplierMaterialsView(List<SupplierMaterialViewItems> model)
 		{
 			if (!ModelState.IsValid)

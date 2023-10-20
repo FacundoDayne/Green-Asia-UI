@@ -37,6 +37,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult Index()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			EmployeeDashboardModel model = new EmployeeDashboardModel();
 			model.projects = GetNewProjects(HttpContext.Session.GetInt32("EmployeeID"));
 			return View(model);
@@ -77,6 +81,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult Templates()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<TemplateListItem> model = new List<TemplateListItem>();
 
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -105,6 +113,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult NewTemplate()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			NewTemplateModel model = new NewTemplateModel();
 			model.materials = new List<TemplateMaterial>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -133,9 +145,12 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> NewTemplate(NewTemplateModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			int id = 0, id2= 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -225,6 +240,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult TemplatesEdit(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			EditTemplateModel model = new EditTemplateModel();
 			model.ID = (int)id;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -305,9 +324,12 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public IActionResult TemplatesEdit(EditTemplateModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -387,6 +409,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult BOMTemplates()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<Employee_BOMTemplate> model = new List<Employee_BOMTemplate>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -413,14 +439,19 @@ namespace Green_Asia_UI.Controllers
 			return View(model);
 		}
 
-		public IActionResult BOMGenerate(int? id = 0, int? template_id = 0)
+		public IActionResult BOMGenerate(int? template_id = -1, int? id = -1)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			
 			EmployeeBOMModel model = new EmployeeBOMModel();
 			model.templates = new List<Employee_BOM_Template_List>();
 			model.ProjectID = (int)id;
 			string location = model.Latitude + "," + model.Longtitude;
 
-			if (TempData["BOMInfo"] == null && id != 0)
+			if (TempData["BOMInfo"] == null && id != -1)
 			{
 				using (SqlConnection conn = new SqlConnection(connectionstring))
 				{
@@ -470,7 +501,7 @@ namespace Green_Asia_UI.Controllers
 							}
 						}
 					}
-					if (template_id == 0)
+					if (template_id == -1)
 					{
 						model.materialpicker = new List<BOMMaterialPickItem>();
 						using (SqlCommand command = new SqlCommand("SELECT * FROM materials;"))
@@ -495,6 +526,10 @@ namespace Green_Asia_UI.Controllers
 
 			else
 			{
+				if (TempData["BOMInfo"] == null)
+				{
+					return RedirectToAction("employeeProjectDash");
+				}
 				model = JsonConvert.DeserializeObject<EmployeeBOMModel>(TempData["BOMInfo"].ToString());
 				model.materialpicker = new List<BOMMaterialPickItem>();
 				using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -523,15 +558,18 @@ namespace Green_Asia_UI.Controllers
 				}
 			}
 			model.TemplateID = template_id.ToString();
-			Debug.WriteLine(model.TemplateID);
+			Debug.WriteLine("Temp" + model.TemplateID);
 			return View(model);
 		}
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> BOMGenerate(EmployeeBOMModel model, string submitButton)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			if (submitButton == "Templates")
 			{
 				TempData["BOMInfo"] = JsonConvert.SerializeObject(model);
@@ -584,6 +622,7 @@ namespace Green_Asia_UI.Controllers
 			Debug.WriteLine(model.TemplateID);
 			Debug.WriteLine(model.BuildingLength);
 			Debug.WriteLine(model.BuildingWidth);
+			int formulaid = 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
@@ -598,6 +637,10 @@ namespace Green_Asia_UI.Controllers
 						while (sdr.Read())
 						{
 							model.FormulaID = Convert.ToInt32(sdr["formula_constants_id"]);
+							Debug.WriteLine("AAAE"); 
+							Debug.WriteLine(model.FormulaID); 
+							formulaid = Convert.ToInt32(sdr["formula_constants_id"]);
+							Debug.WriteLine(Convert.ToInt32(sdr["formula_constants_id"]));
 							// measurements that are changeable
 							floorThickness = Convert.ToDouble(sdr["floor_thickness"]);
 							wallThickness = Convert.ToDouble(sdr["wall_thickness"]);
@@ -914,26 +957,49 @@ namespace Green_Asia_UI.Controllers
 					}
 				}
 			}
-
-			TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
-			return RedirectToAction("BOMAdd");
+			model.FormulaID = formulaid;
+			//TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
+			//return RedirectToAction("BOMToAdd");
+			return View("BOMAdd", model);
 		}
 
-
-		public IActionResult BOMAdd()
+		public IActionResult BOMAdd(EmployeeBOMModel model)
 		{
-			EmployeeBOMModel model = JsonConvert.DeserializeObject<EmployeeBOMModel>(TempData["BOMGenerateData"].ToString());
-			TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			/*
+			if (model == null)
+			{
+				return RedirectToAction("employeeProjectDash");
+			}
+			else if (model != null)
+			{
+				return (model);
+			}
+			EmployeeBOMModel model2 = JsonConvert.DeserializeObject<EmployeeBOMModel>(TempData["BOMGenerateData"].ToString());
+			return View(model2);*/
+
 			return View(model);
 		}
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> BOMAdd(EmployeeBOMModel model)
+		public async Task<ActionResult> BOMAdd(EmployeeBOMModel model, string Continue)
 		{
-			TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			//TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
 			Debug.WriteLine("boolet");
+			Debug.WriteLine(model.ProjectID);
+			Debug.WriteLine(model.TemplateID);
+			model.FormulaID = Convert.ToInt32(model.TemplateID);
+			Debug.WriteLine(model.FormulaID);
+			Debug.WriteLine("boolet");
+
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
@@ -1013,11 +1079,17 @@ namespace Green_Asia_UI.Controllers
 				}
 			}
 
-			return View(model);
+			return RedirectToAction("employeeProjectDash", "Employee");
 		}
 
 		public IActionResult BOMView(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			int bom = 0;
+			Debug.WriteLine(id);
 			EmployeeBOMModel model = new EmployeeBOMModel();
 			model.templates = new List<Employee_BOM_Template_List>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -1026,7 +1098,7 @@ namespace Green_Asia_UI.Controllers
 				using (SqlCommand command = new SqlCommand("SELECT * FROM bom a INNER JOIN projects b ON a.project_id = b.project_id " +
 					"INNER JOIN template_formula_constants c ON a.bom_formula_id = formula_constants_id " +
 					"INNER JOIN building_types d ON b.building_types_id = d.building_types_id " +
-					"WHERE a.bom_id = @id;"))
+					"WHERE a.project_id = @id;"))
 				{
 					
 					command.Parameters.AddWithValue("@id", (int)id);
@@ -1054,13 +1126,14 @@ namespace Green_Asia_UI.Controllers
 							model.BOMCreationDate = DateTime.Parse(sdr["bom_creation_date"].ToString());
 							model.Wastage = Convert.ToDouble(sdr["wastage"]);
 							model.Provisions = Convert.ToDouble(sdr["provisions"]);
+							bom = Convert.ToInt32(sdr["bom_id"]);
 						}
 					}
 				}
 				model.lists = new List<Employee_BOM_Materials_Lists>();
 				using (SqlCommand command = new SqlCommand("SELECT * FROM bom_lists WHERE bom_id = @id;"))
 				{
-					command.Parameters.AddWithValue("@id", (int)id);
+					command.Parameters.AddWithValue("@id", bom);
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
 					{
@@ -1154,6 +1227,11 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult BOMViewClient(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			int bom = 0;
 			EmployeeBOMModel model = new EmployeeBOMModel();
 			model.templates = new List<Employee_BOM_Template_List>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -1162,7 +1240,7 @@ namespace Green_Asia_UI.Controllers
 				using (SqlCommand command = new SqlCommand("SELECT * FROM bom a INNER JOIN projects b ON a.project_id = b.project_id " +
 					"INNER JOIN template_formula_constants c ON a.bom_formula_id = formula_constants_id " +
 					"INNER JOIN building_types d ON b.building_types_id = d.building_types_id " +
-					"WHERE a.bom_id = @id;"))
+					"WHERE a.project_id = @id;"))
 				{
 
 					command.Parameters.AddWithValue("@id", (int)id);
@@ -1190,13 +1268,14 @@ namespace Green_Asia_UI.Controllers
 							model.BOMCreationDate = DateTime.Parse(sdr["bom_creation_date"].ToString());
 							model.Wastage = Convert.ToDouble(sdr["wastage"]);
 							model.Provisions = Convert.ToDouble(sdr["provisions"]);
+							bom = Convert.ToInt32(sdr["bom_id"]);
 						}
 					}
 				}
 				model.lists = new List<Employee_BOM_Materials_Lists>();
 				using (SqlCommand command = new SqlCommand("SELECT * FROM bom_lists WHERE bom_id = @id;"))
 				{
-					command.Parameters.AddWithValue("@id", (int)id);
+					command.Parameters.AddWithValue("@id", bom);
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
 					{
@@ -1290,6 +1369,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult BOMList()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<Employee_BOM_List_Item> projects = new List<Employee_BOM_List_Item>();
 
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -1326,6 +1409,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult ToMCEAdd(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			EmployeeBOMModel model = new EmployeeBOMModel();
 			model.templates = new List<Employee_BOM_Template_List>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -1463,10 +1550,10 @@ namespace Green_Asia_UI.Controllers
 			return RedirectToAction("MCEAdd");
 		}
 
-		public IActionResult MCEAdd()
+		public IActionResult MCEAdd(Employee_MCE model)
 		{
 
-			Employee_MCE model = JsonConvert.DeserializeObject<Employee_MCE>(TempData["MCEData"].ToString());
+			//Employee_MCE model = JsonConvert.DeserializeObject<Employee_MCE>(TempData["MCEData"].ToString());
 			return View(model);
 		}
 
@@ -1474,6 +1561,10 @@ namespace Green_Asia_UI.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> MCEAdd(Employee_MCE model, string submitButton)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			Debug.WriteLine(model == null);
 			Debug.WriteLine("Menshevik");
 			Debug.WriteLine(model.ProjectID);
@@ -1566,7 +1657,7 @@ namespace Green_Asia_UI.Controllers
 						}
 					}
 				}
-				return Redirect("Index");
+				return Redirect("employeeProjectDash");
 			}
 			
 			return View(model);
@@ -1639,6 +1730,11 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult MCEAdd_New(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			int bom = 0;
 			Employee_MCE model = new Employee_MCE();
 			model.templates = new List<Employee_BOM_Template_List>();
 			model.materials = new List<Employee_MCE_Materials_Subitems>();
@@ -1648,7 +1744,7 @@ namespace Green_Asia_UI.Controllers
 				using (SqlCommand command = new SqlCommand("SELECT * FROM bom a INNER JOIN projects b ON a.project_id = b.project_id " +
 					"INNER JOIN template_formula_constants c ON a.bom_formula_id = formula_constants_id " +
 					"INNER JOIN building_types d ON b.building_types_id = d.building_types_id " +
-					"WHERE a.bom_id = @id;"))
+					"WHERE a.project_id = @id;"))
 				{
 
 					command.Parameters.AddWithValue("@id", (int)id);
@@ -1678,9 +1774,13 @@ namespace Green_Asia_UI.Controllers
 							model.Provisions = Convert.ToDouble(sdr["provisions"]);
 							model.ProjectID = Convert.ToInt32(sdr["project_id"]);
 							model.BOMID = Convert.ToInt32(sdr["bom_id"]);
+							bom = Convert.ToInt32(sdr["bom_id"]);
 						}
 					}
 				}
+				Debug.WriteLine(id);
+
+				Debug.WriteLine(bom);
 				string destination = model.Latitude + "," + model.Longtitude;
 				using (SqlCommand command = new SqlCommand("SELECT e.*, g.measurement_unit_desc_short, f.Quantity FROM ( " +
 					"SELECT c.material_id, SUM(d.bom_subitem_quantity) AS Quantity " +
@@ -1700,7 +1800,7 @@ namespace Green_Asia_UI.Controllers
 					"INNER JOIN materials e ON f.material_id = e.material_id " +
 					"INNER JOIN measurement_units g ON e.measurement_unit_id= g.measurement_unit_id;"))
 				{
-					command.Parameters.AddWithValue("@id", (int)id);
+					command.Parameters.AddWithValue("@id", bom);
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
 					{
@@ -1739,15 +1839,19 @@ namespace Green_Asia_UI.Controllers
 			model.tax = model.subtotalCost * 0.05;
 			model.totalCost = model.subtotalCost + model.tax;
 
-			TempData["MCEData"] = JsonConvert.SerializeObject(model);
-			return RedirectToAction("MCEAdd");
+			//TempData["MCEData"] = JsonConvert.SerializeObject(model);
+			//return RedirectToAction("MCEAdd");
+			return View("MCEAdd", model);
 		}
 
 
 		public IActionResult MCEView (int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			Employee_MCE model = new Employee_MCE();
-
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				int mce = 0;
@@ -1757,7 +1861,7 @@ namespace Green_Asia_UI.Controllers
 					"INNER JOIN projects c ON b.project_id = c.project_id " +
 					"INNER JOIN building_types d ON c.building_types_id = d.building_types_id " +
 					"INNER JOIN template_formula_constants e ON b.bom_formula_id = e.formula_constants_id " +
-					"WHERE a.bom_id = @id;"))
+					"WHERE c.project_id = @id;"))
 				{
 
 					command.Parameters.AddWithValue("@id", (int)id);
@@ -1851,6 +1955,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult SupplierList()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<SupplierListItem> model = new List<SupplierListItem>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -1879,6 +1987,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult SupplierView(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			SupplierInfoModel model = new SupplierInfoModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -1916,9 +2028,12 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult SupplierView(SupplierInfoModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 
 			TempData["SupplierData"] = JsonConvert.SerializeObject(model);
 			return RedirectToAction("SupplierEdit");
@@ -1926,6 +2041,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult SupplierEdit ()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			SupplierInfoModel model = JsonConvert.DeserializeObject<SupplierInfoModel>(TempData["SupplierData"].ToString());
 			TempData["SupplierData"] = JsonConvert.SerializeObject(model);
 			return View(model);
@@ -1933,9 +2052,12 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult SupplierEdit(SupplierInfoModel model, string submitButton)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			bool error = false;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -2000,9 +2122,12 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
 		public ActionResult SupplierAdd(SupplierInfoModel model)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			if (!ModelState.IsValid)
 			{
 				foreach (var x in ModelState.Keys)
@@ -2113,6 +2238,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult employeeDashboard()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			NewEmployeeDashboardModel model = new NewEmployeeDashboardModel();
 			model.projects = new List<EmployeeDashboardProjects>();
 
@@ -2172,6 +2301,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult employeeProjectDash()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<ClientDataModel> model = new List<ClientDataModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -2240,6 +2373,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult employeeProjectView(int? id)
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			ProjectViewModel model = new ProjectViewModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
@@ -2292,6 +2429,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult employeeSupplierDash()
 		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
 			List<AdminSupplierModel> model = new List<AdminSupplierModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
