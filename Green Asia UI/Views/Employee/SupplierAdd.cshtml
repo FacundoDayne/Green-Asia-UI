@@ -36,7 +36,7 @@
 	@Html.ActionLink("Back", "employeeSupplierDash")
 	<h3>Add Supplier</h3>
 
-	<main class="inputGrid">
+	<main class="">
 		@using (Html.BeginForm("SupplierAdd", "Employee", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
 		{
 			@Html.AntiForgeryToken()
