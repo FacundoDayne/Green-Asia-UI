@@ -129,6 +129,8 @@
 				</div>
 				<div>
 					<div class="map" id="myMap" style="position:relative;width:100%;height:600px;"></div>
+					@Html.HiddenFor(m=>m.Latitude, new { @class = "form-control", @id="latitude"})
+					@Html.HiddenFor(m=>m.Longtitude, new { @class = "form-control", @id="longtitude" })
 				</div>
 				<div class="title">Project Details</div>
 				<div class="user-details">
