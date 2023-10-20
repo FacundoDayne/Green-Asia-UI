@@ -1,13 +1,14 @@
 ﻿@{
     Layout = null;
 }
-@model List<AdminSupplierModel>
+
+@model ProjectViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title> Suppliers </title>
-    <link rel="icon" type="images/png" href="images/green asia logo.png" />
+    <title> Projects </title>
+    <link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
 
     <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
 
@@ -29,7 +30,7 @@
                         <span class="nav-item">Dashboard</span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
 					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminProjectDash">
                         <i class="fas fa-chart-bar"></i>
                         <span class="nav-item">Projects</span>
@@ -41,7 +42,7 @@
                         <span class="nav-item">Contractors</span>
                     </a>
                 </li>
-                <li class="active">
+                <li>
 					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminSupplierDash">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Suppliers</span>
@@ -57,41 +58,98 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminAddSupplier">
+            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddProject">
                 <div class="main-top">
-                    <h1>Add Suppliers</h1>
+                    <h1>Add Projects</h1>
                     <i class="fas fa-wrench"></i>
                 </div>
             </a>
 
             <section class="attendance">
                 <div class="attendance-list">
-                    <h1>Supplier List</h1>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Address</th>
-								<th>Contact Name</th>
-								<th>Contact Number</th>
-								<th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-							@for (int x = 0; x < Model.Count; x++)
-							{
-								<tr>
-									<td>@Model[x].ID</td>
-									<td>@Model[x].Desc</td>
-									<td>@Model[x].Address</td>
-									<td>@Model[x].ContactName</td>
-									<td>@Model[x].ContactNum</td>
-									<td><button>Edit</button></td>
-								</tr>
-							}
-                        </tbody>
-                    </table>
+					<table style="width:100%">
+						<tr>
+							<td>
+								<div style="width:50%">
+									<h4>Project Title</h4>
+									<p style="text-indent:20pt;">@Model.Title</p>
+								</div>
+							</td>
+							<td>
+								<div style="width:50%">
+									<h4>Client Name</h4>
+									<p style="text-indent:20pt;">@Model.ClientName</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Date</h4>
+									<p style="text-indent:20pt;">@Model.Date</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Client Contact</h4>
+									<p style="text-indent:20pt;">@Model.ClientContact</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Address</h4>
+									<p style="text-indent:20pt;"><span>@Model.Address</span>, <span>@Model.City</span>, <span>@Model.Region</span>, <span>@Model.Country</span></p></p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Engineer in charge</h4>
+									<p style="text-indent:20pt;">@Model.Engineer</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building type</h4>
+									<p style="text-indent:20pt;">@Model.BuildingType</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building number of storeys</h4>
+									<p style="text-indent:20pt;">@Model.NumberOfStoreys</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building dimensions</h4>
+									<p style="text-indent:20pt;">@Model.BuildingLength Metres by @Model.BuildingWidth Metres</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building floor height</h4>
+									<p style="text-indent:20pt;">@Model.FloorHeight</p>
+								</div>
+							</td>
+						</tr>
+					</table>
+					<div>
+						<h2>Status</h2>
+					@if (@Model.bomCreated != false)
+					{
+						<p>Pending</p>
+					}
+					else
+					{
+						<p>Processed</p>
+					}
+					</div>
                 </div>
             </section>
         </section>

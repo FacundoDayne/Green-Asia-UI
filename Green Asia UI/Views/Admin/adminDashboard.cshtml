@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-
+@model List<ClientDataModel>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,10 +56,10 @@
                 <h2>Dashboard</h2>
             </div>
             <div class="user--info">
-                <div class="search--box">
+                <!--<div class="search--box">
                     <i class="fa-solid fa-search"></i>
                     <input type="text" placeholder="Search" />
-                </div>
+				</div>-->
                 <img src="./images/image2.jpg" alt="">
             </div>
         </div>
@@ -72,7 +72,7 @@
                         <div class="card--header">
                             <div class="amount">
                                 <span class="title">Project</span>
-                                <span class="amount-value">Add and Remove projects</span>
+                                <span class="amount-value">Manage projects</span>
                             </div>
                             <i class="fas fa-peso-sign icon"></i>
                         </div>
@@ -85,7 +85,7 @@
                         <div class="card--header">
                             <div class="amount">
                                 <span class="title">Contractor</span>
-                                <span class="amount-value">Add and Remove Contractors</span>
+                                <span class="amount-value">Manage Contractors</span>
                             </div>
                             <i class="fas fa-list icon dark-purple"></i>
                         </div>
@@ -98,7 +98,7 @@
                         <div class="card--header">
                             <div class="amount">
                                 <span class="title">Supplier</span>
-                                <span class="amount-value">Add and Remove Partners</span>
+                                <span class="amount-value">Manage Suppliers</span>
                             </div>
                             <i class="fas fa-users icon dark-green"></i>
                         </div>
@@ -118,34 +118,34 @@
                             <th>Name</th>
                             <th>Description</th>
                             <th>Amount</th>
-                            <th>Category</th>
+							<th>Category</th>
+							<th>Status</th>
                             <th>Action</th>
                         </tr>
                     <tbody>
-                        <tr>
-                            <td>2023-05-01</td>
-                            <td>Mark Gomez</td>
-                            <td>Bungalow</td>
-                            <td>2,500,000</td>
-                            <td>Residential</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>2023-05-01</td>
-                            <td>Vegas Hardware</td>
-                            <td>Hardware</td>
-                            <td>-</td>
-                            <td>Partner</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>2023-05-01</td>
-                            <td>Amanda Sky</td>
-                            <td>2 Storey</td>
-                            <td>250,000,000</td>
-                            <td>Residential</td>
-                            <td><button>Edit</button></td>
-                        </tr>
+						@for (int x = 0; x < Model.Count; x++)
+							{
+								<tr>
+									<td>@Model[x].date.ToString("yyyy-MM-dd")</td>
+									<td>@Model[x].ClientName</td>
+									<td>@Model[x].Description</td>
+									<td>@Model[x].Amount</td>
+									<td>@Model[x].Category</td>
+									@if (Model[x].Status == 0)
+									{
+										<td>BOM Pending</td>
+									}
+									else if (Model[x].Status == 1)
+									{
+										<td>MCE Pending</td>
+									}
+									else if (Model[x].Status == 2)
+									{
+									<td>Processed</td>
+									}
+									<td><button>Edit</button></td>
+								</tr>
+							}
                     </tbody>
                     <tfoot>
                         <tr>

@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-
+@model List<ContractorModel>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,8 +18,8 @@
         <nav>
             <ul>
                 <li>
-                    
-                    <a class="logo" asp-area="" asp-controller="Admin" asp-action="adminDashboard">
+
+					<a class="logo" asp-area="" asp-controller="Admin" asp-action="adminDashboard">
                         <img src="../../Images/greenAsiaLogo.png" alt="logo">
                         <span class="nav-item">GACTC</span>
                     </a>
@@ -58,12 +58,13 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="adminAddContractor">
+            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddContractor">
                 <div class="main-top">
                     <h1>Add Contractors</h1>
                     <i class="fas fa-user-plus"></i>
                 </div>
             </a>
+			<!--
             <div class="users">
                 <div class="card">
                     <img src="./images/profile.jpg" alt="">
@@ -138,58 +139,35 @@
                     <button>Profile</button>
                 </div>
             </div>
+			-->
             <section class="attendance">
                 <div class="attendance-list">
                     <h1>Contractor List</h1>
                     <table class="table">
                         <thead>
-                            <tr>
+							<tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Status</th>
-                                <th>Date of Birth</th>
-                                <th>Position</th>
                                 <th>Address</th>
+                                <th>Contact #</th>
+                                <th>Email</th>
+                                <th>Pending Projects</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>01</td>
-                                <td>Sam David</td>
-                                <td>Unavailable</td>
-                                <td>07-24-17</td>
-                                <td>Contractor</td>
-                                <td>Makati City</td>
-                                <td><button>Remove</button></td>
-                            </tr>
-                            <tr class="active">
-                                <td>02</td>
-                                <td>Baron Gomez</td>
-                                <td>Available</td>
-                                <td>03-24-1968</td>
-                                <td>Contractor</td>
-                                <td>Pasig City</td>
-                                <td><button>Remove</button></td>
-                            </tr>
-                            <tr>
-                                <td>03</td>
-                                <td>Juan Dela Cruz</td>
-                                <td>Unavailable</td>
-                                <td>07-04-1982</td>
-                                <td>Contractor</td>
-                                <td>Quezon City</td>
-                                <td><button>Remove</button></td>
-                            </tr>
-                            <tr class="active">
-                                <td>04</td>
-                                <td>Michael Solis</td>
-                                <td>Available</td>
-                                <td>09-24-2002</td>
-                                <td>Contractor</td>
-                                <td>Cavite</td>
-                                <td><button>Remove</button></td>
-                            </tr>
+						<tbody>
+							@for (int x = 0; x < Model.Count; x++)
+							{
+								<tr>
+									<td>@Model[x].ID</td>
+									<td>@Model[x].ContractorName</td>
+									<td>@Model[x].Address</td>
+									<td>@Model[x].ContactNum</td>
+									<td>@Model[x].Email</td>
+									<td>@Model[x].Pending</td>
+									<td><button>Edit</button></td>
+								</tr>
+							}
                         </tbody>
                     </table>
                 </div>
