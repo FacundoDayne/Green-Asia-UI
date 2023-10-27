@@ -97,7 +97,7 @@ namespace Green_Asia_UI.Controllers
 					id = Convert.ToUInt32(command.ExecuteScalar());
 				}
 			}
-			return RedirectToAction("ProjectView", new { id = id });
+			return RedirectToAction("adminProjectView", new { id = id });
 		}
 
 		public IActionResult ProjectView(int id)
@@ -592,6 +592,40 @@ namespace Green_Asia_UI.Controllers
 				}
 			}
 			return View(model);
+		}
+
+		// AJAX
+
+		public ActionResult AJAXGetContractorNumOfProjects (string selectedValue)
+		{
+			int numOfProjects = 0;
+			try
+			{
+				using (SqlConnection conn = new SqlConnection(connectionstring))
+				{
+					conn.Open();
+					using (SqlCommand command = new SqlCommand("SELECT COUNT(a.project_id) FROM projects a " +
+						"LEFT JOIN bom b ON a.project_id = b.project_id " +
+						"LEFT JOIN mce c ON b.bom_id = c.bom_id " +
+						"WHERE a.project_engineer_id = @id " +
+						"AND (c.mce_id IS NULL OR b.bom_id IS NULL);"))
+					{
+						command.Parameters.AddWithValue("@id", Convert.ToInt32(selectedValue));
+						command.Connection = conn;
+						numOfProjects = Convert.ToInt32(command.ExecuteScalar());
+					}
+				}
+			}
+			catch (SqlException e)
+			{
+				Debug.WriteLine(e.Message);
+			}
+			catch (InvalidCastException e)
+			{
+				Debug.WriteLine(e.Message);
+			}
+			Debug.WriteLine(selectedValue + ": " + numOfProjects);
+			return Json(numOfProjects.ToString());
 		}
 	}
 }
