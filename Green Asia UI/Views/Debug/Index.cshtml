@@ -1,0 +1,122 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model DebugModel
+<head>
+</head>
+
+<body>
+	<p>Directory: @AppDomain.CurrentDomain.BaseDirectory</p>
+	@if (Model.filepath != null)
+	{
+		<p>@Model.filepath</p>
+		@using (Html.BeginForm("DownloadFile", "Debug", FormMethod.Post))
+		{
+			@Html.HiddenFor(m=>m.filepath);
+			<button type="submit" >Download File</button>
+		}
+	}
+	<Table>
+		@for (int i = 0; i < 10; i++)
+		{
+			<tr data-row="@i">
+				<td>Row @i</td>
+				<td><input type="number" class="number-input" value="0"/></td>
+				<td><input type="number" class="number-input" value="0"/></td>
+				<td><p class="result-p">0</p></td>
+			</tr>
+		}
+	</table>
+	<h1>a</h1>
+	<table>
+		@for (int i = 0; i < 5; i++) {
+			<tr>
+				<td>
+					@Html.DropDownListFor(m=>m.suppliers, new SelectList(Model.suppliers, "id", "desc"), new { @id="select-"+i });
+				</td>
+				<td>
+					<p id="number-@i">@(i + 1)</p>
+				</td>
+				<td>
+					<p id="result-@i">Result: </p>
+				</td>
+			</tr>
+		}
+	</table>
+	<!--
+	for (int i=0; i < 10; i++)
+	{
+		<script>
+			console.log(i);
+			var inputA = document.getElementById('inputA-i');
+			var inputB = document.getElementById('inputB-i');
+			var output = document.getElementById('output-i');
+			inputA.addEventListener('change', function() {
+				var valueA = inputA.value;
+				var valueB = inputB.value;
+				console.log('A i');
+				if (valueB != null)
+				{
+					output.value = valueA + valueB; 
+				}
+			});
+			inputB.addEventListener('change', function() {
+				var valueA = inputA.value;
+				var valueB = inputB.value;
+				console.log('B i');
+				if (valueA!= null)
+				{
+					output.textContent  = valueA + valueB; 
+				}
+			});
+		</script>
+	}
+	-->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			// Attach an event listener to each input element with the "number-input" class
+			$('.number-input').on('input', function () {
+				// Find the parent row of the input element
+				const $row = $(this).closest('tr');
+            
+				// Find the two input elements in the same row
+				const $inputs = $row.find('.number-input');
+            
+				// Calculate the sum of the two input values
+				const sum = +$inputs.eq(0).val() * +$inputs.eq(1).val();
+            
+				// Find the <p> element in the same row and update its text
+				const $resultP = $row.find('.result-p');
+				$resultP.text(`Result: ${sum}`);
+			});
+			for (let i = 0; i < 5; i++) {
+				$(`#select-${i}`).on('change', function () {
+					// Get the selected option value
+					const selectedValue = $(this).val();
+
+					// Get the number from the first <p>
+					const number = parseFloat($(`#number-${i}`).text());
+
+					// Send an AJAX request to retrieve the multiplier
+					$.ajax({
+						url: '/Debug/GetMultiplier?param1=' + (i + 1), // Replace with your controller action URL
+						method: 'GET',
+						data: { selectedValue: selectedValue },
+						success: function (multiplier) {
+							// Calculate the result
+							const result = number * multiplier;
+							// Update the second <p> with the result
+							$(`#result-${i}`).text(`${result}`);
+						},
+						error: function (error) {
+							console.error(error);
+						}
+					});
+				});
+			}
+		});
+	</script>
+</body>

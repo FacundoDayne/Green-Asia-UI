@@ -2,8 +2,10 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-}
-@model EmployeeBOMModel
+	int numOfItems = 0;
+	int numOfItems2 = 0;
+	}
+	@model EmployeeBOMModel
 <head>
 	<script>
 			.field - validation - valid {
@@ -75,9 +77,10 @@
 						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityProvisions)
 						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialUoM)
 						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialCost)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount)
+						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount, new { @id="result-amount-" + numOfItems2 })
 						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
 						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
+						numOfItems2++;
 					}
 				}
 			}
@@ -108,7 +111,7 @@
 			<thead>
 				<tr>
 					<th></th>
-					<th colspan="5">Proposed Materials</th>
+					<th colspan="6">Proposed Materials</th>
 					<th colspan="2">Cost Estimate</th>
 				</tr>
 				<tr>
@@ -118,6 +121,7 @@
 					<th>With Wastage</th>
 					<th>With Wastage + Provisions</th>
 					<th>UoM</th>
+					<th>Supplier</th>
 					<th>Cost per unit</th>
 					<th>Total Amount</th>
 				</tr>
@@ -128,33 +132,38 @@
 					<tr style="background: #BBBBBB">
 						<td>
 						</td>
-						<td colspan="7">@Model.lists[x].Description</td>
+						<td colspan="8">@Model.lists[x].Description</td>
 					</tr>
 					@for (int y = 0; y < Model.lists[x].Items.Count; y++)
 					{
 						<tr style="background: #EEEEEE">
 							<td>@Model.lists[x].Items[y].ItemNumber</td>
-							<td colspan="7">@Model.lists[x].Items[y].Description</td>
+							<td colspan="8">@Model.lists[x].Items[y].Description</td>
 						</tr>
 						@for (int z = 0; z < Model.lists[x].Items[y].Subitems.Count; z++)
 						{
 							{
 								<tr>
-									<td>@Model.lists[x].Items[y].Subitems[z].SubitemNumber</td>
+									<td>@Model.lists[x].Items[y].Subitems[z].SubitemNumber 
+										<p hidden id="material-@numOfItems">@Model.lists[x].Items[y].Subitems[z].MaterialID</p></td>
 									<td>@Model.lists[x].Items[y].Subitems[z].MaterialDesc</td>
 									<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantity</td>
 									<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantityWastage</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantityProvisions</td>
+										<td><p id="number-@numOfItems">@Model.lists[x].Items[y].Subitems[z].MaterialQuantityProvisions</p></td>
 									<td>@Model.lists[x].Items[y].Subitems[z].MaterialUoM</td>
-									<td>@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialCost)</td>
-									<td>@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialAmount)</td>
+									<td>@Html.DropDownListFor(m=>m.lists[x].Items[y].Subitems[z].SupplierID,
+									new SelectList(Model.suppliers, "ID", "Description"), new { @id="select-"+numOfItems })
+									</td>
+									<td><p id="cost-@numOfItems">@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialCost)</p></td>
+									<td><p id="result-@numOfItems"> @string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialAmount)</p></td>
 								</tr>
+								numOfItems++;
 							}
 						}
 					}
 				}
 				<tr style="background: #BBBBBB">
-					<td colspan="7" style="text-align:right">Amount:</td>
+					<td colspan="8" style="text-align:right">Amount:</td>
 					<td>@string.Format("{0:N2}", Model.totalCost)</td>
 				</tr>
 			</tbody>
@@ -162,4 +171,39 @@
 
 		<input type="submit" name="Continue" value="Continue" class="button button2" />
 	}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			for (let i = 0; i < @numOfItems; i++) {
+				$(`#select-${i}`).on('change', function () {
+					// Get the selected option value
+					const selectedValue = $(this).val();
+
+					// Get the number from the first <p>
+					const number = parseFloat($(`#number-${i}`).text());
+
+					// Send an AJAX request to retrieve the multiplier
+					$.ajax({
+						url: '/Debug/GetMultiplier?param1=' + $(`#material-` + i).text(), // Replace with your controller action URL
+						method: 'GET',
+						data: { selectedValue: selectedValue },
+						success: function (multiplier) {
+							// Calculate the result
+							const cost = (multiplier / 100);
+							const result = number * cost;
+							const formattedcost = cost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+							const formattedresult = result.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+							// Update the second <p> with the result
+							$(`#result-${i}`).text(`${formattedresult}`);
+							$(`#cost-${i}`).text(`${formattedcost}`);
+							$(`#result-amount-${i}`).value(`${result}`);
+						},
+						error: function (error) {
+							console.error(error);
+						}
+					});
+				});
+			}
+		});
+	</script>
 </body>

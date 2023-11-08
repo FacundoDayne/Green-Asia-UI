@@ -233,6 +233,7 @@ namespace Green_Asia_UI.Models
 		public double TotalUnitRate { get; set; }
 		public double SupplierMaterialID { get; set; }
 		public string Supplier { get; set; }
+		public string SupplierID { get; set; }
 	}
 
 	public class Employee_BOM_Materials_Items
@@ -257,6 +258,7 @@ namespace Green_Asia_UI.Models
 		public List<Employee_BOM_Materials_Lists> lists { get; set; }
 		public List<Employee_BOM_Template_List> templates { get; set; }
 		public List<BOMMaterialPickItem> materialpicker { get; set; }
+		public List<SupplierListItem> suppliers { get; set; }
 
 		public double totalCost { get; set; }
 
@@ -360,6 +362,7 @@ namespace Green_Asia_UI.Models
 		public double TotalUnitRate { get; set; }
 		public double SupplierMaterialID { get; set; }
 		public string Supplier { get; set; }
+		public int SupplierID { get; set; }
 	}
 
 	public class Employee_MCE

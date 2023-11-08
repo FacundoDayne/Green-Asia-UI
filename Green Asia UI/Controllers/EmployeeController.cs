@@ -958,6 +958,29 @@ namespace Green_Asia_UI.Controllers
 				}
 			}
 			model.FormulaID = formulaid;
+
+			model.suppliers = new List<SupplierListItem>();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT supplier_id, supplier_desc FROM supplier_info WHERE employee_id = @employee_id;"))
+				{
+					command.Parameters.AddWithValue("@employee_id", HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.suppliers.Add(new SupplierListItem()
+							{
+								ID = Convert.ToInt32(sdr["supplier_id"]),
+								Description = sdr["supplier_desc"].ToString()
+							});
+						}
+					}
+				}
+			}
+
 			//TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
 			//return RedirectToAction("BOMToAdd");
 			return View("BOMAdd", model);
@@ -980,7 +1003,7 @@ namespace Green_Asia_UI.Controllers
 			}
 			EmployeeBOMModel model2 = JsonConvert.DeserializeObject<EmployeeBOMModel>(TempData["BOMGenerateData"].ToString());
 			return View(model2);*/
-
+			Debug.WriteLine(model.suppliers == null);
 			return View(model);
 		}
 
@@ -2479,12 +2502,15 @@ namespace Green_Asia_UI.Controllers
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
-				using (SqlCommand command = new SqlCommand("SELECT a.material_id, a.material_desc, b.measurement_unit_desc_short FROM materials a " +
+				using (SqlCommand command = new SqlCommand("SELECT a.material_id, a.material_desc, b.measurement_unit_desc_short, " +
+					"(SELECT supplier_id FROM supplier_materials a WHERE a.supplier_material_id = @supplier_material_id) as supplier_id " +
+					"FROM materials a " +
 					" INNER JOIN measurement_units b " +
 					" ON a.measurement_unit_id = b.measurement_unit_id " +
 					" WHERE material_id = @material_id;"))
 				{
 					command.Parameters.AddWithValue("@material_id", material_id);
+					command.Parameters.AddWithValue("@supplier_material_id", SupplierMaterialID);
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
 					{
@@ -2500,6 +2526,7 @@ namespace Green_Asia_UI.Controllers
 							item.MaterialCost = cost;
 							item.MaterialAmount = Math.Ceiling(Math.Ceiling(Math.Ceiling(Quantity) * wastage) * provisions) * cost;
 							item.SupplierMaterialID = SupplierMaterialID;
+							item.SupplierID = sdr["supplier_id"].ToString();
 						}
 					}
 				}
