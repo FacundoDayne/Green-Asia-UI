@@ -2,30 +2,104 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+	Layout = null;
 }
 @model List<TemplateListItem>
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8" />
+	<title> Templates </title>
+	<link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
 
+	<link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
 
 <body>
-	@Html.ActionLink("Back", "employeeProjectDash")
-	@if (Model != null || Model.Count != 0)
-	{
-		foreach(TemplateListItem x in Model)
-		{
-			<div class="cards">
-				<p>Name: @x.Descritpion</p>
-				<p>Description: @x.Long_Description</p>
-				@Html.ActionLink("Edit", "TemplatesEdit", "Employee", new { id = x.ID })
-			</div>
-		}
-	}
-	else if (Model.Count == 0)
-	{
-		<h2 style="text-align:center;">No templates yet</h2>
-	}
-
-	@Html.ActionLink("Add new template", "NewTemplate", "Employee")
+	<div class="container">
+		<nav>
+			<ul>
+				<li>
+					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo">
+						<span class="nav-item">GACTC</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<i class="fas fa-menorah"></i>
+						<span class="nav-item">Dashboard</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+						<i class="fas fa-chart-bar"></i>
+						<span class="nav-item">Projects</span>
+					</a>
+				</li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Templates</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Suppliers</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+						<i class="fas fa-sign-out-alt"></i>
+						<span class="nav-item">Log out</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<section class="main">
+			<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="NewTemplate">
+				<div class="main-top">
+					<h1>Templates</h1>
+					<i class="fas fa-wrench"></i>
+				</div>
+			</a>
+			<section class="attendance">
+				<div class="attendance-list">
+					<h1>Templates List</h1>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Description</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@if (Model != null || Model.Count != 0)
+							{
+								foreach(TemplateListItem x in Model)
+								{
+									<tr>
+										<td>@x.Descritpion</td>
+										<td>@x.Long_Description</td>
+										<td>@Html.ActionLink("Edit", "TemplatesEdit", "Employee", new { id = x.ID })</td>
+									</tr>
+								}
+							}
+							else if (Model.Count == 0)
+							{
+								<tr>
+									<h4 style="text-align:center;">No templates yet</h4>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</section>
+	</div>
 </body>

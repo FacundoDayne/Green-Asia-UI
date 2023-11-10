@@ -2,6 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+	Layout = null;
 }
 @model EmployeeBOMModel
 <head>
@@ -14,76 +15,203 @@
 			display: none;
 		}
 	</script>
+
+	<style>
+		.a-button{
+			padding:10px 20px 10px 20px;
+			border:solid;
+			border-color:black	
+		}
+	</style>
+
+	<meta charset="UTF-8" />
+	<title> Templates </title>
+	<link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
+
+	<link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
 
 <body>
-	@Html.ActionLink("Back", "employeeProjectDash")
-	<div style="border-color:black;">
-	<p>Project Title: @Model.Title</p>
-	<p>Project Client: @Model.ClientName</p>
-	<p>Project Client Contacts: @Model.ClientContact</p>
-	<p>Project Date: @Model.Date</p>
-	<p>Project Address: <span>@Model.Address</span>,<span>@Model.City</span>,<span>@Model.Region</span>,<span>@Model.Country</span></p>
-	<p>Building Type: @Model.BuildingType</p>
-	<p>Number of Storeys: @Model.NumberOfStoreys</p>
-	<p>Floor height: @Model.FloorHeight</p>
-	<p>Building Length: @Model.BuildingLength</p>
-	<p>Building Width: @Model.BuildingWidth</p>
-		<p>Lon: @Model.Longtitude</p>
-		<p>Lat: @Model.Latitude</p>
+	<div class="container">
+		<nav>
+			<ul>
+				<li>
+					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo">
+						<span class="nav-item">GACTC</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<i class="fas fa-menorah"></i>
+						<span class="nav-item">Dashboard</span>
+					</a>
+				</li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+						<i class="fas fa-chart-bar"></i>
+						<span class="nav-item">Projects</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Templates</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Suppliers</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+						<i class="fas fa-sign-out-alt"></i>
+						<span class="nav-item">Log out</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+
+		<section class="main">
+			<section class="attendance">
+				<div class="attendance-list">
+					<table style="width:100%">
+						<tr>
+							<td>
+								<div style="width:50%">
+									<h4>Project Title</h4>
+									<p style="text-indent:20pt;">@Model.Title</p>
+								</div>
+							</td>
+							<td>
+								<div style="width:50%">
+									<h4>Client Name</h4>
+									<p style="text-indent:20pt;">@Model.ClientName</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Date</h4>
+									<p style="text-indent:20pt;">@Model.Date.ToString("dd-MMMM-yyyy")</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Client Contact</h4>
+									<p style="text-indent:20pt;">@Model.ClientContact</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Address</h4>
+									<p style="text-indent:20pt;"><span>@Model.Address</span>, <span>@Model.City</span>, <span>@Model.Region</span>, <span>@Model.Country</span></p></p>
+								</div>
+							</td>
+							<td>
+								<div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building type</h4>
+									<p style="text-indent:20pt;">@Model.BuildingType</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building number of storeys</h4>
+									<p style="text-indent:20pt;">@Model.NumberOfStoreys</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building dimensions</h4>
+									<p style="text-indent:20pt;">@Model.BuildingLength Metres by @Model.BuildingWidth Metres</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building floor height</h4>
+									<p style="text-indent:20pt;">@Model.FloorHeight</p>
+								</div>
+							</td>
+						</tr>
+					</table>
+					@using (Html.BeginForm("BOMGenerate", "Employee", FormMethod.Post))
+					{
+						@Html.AntiForgeryToken()
+						<div style="display: none">
+							@Html.EditorFor(m=>m.templates)
+							@Html.EditorFor(m=>m.materialpicker)
+							@for (int x = 0; x < Model.materialpicker.Count; x++)
+							{
+								@Html.HiddenFor(m=>m.materialpicker[x])
+								@Html.HiddenFor(m=>m.materialpicker[x].ID)
+								@Html.HiddenFor(m=>m.materialpicker[x].Description)
+							}
+							@for (int x = 0; x < Model.templates.Count; x++)
+							{
+								@Html.EditorFor(m=>m.templates[x])
+								@Html.EditorFor(m=>m.templates[x].ID)
+								@Html.EditorFor(m=>m.templates[x].Description)
+							}
+							@Html.EditorFor(m=>m.Title)
+							@Html.EditorFor(m=>m.ClientName)
+							@Html.EditorFor(m=>m.ClientContact)
+							@Html.EditorFor(m=>m.Date)
+							@Html.EditorFor(m=>m.Address)
+							@Html.EditorFor(m=>m.City)
+							@Html.EditorFor(m=>m.Region)
+							@Html.EditorFor(m=>m.BuildingType)
+							@Html.EditorFor(m=>m.Country)
+							@Html.EditorFor(m=>m.Longtitude)
+							@Html.EditorFor(m=>m.Latitude)
+							@Html.EditorFor(m=>m.NumberOfStoreys)
+							@Html.EditorFor(m=>m.FloorHeight)
+							@Html.EditorFor(m=>m.BuildingLength)
+							@Html.EditorFor(m=>m.BuildingWidth)
+							@Html.EditorFor(m=>m.ProjectID)
+							@Html.EditorFor(m=>m.FormulaID)
+							@Html.EditorFor(m=>m.TemplateID)
+						</div>
+						<br/>
+						<input type="submit" name="submitButton" value="Select a Template" class="a-button" />
+
+						<br />
+						<br />
+						<div class="">
+							
+							<table class="table" style="width:100%">
+								<thead>
+									<tr><h4>Materials</h4></tr>
+								</thead>
+								<tbody>
+									@for(int x = 0; x < Model.materialpicker.Count; x++)
+									{
+										<tr>
+											<td><span>@Html.CheckBoxFor(m=>m.materialpicker[x].IsChecked)</span><span>&nbsp;</span><span>@Model.materialpicker[x].Description</span></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+						<br />
+						<input type="submit" name="submitButton" value="Next" class="a-button" />
+					}
+				</div>
+			</section>
+		</section>
 	</div>
-	@using (Html.BeginForm("BOMGenerate", "Employee", FormMethod.Post))
-	{
-		@Html.AntiForgeryToken()
-		<div style="display: none">
-			@Html.EditorFor(m=>m.templates)
-			@Html.EditorFor(m=>m.materialpicker)
-			@for (int x = 0; x < Model.materialpicker.Count; x++)
-			{
-				@Html.HiddenFor(m=>m.materialpicker[x])
-				@Html.HiddenFor(m=>m.materialpicker[x].ID)
-				@Html.HiddenFor(m=>m.materialpicker[x].Description)
-			}
-			@for (int x = 0; x < Model.templates.Count; x++)
-			{
-				@Html.EditorFor(m=>m.templates[x])
-				@Html.EditorFor(m=>m.templates[x].ID)
-				@Html.EditorFor(m=>m.templates[x].Description)
-			}
-			@Html.EditorFor(m=>m.Title)
-			@Html.EditorFor(m=>m.ClientName)
-			@Html.EditorFor(m=>m.ClientContact)
-			@Html.EditorFor(m=>m.Date)
-			@Html.EditorFor(m=>m.Address)
-			@Html.EditorFor(m=>m.City)
-			@Html.EditorFor(m=>m.Region)
-			@Html.EditorFor(m=>m.BuildingType)
-			@Html.EditorFor(m=>m.Country)
-			@Html.EditorFor(m=>m.Longtitude)
-			@Html.EditorFor(m=>m.Latitude)
-			@Html.EditorFor(m=>m.NumberOfStoreys)
-			@Html.EditorFor(m=>m.FloorHeight)
-			@Html.EditorFor(m=>m.BuildingLength)
-			@Html.EditorFor(m=>m.BuildingWidth)
-			@Html.EditorFor(m=>m.ProjectID)
-			@Html.EditorFor(m=>m.FormulaID)
-			@Html.EditorFor(m=>m.TemplateID)
-		</div>
-
-		<input type="submit" name="submitButton" value="Templates" class="button button2" />
-
-		<div class="">
-			<h4>Materials</h4>
-			<table>
-				@for(int x = 0; x < Model.materialpicker.Count; x++)
-				{
-					<tr>
-						<td>@Model.materialpicker[x].Description</td>
-						<td>@Html.CheckBoxFor(m=>m.materialpicker[x].IsChecked)</td>
-					</tr>
-				}
-			</table>
-		</div>
-		<input type="submit" name="submitButton" value="Continue" class="button button2" />
-	}
 </body>

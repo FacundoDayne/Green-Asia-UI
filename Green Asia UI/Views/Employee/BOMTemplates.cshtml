@@ -2,28 +2,92 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+	Layout = null;
 }
 @model List<Employee_BOMTemplate>
 
 <head>
 
-</head>
-<body>
-	<div class="bomGrid">
-		@Html.ActionLink("Back", "employeeProjectDash")
-		@using (Html.BeginForm("Templates", "BOM", FormMethod.Post))
-		{
-			@foreach (Employee_BOMTemplate item in Model)
-			{
-				<div class="cards">
-					<label>Template Name: @item.Description</label> <br>
-					<label>Description: @item.Description_Long.ToString()</label><br>
-					<!--<label>Project Cost: </label> <label class="Project Cost"> ----- </label> <br>-->
-			@Html.ActionLink("Use", "BOMGenerate", "Employee", new { template_id = item.ID }, new { @class = "btn btn-primary" })
-					<!--<p><a asp-action="MaterialCostEstimate" asp>Edit</a> || <a asp-action="MaterialCostEstimate">Create MCE</a></p>-->
+	<meta charset="UTF-8" />
+	<title> Templates </title>
+	<link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
 
+	<link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+
+<body>
+	<div class="container">
+		<nav>
+			<ul>
+				<li>
+					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo">
+						<span class="nav-item">GACTC</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<i class="fas fa-menorah"></i>
+						<span class="nav-item">Dashboard</span>
+					</a>
+				</li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+						<i class="fas fa-chart-bar"></i>
+						<span class="nav-item">Projects</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Templates</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Suppliers</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+						<i class="fas fa-sign-out-alt"></i>
+						<span class="nav-item">Log out</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+
+		<section class="main">
+			<section class="attendance">
+				<div class="attendance-list">
+					<table style="width:100%">
+						@using (Html.BeginForm("Templates", "BOM", FormMethod.Post))
+						{
+							<thead>
+								<tr>
+									<td width="20%">Name</td>
+									<td width="60%">Description</td>
+									<td width="20%">Action</td>
+								</tr>
+							</thead>
+							<tbody>
+							@foreach (Employee_BOMTemplate item in Model)
+							{
+								<tr>
+									<td>@item.Description</td> <br>
+									<td>@item.Description_Long.ToString()</td><br>
+									<td>@Html.ActionLink("Use This Template", "BOMGenerate", "Employee", new { template_id = item.ID }, new { @class = "btn btn-primary" })</td>
+
+								</tr>
+							}
+							</tbody>
+						}
+					</table>
 				</div>
-			}
-		}
+			</section>
+		</section>
 	</div>
 </body>

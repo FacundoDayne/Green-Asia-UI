@@ -27,13 +27,32 @@ using System.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
+using System.Drawing;
+using iText.Kernel.Geom;
+using iText.Layout;
+using iText.Kernel.Pdf;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.Kernel.Font;
+using iText.IO.Font;
+using iText.Layout.Borders;
+using Org.BouncyCastle.Math.EC.Multiplier;
+
+
 namespace Green_Asia_UI.Controllers
 {
 	public class EmployeeController : Controller
 	{
+		private readonly IWebHostEnvironment _hostingEnvironment;
+
 		private readonly string oldconnectionstring = "Data Source=localhost;port=3306;Initial Catalog=bom_mce_db;User Id=root;password=password123;";
 		//private readonly string connectionstring = @"Server=LAPTOP-HJA4M31O\SQLEXPRESS;Database=bom_mce_db;User Id=bom_debug;Password=password123;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
 		private readonly string connectionstring = @"Server=68.71.129.120,1533;Database=bomgreen_db;User Id=bomgreen;Password=~Ni94tt39;Encrypt=False;Trusted_Connection=False;MultipleActiveResultSets=true";
+
+		public EmployeeController(IWebHostEnvironment hostingEnvironment)
+		{
+			_hostingEnvironment = hostingEnvironment;
+		}
 
 		public IActionResult Index()
 		{
@@ -570,7 +589,7 @@ namespace Green_Asia_UI.Controllers
 			{
 				return RedirectToAction("HomePage", "Home");
 			}
-			if (submitButton == "Templates")
+			if (submitButton == "Select a Template")
 			{
 				TempData["BOMInfo"] = JsonConvert.SerializeObject(model);
 				return RedirectToAction("BOMTemplates");
@@ -2623,5 +2642,386 @@ namespace Green_Asia_UI.Controllers
 				return MaterialsCosts[0];
 			}
 		}
+
+
+		public string getContractorName()
+		{
+			string name = "";
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM employee_info b WHERE employee_info_id = @employee_info_id;;"))
+				{
+					command.Parameters.AddWithValue("@employee_info_id", HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							name = sdr["employee_info_firstname"].ToString() + " " + sdr["employee_info_middlename"].ToString().ToUpper()[0] + ". " + sdr["employee_info_lastname"].ToString();
+						}
+					}
+				}
+			}
+			return name;
+		}
+
+
+		public ActionResult DownloadMCE(Employee_MCE model)
+		{
+
+			string fileStoragePath = System.IO.Path.Combine(_hostingEnvironment.ContentRootPath, "FileStorage");
+			Directory.CreateDirectory(fileStoragePath);
+			string fileName = Guid.NewGuid() + System.IO.Path.GetExtension("AAA.pdf");
+			string filePath = System.IO.Path.Combine(fileStoragePath, fileName);
+
+			if (!System.IO.File.Exists(filePath))
+			{
+				PageSize pageSize = PageSize.A4;
+				PdfDocument pdfDoc = new PdfDocument(new PdfWriter(filePath));
+				pdfDoc.SetDefaultPageSize(pageSize);
+				Document doc = new Document(pdfDoc);
+				doc.SetMargins(36, 36, 72, 36);
+
+				Paragraph p = new Paragraph();
+				p.Add(new Text(""));
+				p.SetMarginTop(30);
+				doc.Add(p);
+
+				float availableWidth = doc.GetPageEffectiveArea(pdfDoc.GetDefaultPageSize()).GetWidth();
+
+				Table table2 = new Table(UnitValue.CreatePointArray(new float[] { availableWidth / 3, (availableWidth / 3) * 2 }));
+				table2.SetBorder(Border.NO_BORDER);
+
+				Paragraph p2 = new Paragraph();
+				p2.Add(new Text("Date:"));
+				p2.SetFontSize(10);
+				Cell cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text(model.Date.ToString("dd MMMM, yyyy")));
+				p2.SetFontSize(10);
+				p2.SetBold();
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Subject:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Materials Cost Estimate"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Project Title:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text(model.Title));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Client Name:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text(model.ClientName));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Location:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text(model.Address + ", " + model.City + ", " + model.Region + ", " + model.Country));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Mode of Implementation:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("By Contract"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Amount:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Php " + Math.Round(model.totalCost,2).ToString()));
+				p2.SetFontSize(10);
+				p2.SetBold();
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text("Building Area:"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				p2 = new Paragraph();
+				p2.Add(new Text((model.BuildingWidth * model.BuildingLength).ToString("N") + " Square Metres"));
+				p2.SetFontSize(10);
+				cell = new Cell();
+				cell.Add(p2);
+				cell.SetBorder(Border.NO_BORDER);
+				table2.AddCell(cell);
+
+				doc.Add(table2);
+
+				p = new Paragraph();
+				p.Add(new Text(""));
+				p.SetMarginTop(30);
+				doc.Add(p);
+
+				Table table = new Table(UnitValue.CreatePointArray(new float[] { 
+					availableWidth / 8, availableWidth / 8, availableWidth / 8, availableWidth / 8, 
+					availableWidth / 8, availableWidth / 8, availableWidth / 8, availableWidth / 8 }));
+
+				Cell headerCell = new Cell(1, 8);
+				headerCell.SetTextAlignment(TextAlignment.CENTER);
+				Paragraph headerParagraph = new Paragraph("Materials Cost Estimate");
+				headerParagraph.SetBold();
+				headerCell.Add(headerParagraph);
+
+				table.AddHeaderCell(headerCell);
+				table.AddHeaderCell(createCellCentred("Material Name", 10, true));
+				table.AddHeaderCell(createCellCentred("Quantity", 10, true));
+				table.AddHeaderCell(createCellCentred("UoM", 10, true));
+				table.AddHeaderCell(createCellCentred("Cost per Unit", 10, true));
+				table.AddHeaderCell(createCellCentred("Marked Up Cost", 10, true));
+				table.AddHeaderCell(createCellCentred("Labour Cost", 10, true));
+				table.AddHeaderCell(createCellCentred("Total Unit Rate", 10, true));
+				table.AddHeaderCell(createCellCentred("Total Amount", 10, true));
+				
+				foreach (Employee_MCE_Materials_Subitems x in model.materials)
+				{
+					table.AddCell(createCell(x.MaterialDesc, 10));
+					table.AddCell(createCell(x.MaterialQuantityProvisions.ToString("N"), 10));
+					table.AddCell(createCell(x.MaterialUoM, 10));
+					table.AddCell(createCell("Php " + x.MaterialCost.ToString("N"), 10));
+					table.AddCell(createCell("Php " + x.MarkedUpCost.ToString("N"), 10));
+					table.AddCell(createCell("Php " + x.LabourCost.ToString("N"), 10));
+					table.AddCell(createCell("Php " + x.TotalUnitRate.ToString("N"), 10));
+					table.AddCell(createCell("Php " + x.MaterialAmount.ToString("N"), 10));
+				}
+				doc.Add(table);
+
+				Table table4 = new Table(UnitValue.CreatePointArray(new float[] {
+					(availableWidth / 8) * 6, (availableWidth / 8) * 2 }));
+
+				table4.AddCell(createCellRight("Total Cost of Items:", 10));
+				table4.AddCell(createCell("Php " + model.totalIndirectCost.ToString("N"), 10, true));
+				table4.AddCell(createCellRight("Profit:", 10));
+				table4.AddCell(createCell("Php " + model.profit.ToString("N"), 10));
+				table4.AddCell(createCellRight("Sub-Total:", 10));
+				table4.AddCell(createCell("Php " + model.subtotalCost.ToString("N"), 10, true));
+				table4.AddCell(createCellRight("Vat(5%)", 10));
+				table4.AddCell(createCell("Php " + model.tax.ToString("N"), 10));
+				table4.AddCell(createCellRight("Total Estimated Cost", 10));
+				table4.AddCell(createCell("Php " + model.totalCost.ToString("N"), 10, true));
+
+				doc.Add(table4);
+
+
+				p = new Paragraph();
+				p.Add(new Text(""));
+				p.SetMarginTop(30);
+				doc.Add(p);
+
+				Table table3 = new Table(UnitValue.CreatePointArray(new float[] { availableWidth / 3 }));
+				table3.AddCell(createCellBorderless("Prepared by:", 10));
+				table3.AddCell(createCellBorderlessCentredUnderline(getContractorName(), 10, true));
+				table3.AddCell(createCellBorderlessCentred("Engineer", 10));
+				doc.Add(table3);
+				doc.Close();
+				pdfDoc.Close();
+			}
+			if (System.IO.File.Exists(filePath))
+			{
+				// Specify the file path and content type
+				string contentType = "application/pdf"; // Change the content type as needed
+				var fs = System.IO.File.OpenRead(filePath);
+				// Return the file for download
+				return File(fs, contentType,"MCE" + model.Date.ToString("dd_MMMM_yyyy") + ".pdf");
+			}
+
+			return View(model);
+		}
+
+
+		private Cell createCell(string text, float size)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			return cell;
+		}
+
+		private Cell createCell(string text, float size, bool isBold)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetBold();
+			Cell cell = new Cell();
+			cell.Add(p2);
+			return cell;
+		}
+
+		private Cell createCellCentred(string text, float size)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetTextAlignment(TextAlignment.CENTER);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			return cell;
+		}
+
+		private Cell createCellRight(string text, float size)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetTextAlignment(TextAlignment.RIGHT);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			return cell;
+		}
+
+		private Cell createCellCentred(string text, float size, bool isBold)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetBold();
+			p2.SetTextAlignment(TextAlignment.CENTER);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			return cell;
+		}
+
+		private Cell createCellBorderless(string text, float size)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			cell.SetBorder(Border.NO_BORDER);
+			return cell;
+		}
+
+		private Cell createCellBorderless(string text, float size, bool isBold)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetBold();
+			Cell cell = new Cell();
+			cell.Add(p2);
+			cell.SetBorder(Border.NO_BORDER);
+			return cell;
+		}
+
+		private Cell createCellBorderlessCentred(string text, float size)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetTextAlignment(TextAlignment.CENTER);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			cell.SetBorder(Border.NO_BORDER);
+			return cell;
+		}
+
+		private Cell createCellBorderlessCentred(string text, float size, bool isBold)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetBold();
+			p2.SetTextAlignment(TextAlignment.CENTER);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			cell.SetBorder(Border.NO_BORDER);
+			return cell;
+		}
+
+		private Cell createCellBorderlessCentredUnderline(string text, float size, bool isBold)
+		{
+			Paragraph p2 = new Paragraph();
+			p2.Add(new Text(text));
+			p2.SetFontSize(size);
+			p2.SetBold();
+			p2.SetUnderline();
+			p2.SetTextAlignment(TextAlignment.CENTER);
+			Cell cell = new Cell();
+			cell.Add(p2);
+			cell.SetBorder(Border.NO_BORDER);
+			return cell;
+		}
+
 	}
 }

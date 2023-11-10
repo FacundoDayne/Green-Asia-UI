@@ -256,14 +256,6 @@ namespace Green_Asia_UI.Controllers
 
 
 
-		public IActionResult adminAddContractor()
-		{
-			if (HttpContext.Session.GetInt32("EmployeeID") == null)
-			{
-				return RedirectToAction("HomePage", "Home");
-			}
-			return View();
-		}
 
 		public IActionResult adminAddProject()
 		{
@@ -592,6 +584,172 @@ namespace Green_Asia_UI.Controllers
 				}
 			}
 			return View(model);
+		}
+
+
+
+		public ActionResult adminAddContractor()
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			AddEmployeeModel xmodel = new AddEmployeeModel();
+
+			xmodel.roles = new List<RoleList>();
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_roles;"))
+				{
+					command.Connection = conn;
+					conn.Open();
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							//xmodel.measurements.Add(new SelectListItem
+							xmodel.roles.Add(new RoleList
+							{
+								id = sdr["role_id"].ToString(),
+								name = sdr["role_name"].ToString()
+							}
+							);
+						}
+					}
+					conn.Close();
+				}
+			}
+			return View(xmodel);
+		}
+
+		[HttpPost]
+		[AllowAnonymous]
+		public ActionResult adminAddContractor(AddEmployeeModel model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				model.roles = GetUserRolesFromDB();
+				return View(model);
+			}
+			bool username_exists = false;
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username"))
+				{
+					conn.Open();
+					command.Connection = conn;
+					command.Parameters.AddWithValue("@username", model.Username);
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						if (sdr.Read())
+						{
+							username_exists = true;
+						}
+					}
+					conn.Close();
+				}
+			}
+
+			if (username_exists)
+			{
+				model.roles = GetUserRolesFromDB();
+				return View(model);
+			}
+
+			bool error = false;
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlTransaction transaction = conn.BeginTransaction())
+				{
+					try
+					{
+						int info_id = 0;
+
+						using (SqlCommand command = new SqlCommand("INSERT INTO user_credentials (username,user_password,user_role,user_status) " +
+							" VALUES (@username, @password, @user_role, @user_status); SELECT SCOPE_IDENTITY() FROM user_credentials;"))
+						{
+							command.Connection = conn;
+							command.Transaction = transaction;
+
+							command.Parameters.AddWithValue("@username", model.Username);
+							command.Parameters.AddWithValue("@password", model.Password);
+							command.Parameters.AddWithValue("@user_role", Convert.ToInt32(model.Role));
+							command.Parameters.AddWithValue("@user_status", 1);
+
+							info_id = Convert.ToInt32(command.ExecuteScalar());
+						}
+
+						using (SqlCommand command = new SqlCommand("INSERT INTO employee_info (user_credentials_id, employee_info_firstname, employee_info_middlename, employee_info_lastname, employee_info_contactnum, employee_info_email, employee_info_address, employee_info_city, employee_info_status) " +
+							" VALUES (@user_credentials_id, @FirstName, @MiddleName, @LastName, @Contact, @Email, @Address, @City, @Status); "))
+						{
+							command.Connection = conn;
+							command.Transaction = transaction;
+
+							command.Parameters.AddWithValue("@user_credentials_id", info_id);
+							command.Parameters.AddWithValue("@FirstName", model.FirstName);
+							command.Parameters.AddWithValue("@MiddleName", model.MiddleName);
+							command.Parameters.AddWithValue("@LastName", model.LastName);
+							command.Parameters.AddWithValue("@Contact", model.Contact);
+							command.Parameters.AddWithValue("@Email", model.Email);
+							command.Parameters.AddWithValue("@Address", model.Address);
+							command.Parameters.AddWithValue("@City", model.City);
+							command.Parameters.AddWithValue("@Status", 1);
+
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (SqlException e)
+					{
+						error = true;
+						Debug.WriteLine(e.Message);
+						transaction.Rollback();
+					}
+				}
+				conn.Close();
+			}
+			if (error)
+			{
+				model.roles = GetUserRolesFromDB();
+				return View(model);
+			}
+
+			return RedirectToAction("adminContractorDash", "Admin");
+		}
+
+		public List<RoleList> GetUserRolesFromDB()
+		{
+			List<RoleList> roles = new List<RoleList>();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_roles WHERE role_id != 3;"))
+				{
+					command.Connection = conn;
+					conn.Open();
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							roles.Add(new RoleList
+							{
+								id = sdr["role_id"].ToString(),
+								name = sdr["role_name"].ToString()
+							}
+							);
+						}
+					}
+					conn.Close();
+				}
+			}
+			return roles;
 		}
 
 		// AJAX

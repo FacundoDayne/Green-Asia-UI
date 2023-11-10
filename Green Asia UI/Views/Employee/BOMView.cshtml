@@ -2,6 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+	Layout = null;
 }
 @model EmployeeBOMModel
 <head>
@@ -14,149 +15,276 @@
 			display: none;
 		}
 	</script>
+	<style>
+		.a-button {
+			padding: 10px 20px 10px 20px;
+			border: solid;
+			border-color: black
+		}
+
+		.scroll {
+			width: 100%;
+			height: 40%;
+			overflow: auto;
+			white-space: nowrap;
+		}
+	</style>
+
+	<meta charset="UTF-8" />
+	<title> Templates </title>
+	<link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
+
+	<link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
 
 <body>
-	@Html.ActionLink("Back", "employeeProjectDash")
-	<div style="border-color:black;">
-		<p>Project ID: @Model.ProjectID</p>
-		<p>Project Title: @Model.Title</p>
-		<p>Project Client: @Model.ClientName</p>
-		<p>Project Client Contacts: @Model.ClientContact</p>
-		<p>Project Date: @Model.Date</p>
-		<p>Project Address: <span>@Model.Address</span>,<span>@Model.City</span>,<span>@Model.Region</span>,<span>@Model.Country</span></p>
-		<p>Building Type: @Model.BuildingType</p>
-		<p>Number of Storeys: @Model.NumberOfStoreys</p>
-		<p>Floor height: @Model.FloorHeight</p>
-		<p>Building Length: @Model.BuildingLength</p>
-		<p>Building Width: @Model.BuildingWidth</p>
-		<p>Template ID: @Model.TemplateID</p>
-		<p>Lon: @Model.Longtitude</p>
-		<p>Lat: @Model.Latitude</p>
-	</div>
-	@using (Html.BeginForm("BOMGenerate", "Employee", FormMethod.Post))
-	{
+	<div class="container">
+		<nav>
+			<ul>
+				<li>
+					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo">
+						<span class="nav-item">GACTC</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+						<i class="fas fa-menorah"></i>
+						<span class="nav-item">Dashboard</span>
+					</a>
+				</li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+						<i class="fas fa-chart-bar"></i>
+						<span class="nav-item">Projects</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Templates</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Suppliers</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+						<i class="fas fa-sign-out-alt"></i>
+						<span class="nav-item">Log out</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
 
-		<div style="display: none">
-			@Html.EditorFor(m=>m.templates)
-			@for (int x = 0; x < Model.templates.Count; x++)
-			{
-				@Html.EditorFor(m=>m.templates[x])
-				@Html.EditorFor(m=>m.templates[x].ID)
-				@Html.EditorFor(m=>m.templates[x].Description)
-			}
-			@Html.EditorFor(m=>m.lists)
-
-			@for (int i = 0; i < Model.lists.Count; i++)
-			{
-				@Html.EditorFor(m=>m.lists[i])
-				@Html.EditorFor(m=>m.lists[i].Description)
-				@Html.EditorFor(m=>m.lists[i].ListNumber)
-				@Html.EditorFor(m=>m.lists[i].ListLetter)
-				@Html.EditorFor(m=>m.lists[i].Items)
-
-				@for (int x = 0; x < Model.lists[i].Items.Count; x++)
-				{
-
-					@Html.EditorFor(m=>m.lists[i].Items[x])
-					@Html.EditorFor(m=>m.lists[i].Items[x].ItemNumber)
-					@Html.EditorFor(m=>m.lists[i].Items[x].Description)
-					@Html.EditorFor(m=>m.lists[i].Items[x].Subitems)
-
-					@for (int y = 0; y < Model.lists[i].Items[x].Subitems.Count; y++)
-					{
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y])
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].SubitemNumber)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialID)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialDesc)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantity)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityWastage)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityProvisions)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialUoM)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialCost)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
-						@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
-					}
-				}
-			}
-
-			@Html.EditorFor(m=>m.Title)
-			@Html.EditorFor(m=>m.ClientName)
-			@Html.EditorFor(m=>m.ClientContact)
-			@Html.EditorFor(m=>m.Date)
-			@Html.EditorFor(m=>m.Address)
-			@Html.EditorFor(m=>m.City)
-			@Html.EditorFor(m=>m.Region)
-			@Html.EditorFor(m=>m.BuildingType)
-			@Html.EditorFor(m=>m.Country)
-			@Html.EditorFor(m=>m.Longtitude)
-			@Html.EditorFor(m=>m.Latitude)
-			@Html.EditorFor(m=>m.NumberOfStoreys)
-			@Html.EditorFor(m=>m.FloorHeight)
-			@Html.EditorFor(m=>m.BuildingLength)
-			@Html.EditorFor(m=>m.BuildingWidth)
-			@Html.EditorFor(m=>m.TemplateID)
-		</div>
-
-
-		<table>
-			<thead>
-				<tr>
-					<th></th>
-					<th colspan="5">Proposed Materials</th>
-					<th colspan="3">Cost Estimate</th>
-				</tr>
-				<tr>
-					<th>Item No.</th>
-					<th>Material Name</th>
-					<th>Quantity</th>
-					<th>With Wastage</th>
-					<th>With Wastage + Provisions</th>
-					<th>UoM</th>
-					<th>Cost per unit</th>
-					<th>Supplier</th>
-					<th>Total Amount</th>
-				</tr>
-			</thead>
-			<tbody>
-				@for (int x = 0; x < Model.lists.Count; x++)
-				{
-					<tr style="background: #BBBBBB">
-						<td>
-						</td>
-						<td colspan="8">@Model.lists[x].Description</td>
-					</tr>
-					@for (int y = 0; y < Model.lists[x].Items.Count; y++)
-					{
-						<tr style="background: #EEEEEE">
-							<td>@Model.lists[x].Items[y].ItemNumber</td>
-							<td colspan="8">@Model.lists[x].Items[y].Description</td>
+		<section class="main">
+			<section class="attendance">
+				<div class="attendance-list">
+					<table style="width:100%">
+						<tr>
+							<td>
+								<div style="width:50%">
+									<h4>Project Title</h4>
+									<p style="text-indent:20pt;">@Model.Title</p>
+								</div>
+							</td>
+							<td>
+								<div style="width:50%">
+									<h4>Client Name</h4>
+									<p style="text-indent:20pt;">@Model.ClientName</p>
+								</div>
+							</td>
 						</tr>
-						@for (int z = 0; z < Model.lists[x].Items[y].Subitems.Count; z++)
-						{
-							{
-								<tr>
-									<td>@Model.lists[x].Items[y].Subitems[z].SubitemNumber</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].MaterialDesc</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantity</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantityWastage</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantityProvisions</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].MaterialUoM</td>
-									<td>@Model.lists[x].Items[y].Subitems[z].Supplier</td>
-									<td>@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialCost)</td>
-									<td>@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialAmount)</td>
-								</tr>
-							}
-						}
-					}
-				}
-				<tr style="background: #BBBBBB">
-					<td colspan="8" style="text-align:right">Amount:</td>
-					<td>@string.Format("{0:N2}", Model.totalCost)</td>
-				</tr>
-			</tbody>
-		</table>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Date</h4>
+									<p style="text-indent:20pt;">@Model.Date.ToString("dd-MMMM-yyyy")</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Client Contact</h4>
+									<p style="text-indent:20pt;">@Model.ClientContact</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Project Address</h4>
+									<p style="text-indent:20pt;"><span>@Model.Address</span>, <span>@Model.City</span>, <span>@Model.Region</span>, <span>@Model.Country</span></p></p>
+								</div>
+							</td>
+							<td>
+								<div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building type</h4>
+									<p style="text-indent:20pt;">@Model.BuildingType</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building number of storeys</h4>
+									<p style="text-indent:20pt;">@Model.NumberOfStoreys</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Building dimensions</h4>
+									<p style="text-indent:20pt;">@Model.BuildingLength Metres by @Model.BuildingWidth Metres</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Building floor height</h4>
+									<p style="text-indent:20pt;">@Model.FloorHeight</p>
+								</div>
+							</td>
+						</tr>
+					</table>
+					@using (Html.BeginForm("BOMGenerate", "Employee", FormMethod.Post))
+					{
 
-	}
+						<div style="display: none">
+							@Html.EditorFor(m=>m.templates)
+							@for (int x = 0; x < Model.templates.Count; x++)
+							{
+								@Html.EditorFor(m=>m.templates[x])
+								@Html.EditorFor(m=>m.templates[x].ID)
+								@Html.EditorFor(m=>m.templates[x].Description)
+							}
+							@Html.EditorFor(m=>m.lists)
+
+							@for (int i = 0; i < Model.lists.Count; i++)
+							{
+								@Html.EditorFor(m=>m.lists[i])
+								@Html.EditorFor(m=>m.lists[i].Description)
+								@Html.EditorFor(m=>m.lists[i].ListNumber)
+								@Html.EditorFor(m=>m.lists[i].ListLetter)
+								@Html.EditorFor(m=>m.lists[i].Items)
+
+								@for (int x = 0; x < Model.lists[i].Items.Count; x++)
+								{
+
+									@Html.EditorFor(m=>m.lists[i].Items[x])
+									@Html.EditorFor(m=>m.lists[i].Items[x].ItemNumber)
+									@Html.EditorFor(m=>m.lists[i].Items[x].Description)
+									@Html.EditorFor(m=>m.lists[i].Items[x].Subitems)
+
+									@for (int y = 0; y < Model.lists[i].Items[x].Subitems.Count; y++)
+									{
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y])
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].SubitemNumber)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialID)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialDesc)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantity)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityWastage)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityProvisions)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialUoM)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialCost)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
+										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
+									}
+								}
+							}
+
+							@Html.EditorFor(m=>m.Title)
+							@Html.EditorFor(m=>m.ClientName)
+							@Html.EditorFor(m=>m.ClientContact)
+							@Html.EditorFor(m=>m.Date)
+							@Html.EditorFor(m=>m.Address)
+							@Html.EditorFor(m=>m.City)
+							@Html.EditorFor(m=>m.Region)
+							@Html.EditorFor(m=>m.BuildingType)
+							@Html.EditorFor(m=>m.Country)
+							@Html.EditorFor(m=>m.Longtitude)
+							@Html.EditorFor(m=>m.Latitude)
+							@Html.EditorFor(m=>m.NumberOfStoreys)
+							@Html.EditorFor(m=>m.FloorHeight)
+							@Html.EditorFor(m=>m.BuildingLength)
+							@Html.EditorFor(m=>m.BuildingWidth)
+							@Html.EditorFor(m=>m.TemplateID)
+						</div>
+
+
+						<div class="scroll">
+							<table class="table" width="150%">
+								<thead>
+									<tr>
+										<th></th>
+										<th colspan="5">Proposed Materials</th>
+										<th colspan="3">Cost Estimate</th>
+									</tr>
+									<tr>
+										<th>Item No.</th>
+										<th>Material Name</th>
+										<th>Quantity</th>
+										<th>With Wastage</th>
+										<th>With Wastage + Provisions</th>
+										<th>UoM</th>
+										<th>Supplier</th>
+										<th>Cost per unit</th>
+										<th>Total Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									@for (int x = 0; x < Model.lists.Count; x++)
+									{
+										<tr style="background: #BBBBBB">
+											<td>
+											</td>
+											<td colspan="8">@Model.lists[x].Description</td>
+										</tr>
+										@for (int y = 0; y < Model.lists[x].Items.Count; y++)
+										{
+											<tr style="background: #EEEEEE">
+												<td>@Model.lists[x].Items[y].ItemNumber</td>
+												<td colspan="8">@Model.lists[x].Items[y].Description</td>
+											</tr>
+											@for (int z = 0; z < Model.lists[x].Items[y].Subitems.Count; z++)
+											{
+												{
+													<tr>
+														<td>@Model.lists[x].Items[y].Subitems[z].SubitemNumber</td>
+														<td>@Model.lists[x].Items[y].Subitems[z].MaterialDesc</td>
+														<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantity</td>
+														<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantityWastage</td>
+														<td>@Model.lists[x].Items[y].Subitems[z].MaterialQuantityProvisions</td>
+														<td>@Model.lists[x].Items[y].Subitems[z].MaterialUoM</td>
+														<td>@Model.lists[x].Items[y].Subitems[z].Supplier</td>
+														<td>@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialCost)</td>
+														<td>@string.Format("{0:N2}", Model.lists[x].Items[y].Subitems[z].MaterialAmount)</td>
+													</tr>
+												}
+											}
+										}
+									}
+									<tr style="background: #BBBBBB">
+										<td colspan="8" style="text-align:right">Amount:</td>
+										<td>@string.Format("{0:N2}", Model.totalCost)</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					}
+
+				</div>
+			</section>
+		</section>
+	</div>
 </body>
