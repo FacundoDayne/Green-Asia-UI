@@ -183,6 +183,7 @@ body {
     }
 /* Responsive */
 @media (max-width: 768px) {
+
     body {
         padding: 2rem 0;
     }
