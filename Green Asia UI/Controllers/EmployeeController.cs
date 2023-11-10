@@ -2669,239 +2669,240 @@ namespace Green_Asia_UI.Controllers
 
 		public ActionResult DownloadMCE(Employee_MCE model)
 		{
-
+			/*
 			string fileStoragePath = System.IO.Path.Combine(_hostingEnvironment.ContentRootPath, "FileStorage");
 			Directory.CreateDirectory(fileStoragePath);
 			string fileName = Guid.NewGuid() + System.IO.Path.GetExtension("AAA.pdf");
 			string filePath = System.IO.Path.Combine(fileStoragePath, fileName);
+			*/
+			MemoryStream memoryStream = new MemoryStream();
+			PdfWriter pdfWriter = new PdfWriter(memoryStream);
+				
+					PageSize pageSize = PageSize.A4;
+					PdfDocument pdfDoc = new PdfDocument(pdfWriter);
+					pdfDoc.SetDefaultPageSize(pageSize);
+					Document doc = new Document(pdfDoc);
+					doc.SetMargins(36, 36, 72, 36);
 
-			if (!System.IO.File.Exists(filePath))
-			{
-				PageSize pageSize = PageSize.A4;
-				PdfDocument pdfDoc = new PdfDocument(new PdfWriter(filePath));
-				pdfDoc.SetDefaultPageSize(pageSize);
-				Document doc = new Document(pdfDoc);
-				doc.SetMargins(36, 36, 72, 36);
+					Paragraph p = new Paragraph();
+					p.Add(new Text(""));
+					p.SetMarginTop(30);
+					doc.Add(p);
 
-				Paragraph p = new Paragraph();
-				p.Add(new Text(""));
-				p.SetMarginTop(30);
-				doc.Add(p);
+					float availableWidth = doc.GetPageEffectiveArea(pdfDoc.GetDefaultPageSize()).GetWidth();
 
-				float availableWidth = doc.GetPageEffectiveArea(pdfDoc.GetDefaultPageSize()).GetWidth();
+					Table table2 = new Table(UnitValue.CreatePointArray(new float[] { availableWidth / 3, (availableWidth / 3) * 2 }));
+					table2.SetBorder(Border.NO_BORDER);
 
-				Table table2 = new Table(UnitValue.CreatePointArray(new float[] { availableWidth / 3, (availableWidth / 3) * 2 }));
-				table2.SetBorder(Border.NO_BORDER);
+					Paragraph p2 = new Paragraph();
+					p2.Add(new Text("Date:"));
+					p2.SetFontSize(10);
+					Cell cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				Paragraph p2 = new Paragraph();
-				p2.Add(new Text("Date:"));
-				p2.SetFontSize(10);
-				Cell cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text(model.Date.ToString("dd MMMM, yyyy")));
+					p2.SetFontSize(10);
+					p2.SetBold();
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text(model.Date.ToString("dd MMMM, yyyy")));
-				p2.SetFontSize(10);
-				p2.SetBold();
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Subject:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Subject:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Materials Cost Estimate"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Materials Cost Estimate"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Project Title:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Project Title:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text(model.Title));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text(model.Title));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Client Name:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Client Name:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text(model.ClientName));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text(model.ClientName));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Location:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Location:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text(model.Address + ", " + model.City + ", " + model.Region + ", " + model.Country));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text(model.Address + ", " + model.City + ", " + model.Region + ", " + model.Country));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Mode of Implementation:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Mode of Implementation:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("By Contract"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("By Contract"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Amount:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Amount:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Php " + Math.Round(model.totalCost, 2).ToString()));
+					p2.SetFontSize(10);
+					p2.SetBold();
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Php " + Math.Round(model.totalCost,2).ToString()));
-				p2.SetFontSize(10);
-				p2.SetBold();
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text("Building Area:"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text("Building Area:"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					p2 = new Paragraph();
+					p2.Add(new Text((model.BuildingWidth * model.BuildingLength).ToString("N") + " Square Metres"));
+					p2.SetFontSize(10);
+					cell = new Cell();
+					cell.Add(p2);
+					cell.SetBorder(Border.NO_BORDER);
+					table2.AddCell(cell);
 
-				p2 = new Paragraph();
-				p2.Add(new Text((model.BuildingWidth * model.BuildingLength).ToString("N") + " Square Metres"));
-				p2.SetFontSize(10);
-				cell = new Cell();
-				cell.Add(p2);
-				cell.SetBorder(Border.NO_BORDER);
-				table2.AddCell(cell);
+					doc.Add(table2);
 
-				doc.Add(table2);
+					p = new Paragraph();
+					p.Add(new Text(""));
+					p.SetMarginTop(30);
+					doc.Add(p);
 
-				p = new Paragraph();
-				p.Add(new Text(""));
-				p.SetMarginTop(30);
-				doc.Add(p);
-
-				Table table = new Table(UnitValue.CreatePointArray(new float[] { 
-					availableWidth / 8, availableWidth / 8, availableWidth / 8, availableWidth / 8, 
+					Table table = new Table(UnitValue.CreatePointArray(new float[] {
+					availableWidth / 8, availableWidth / 8, availableWidth / 8, availableWidth / 8,
 					availableWidth / 8, availableWidth / 8, availableWidth / 8, availableWidth / 8 }));
 
-				Cell headerCell = new Cell(1, 8);
-				headerCell.SetTextAlignment(TextAlignment.CENTER);
-				Paragraph headerParagraph = new Paragraph("Materials Cost Estimate");
-				headerParagraph.SetBold();
-				headerCell.Add(headerParagraph);
+					Cell headerCell = new Cell(1, 8);
+					headerCell.SetTextAlignment(TextAlignment.CENTER);
+					Paragraph headerParagraph = new Paragraph("Materials Cost Estimate");
+					headerParagraph.SetBold();
+					headerCell.Add(headerParagraph);
 
-				table.AddHeaderCell(headerCell);
-				table.AddHeaderCell(createCellCentred("Material Name", 10, true));
-				table.AddHeaderCell(createCellCentred("Quantity", 10, true));
-				table.AddHeaderCell(createCellCentred("UoM", 10, true));
-				table.AddHeaderCell(createCellCentred("Cost per Unit", 10, true));
-				table.AddHeaderCell(createCellCentred("Marked Up Cost", 10, true));
-				table.AddHeaderCell(createCellCentred("Labour Cost", 10, true));
-				table.AddHeaderCell(createCellCentred("Total Unit Rate", 10, true));
-				table.AddHeaderCell(createCellCentred("Total Amount", 10, true));
-				
-				foreach (Employee_MCE_Materials_Subitems x in model.materials)
-				{
-					table.AddCell(createCell(x.MaterialDesc, 10));
-					table.AddCell(createCell(x.MaterialQuantityProvisions.ToString("N"), 10));
-					table.AddCell(createCell(x.MaterialUoM, 10));
-					table.AddCell(createCell("Php " + x.MaterialCost.ToString("N"), 10));
-					table.AddCell(createCell("Php " + x.MarkedUpCost.ToString("N"), 10));
-					table.AddCell(createCell("Php " + x.LabourCost.ToString("N"), 10));
-					table.AddCell(createCell("Php " + x.TotalUnitRate.ToString("N"), 10));
-					table.AddCell(createCell("Php " + x.MaterialAmount.ToString("N"), 10));
-				}
-				doc.Add(table);
+					table.AddHeaderCell(headerCell);
+					table.AddHeaderCell(createCellCentred("Material Name", 10, true));
+					table.AddHeaderCell(createCellCentred("Quantity", 10, true));
+					table.AddHeaderCell(createCellCentred("UoM", 10, true));
+					table.AddHeaderCell(createCellCentred("Cost per Unit", 10, true));
+					table.AddHeaderCell(createCellCentred("Marked Up Cost", 10, true));
+					table.AddHeaderCell(createCellCentred("Labour Cost", 10, true));
+					table.AddHeaderCell(createCellCentred("Total Unit Rate", 10, true));
+					table.AddHeaderCell(createCellCentred("Total Amount", 10, true));
 
-				Table table4 = new Table(UnitValue.CreatePointArray(new float[] {
+					foreach (Employee_MCE_Materials_Subitems x in model.materials)
+					{
+						table.AddCell(createCell(x.MaterialDesc, 10));
+						table.AddCell(createCell(x.MaterialQuantityProvisions.ToString("N"), 10));
+						table.AddCell(createCell(x.MaterialUoM, 10));
+						table.AddCell(createCell("Php " + x.MaterialCost.ToString("N"), 10));
+						table.AddCell(createCell("Php " + x.MarkedUpCost.ToString("N"), 10));
+						table.AddCell(createCell("Php " + x.LabourCost.ToString("N"), 10));
+						table.AddCell(createCell("Php " + x.TotalUnitRate.ToString("N"), 10));
+						table.AddCell(createCell("Php " + x.MaterialAmount.ToString("N"), 10));
+					}
+					doc.Add(table);
+
+					Table table4 = new Table(UnitValue.CreatePointArray(new float[] {
 					(availableWidth / 8) * 6, (availableWidth / 8) * 2 }));
 
-				table4.AddCell(createCellRight("Total Cost of Items:", 10));
-				table4.AddCell(createCell("Php " + model.totalIndirectCost.ToString("N"), 10, true));
-				table4.AddCell(createCellRight("Profit:", 10));
-				table4.AddCell(createCell("Php " + model.profit.ToString("N"), 10));
-				table4.AddCell(createCellRight("Sub-Total:", 10));
-				table4.AddCell(createCell("Php " + model.subtotalCost.ToString("N"), 10, true));
-				table4.AddCell(createCellRight("Vat(5%)", 10));
-				table4.AddCell(createCell("Php " + model.tax.ToString("N"), 10));
-				table4.AddCell(createCellRight("Total Estimated Cost", 10));
-				table4.AddCell(createCell("Php " + model.totalCost.ToString("N"), 10, true));
+					table4.AddCell(createCellRight("Total Cost of Items:", 10));
+					table4.AddCell(createCell("Php " + model.totalIndirectCost.ToString("N"), 10, true));
+					table4.AddCell(createCellRight("Profit:", 10));
+					table4.AddCell(createCell("Php " + model.profit.ToString("N"), 10));
+					table4.AddCell(createCellRight("Sub-Total:", 10));
+					table4.AddCell(createCell("Php " + model.subtotalCost.ToString("N"), 10, true));
+					table4.AddCell(createCellRight("Vat(5%)", 10));
+					table4.AddCell(createCell("Php " + model.tax.ToString("N"), 10));
+					table4.AddCell(createCellRight("Total Estimated Cost", 10));
+					table4.AddCell(createCell("Php " + model.totalCost.ToString("N"), 10, true));
 
-				doc.Add(table4);
+					doc.Add(table4);
 
 
-				p = new Paragraph();
-				p.Add(new Text(""));
-				p.SetMarginTop(30);
-				doc.Add(p);
+					p = new Paragraph();
+					p.Add(new Text(""));
+					p.SetMarginTop(30);
+					doc.Add(p);
 
-				Table table3 = new Table(UnitValue.CreatePointArray(new float[] { availableWidth / 3 }));
-				table3.AddCell(createCellBorderless("Prepared by:", 10));
-				table3.AddCell(createCellBorderlessCentredUnderline(getContractorName(), 10, true));
-				table3.AddCell(createCellBorderlessCentred("Engineer", 10));
-				doc.Add(table3);
-				doc.Close();
-				pdfDoc.Close();
-			}
-			if (System.IO.File.Exists(filePath))
-			{
-				// Specify the file path and content type
-				string contentType = "application/pdf"; // Change the content type as needed
-				var fs = System.IO.File.OpenRead(filePath);
-				// Return the file for download
-				return File(fs, contentType,"MCE" + model.Date.ToString("dd_MMMM_yyyy") + ".pdf");
-			}
-
+					Table table3 = new Table(UnitValue.CreatePointArray(new float[] { availableWidth / 3 }));
+					table3.AddCell(createCellBorderless("Prepared by:", 10));
+					table3.AddCell(createCellBorderlessCentredUnderline(getContractorName(), 10, true));
+					table3.AddCell(createCellBorderlessCentred("Engineer", 10));
+					doc.Add(table3);
+					// Document elements insertion code
+				
+				memoryStream.Position = 0;
+				return File(memoryStream, "application/pdf", "MCE" + model.Date.ToString("dd_MMMM_yyyy") + ".pdf");
+				if (true)
+				{
+					/* Specify the file path and content type
+					string contentType = "application/pdf"; // Change the content type as needed
+					var fs = System.IO.File.OpenRead(filePath);
+					 Return the file for download*/
+				}
+			memoryStream.Dispose();
 			return View(model);
 		}
 
