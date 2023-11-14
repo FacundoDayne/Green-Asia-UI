@@ -453,6 +453,12 @@ namespace Green_Asia_UI.Models
 	}
 
 
+	public class JSONSupplierListItem
+	{
+		public int ID { get; set; }
+		public double Multiplier { get; set; }
+	}
+
 
 	public class SupplierListItem
 	{

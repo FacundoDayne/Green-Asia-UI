@@ -2565,7 +2565,7 @@ namespace Green_Asia_UI.Controllers
 				using (SqlCommand command = new SqlCommand("SELECT c.material_id AS MaterialID, c.material_desc_long AS Material, a.supplier_material_id AS SupplierMaterialID, " +
 					"a.supplier_material_price AS Price, d.supplier_id AS SupplierID, d.supplier_desc AS Supplier, d.employee_id AS Employee, " +
 					"CONCAT(d.supplier_coordinates_latitude, ',', d.supplier_coordinates_longtitude) AS Coordinates " +
-					"FROM supplier_materials a JOIN (" +
+					"FROM supplier_materials a LEFT JOIN (" +
 					"SELECT MIN(b.supplier_material_price) AS min_value FROM supplier_materials b WHERE b.material_id = @id AND b.supplier_material_availability = 1  " +
 					"AND b.supplier_material_archived = 0) min_table " +
 					"ON a.supplier_material_price = min_table.min_value " +

@@ -162,74 +162,104 @@
 					{
 
 						<div style="display: none">
-							@Html.EditorFor(m=>m.templates)
+							@Html.DisplayFor(m=>m.templates)
 							@for (int x = 0; x < Model.templates.Count; x++)
 							{
-								@Html.EditorFor(m=>m.templates[x])
-								@Html.EditorFor(m=>m.templates[x].ID)
-								@Html.EditorFor(m=>m.templates[x].Description)
+								@Html.HiddenFor(m=>m.templates[x])
+								@Html.HiddenFor(m=>m.templates[x].ID)
+								@Html.HiddenFor(m=>m.templates[x].Description)
 							}
-							@Html.EditorFor(m=>m.lists)
+
+							@Html.DisplayFor(m=>m.materialpicker)
+							@for (int x = 0; x < Model.materialpicker.Count; x++)
+							{
+								@Html.HiddenFor(m=>m.materialpicker[x])
+								@Html.HiddenFor(m=>m.materialpicker[x].ID)
+								@Html.HiddenFor(m=>m.materialpicker[x].Description)
+								@Html.HiddenFor(m=>m.materialpicker[x].IsChecked)
+							}
+
+							@Html.DisplayFor(m=>m.suppliers)
+							@for (int x = 0; x < Model.suppliers.Count; x++)
+							{
+								@Html.HiddenFor(m=>m.suppliers[x])
+								@Html.HiddenFor(m=>m.suppliers[x].ID)
+								@Html.HiddenFor(m=>m.suppliers[x].Description)
+								@Html.HiddenFor(m=>m.suppliers[x].ContactName)
+								@Html.HiddenFor(m=>m.suppliers[x].ContactNumber)
+							}
+
+							@Html.DisplayFor(m=>m.lists)
 
 							@for (int i = 0; i < Model.lists.Count; i++)
 							{
-								@Html.EditorFor(m=>m.lists[i])
-								@Html.EditorFor(m=>m.lists[i].Description)
-								@Html.EditorFor(m=>m.lists[i].ListNumber)
-								@Html.EditorFor(m=>m.lists[i].ListLetter)
-								@Html.EditorFor(m=>m.lists[i].Items)
+								@Html.HiddenFor(m=>m.lists[i])
+								@Html.HiddenFor(m=>m.lists[i].Description)
+								@Html.HiddenFor(m=>m.lists[i].ListNumber)
+								@Html.HiddenFor(m=>m.lists[i].ListLetter)
+								@Html.DisplayFor(m=>m.lists[i].Items)
 
 								@for (int x = 0; x < Model.lists[i].Items.Count; x++)
 								{
 
-									@Html.EditorFor(m=>m.lists[i].Items[x])
-									@Html.EditorFor(m=>m.lists[i].Items[x].ItemNumber)
-									@Html.EditorFor(m=>m.lists[i].Items[x].Description)
-									@Html.EditorFor(m=>m.lists[i].Items[x].Subitems)
+									@Html.HiddenFor(m=>m.lists[i].Items[x])
+									@Html.HiddenFor(m=>m.lists[i].Items[x].ItemNumber)
+									@Html.HiddenFor(m=>m.lists[i].Items[x].Description)
+									@Html.DisplayFor(m=>m.lists[i].Items[x].Subitems)
 
 									@for (int y = 0; y < Model.lists[i].Items[x].Subitems.Count; y++)
 									{
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y])
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].SubitemNumber)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialID)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialDesc)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantity)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityWastage)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityProvisions)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialUoM)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialCost)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount, new { @id="result-amount-" + numOfItems2 })
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
-										@Html.EditorFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y])
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].SubitemNumber)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialID)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialDesc)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantity)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityWastage)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityProvisions)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialUoM)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialCost)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MarkedUpCost)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount, new { @id="result-amount-" + numOfItems2 })
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].SupplierMaterialID)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].Supplier)
 										numOfItems2++;
 									}
 								}
 							}
-
-							@Html.EditorFor(m=>m.Title)
-							@Html.EditorFor(m=>m.ClientName)
-							@Html.EditorFor(m=>m.ClientContact)
-							@Html.EditorFor(m=>m.Date)
-							@Html.EditorFor(m=>m.Address)
-							@Html.EditorFor(m=>m.City)
-							@Html.EditorFor(m=>m.Region)
-							@Html.EditorFor(m=>m.BuildingType)
-							@Html.EditorFor(m=>m.Country)
-							@Html.EditorFor(m=>m.Longtitude)
-							@Html.EditorFor(m=>m.Latitude)
-							@Html.EditorFor(m=>m.NumberOfStoreys)
-							@Html.EditorFor(m=>m.FloorHeight)
-							@Html.EditorFor(m=>m.BuildingLength)
-							@Html.EditorFor(m=>m.BuildingWidth)
-							@Html.EditorFor(m=>m.TemplateID)
-							@Html.EditorFor(m=>m.ProjectID)
-							@Html.EditorFor(m=>m.FormulaID)
+							
+							@Html.HiddenFor(m=>m.TemplateID)
+							@Html.HiddenFor(m=>m.ProjectID)
+							@Html.HiddenFor(m=>m.FormulaID)
+								  
+							@Html.HiddenFor(m=>m.Wastage)
+							@Html.HiddenFor(m=>m.Provisions)
+							@Html.HiddenFor(m=>m.Markup)
+							@Html.HiddenFor(m=>m.BOMCreationDate)
+							@Html.HiddenFor(m=>m.totalCost)
+								  
+							@Html.HiddenFor(m=>m.Title)
+							@Html.HiddenFor(m=>m.ClientName)
+							@Html.HiddenFor(m=>m.ClientContact)
+							@Html.HiddenFor(m=>m.Date)
+							@Html.HiddenFor(m=>m.Address)
+							@Html.HiddenFor(m=>m.City)
+							@Html.HiddenFor(m=>m.Region)
+							@Html.HiddenFor(m=>m.BuildingType)
+							@Html.HiddenFor(m=>m.Country)
+							@Html.HiddenFor(m=>m.Longtitude)
+							@Html.HiddenFor(m=>m.Latitude)
+							@Html.HiddenFor(m=>m.NumberOfStoreys)
+							@Html.HiddenFor(m=>m.FloorHeight)
+							@Html.HiddenFor(m=>m.BuildingLength)
+							@Html.HiddenFor(m=>m.BuildingWidth)
 
 						</div>
 
 						<div class="scroll">
 							<table class="table" width="150%">
-								<thead>
+								<thead style="position: sticky; top: 0;">
 									<tr>
 										<th></th>
 										<th colspan="6">Proposed Materials</th>
@@ -307,22 +337,24 @@
 
 					// Get the number from the first <p>
 					const number = parseFloat($(`#number-${i}`).text());
-
+					console.log('Selected value:', selectedValue);
 					// Send an AJAX request to retrieve the multiplier
 					$.ajax({
-						url: '/Debug/GetMultiplier?param1=' + $(`#material-` + i).text(), // Replace with your controller action URL
+						url: '/Debug/GetMultiplier?param1=' + $(`#material-` + i).text(), 
 						method: 'GET',
 						data: { selectedValue: selectedValue },
-						success: function (multiplier) {
+						success: function (data) {
 							// Calculate the result
-							const cost = (multiplier / 100);
+							const cost = (data.Multiplier / 100);
+							const supplier_price_id = data.ID;
 							const result = number * cost;
 							const formattedcost = cost.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 							const formattedresult = result.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 							// Update the second <p> with the result
 							$(`#result-${i}`).text(`${formattedresult}`);
 							$(`#cost-${i}`).text(`${formattedcost}`);
-							$(`#result-amount-${i}`).value(`${result}`);
+							$(`#result-amount-${i}`).val(`${result}`);
+							//$(`#supplier-price-id-${i}`).val(`${supplier_price_id}`);
 						},
 						error: function (error) {
 							console.error(error);
