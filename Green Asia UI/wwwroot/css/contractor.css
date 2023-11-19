@@ -207,7 +207,7 @@ a:hover {
 
 table thead tr {
     color: #fff;
-    background: #34AF6D;
+    background: rgb(108, 112, 101);
     text-align: left;
     font-weight: bold;
 }
