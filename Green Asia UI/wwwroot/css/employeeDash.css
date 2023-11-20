@@ -27,7 +27,7 @@ body {
     color: #fff;
     overflow: hidden;
     transition: all 0.5s linear;
-    background: rgb(108, 112, 101);
+    background: rgb(42,98,49);
 }
 
     .sidebar:hover {
@@ -274,7 +274,7 @@ table {
 }
 
 thead {
-    background: rgb(108, 112, 101);
+    background: rgb(42,98,49);
     color: #fff;
 }
 
@@ -298,7 +298,7 @@ tr:nth-child(even) {
 }
 
 tfoot {
-    background: rgba(113, 99, 186, 255);
+    background: rgb(42,98,49);
     font-weight: bold;
     color: #fff;
 }

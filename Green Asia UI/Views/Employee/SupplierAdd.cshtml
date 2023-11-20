@@ -1,7 +1,18 @@
-﻿@model SupplierInfoModel
+﻿@{
+	Layout = null;
+}
+@model SupplierInfoModel
 
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
+	<meta charset="UTF-8">
+	<title> Add Contractor </title>
+	<link rel="stylesheet" href="~/css/newAdminAddContractor.css" asp-append-version="true" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 	<script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol?key=ApFkiZUGSuNuTphyHstPFnkvL0IGwOKelabezyQVt4RwYTD-yE5n5dMgmeHugQgN"></script>
 	<style>
 		.field-validation-valid {
@@ -33,10 +44,15 @@
 </head>
 
 <body>
-	@Html.ActionLink("Back", "employeeSupplierDash")
-	<h3>Add Supplier</h3>
-
-	<main class="">
+	
+	<div class="container">
+		<a class="dashboard-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+			<div class="main-top">
+				<i class="fas fa-user"></i>
+			</div>
+		</a>
+		<div class="title">Add Supplier</div>
+	<div class="content">
 		@using (Html.BeginForm("SupplierAdd", "Employee", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
 		{
 			@Html.AntiForgeryToken()
@@ -140,9 +156,11 @@
 					@Html.ValidationMessageFor(m => m.ContactNumber, "Enter supplier contact number", new { @class = "text-danger" })
 				</div>
 			</div>
-			<input type="submit" value="Submit" class="button button2" />
+				<div class="button">
+					<input type="submit" value="Submit" />
+				</div>
 		}
-	</main>
+	</div>
 	<br>
 	<script>
 		function loadMapScenario() {
@@ -191,3 +209,4 @@
 
 
 </body>
+</html>
