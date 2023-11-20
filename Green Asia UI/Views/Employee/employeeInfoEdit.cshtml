@@ -1,0 +1,192 @@
+﻿@{
+    Layout = null;
+}
+
+@model EmployeeInfoModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<style>
+		.field-validation-valid {
+			display: none;
+		}
+
+		.validation-summary-valid {
+			display: none;
+		}
+
+		.input-text {
+			width:80%;
+			border:solid;
+			border-width: 1px;
+			border-color:black;
+			padding:5px;
+			font-size:12pt;
+		}
+
+		.input-submit {
+			border: solid;
+			border-width: 1px;
+			border-color: black;
+			padding: 5px;
+			font-size: 12pt;
+		}
+	</style>
+    <title> Projects </title>
+    <link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
+
+    <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li>
+					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+                        <img src="../../Images/greenAsiaLogo.png" alt="logo">
+                        <span class="nav-item">GACTC</span>
+                    </a>
+                </li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+                        <i class="fas fa-menorah"></i>
+                        <span class="nav-item">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-item">Projects</span>
+                    </a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Templates</span>
+					</a>
+				</li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-item">Suppliers</span>
+                    </a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Materials</span>
+					</a>
+				</li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Account</span>
+					</a>
+				</li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="nav-item">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="main">
+			@using (Html.BeginForm("employeeInfoEdit", "Employee", FormMethod.Post))
+			{
+				@Html.HiddenFor(m=>m.ID)
+				@Html.HiddenFor(m=>m.user_id)
+				@Html.HiddenFor(m=>m.status)
+				<section class="attendance">
+					<div class="attendance-list">
+						<h1>Account Info</h1>
+						<table style="width:100%">
+							<tr>
+								<td>
+									<div style="width:50%">
+										<h4>Username</h4>
+										@Html.TextBoxFor(m=>m.username, new { @class = "input-text", @readonly = "true" })
+										@Html.ValidationMessageFor(m=>m.username, "Enter username", new { @class = "text-danger"})
+									</div>
+								</td>
+								<td>
+									<div style="width:50%">
+										<h4>Password</h4>
+										@Html.PasswordFor(m=>m.password, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.password, "Enter password", new { @class = "text-danger" })
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<h4>First Name</h4>
+										@Html.TextBoxFor(m=>m.first_name, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.first_name, "Enter first name", new { @class = "text-danger" })
+									</div>
+								</td>
+								<td>
+									<div>
+										<h4>Middle Name</h4>
+										@Html.TextBoxFor(m=>m.middle_name, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.middle_name, "Enter middle name", new { @class = "text-danger" })
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<h4>Last Name</h4>
+										@Html.TextBoxFor(m=>m.last_name, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.last_name, "Enter last name", new { @class = "text-danger" })
+									</div>
+								</td>
+								<td>
+									<div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<h4>Mobile Phone Number</h4>
+										@Html.TextBoxFor(m=>m.contactNum, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.contactNum, "Enter your mobile number", new { @class = "text-danger" })
+									</div>
+								</td>
+								<td>
+									<div>
+										<h4>Email</h4>
+										@Html.TextBoxFor(m=>m.email, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.email, "Enter your Email", new { @class = "text-danger" })
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<h4>Address</h4>
+										@Html.TextBoxFor(m=>m.address, new { @class = "input-text" })
+										@Html.ValidationMessageFor(m=>m.address, "Enter Address", new { @class = "text-danger" })
+									</div>
+								</td>
+								<td>
+									<div>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<input type="submit" value="Save" class="input-submit">
+					</div>
+				</section>
+			}
+        </section>
+	</div>
+	<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+</body>
+</html>

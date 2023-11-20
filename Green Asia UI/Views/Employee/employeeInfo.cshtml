@@ -1,13 +1,14 @@
 ﻿@{
     Layout = null;
 }
-@model List<AdminSupplierModel>
+
+@model EmployeeInfoModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title> Suppliers </title>
-    <link rel="icon" type="images/png" href="images/green asia logo.png" />
+    <title> Projects </title>
+    <link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
 
     <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
 
@@ -41,7 +42,7 @@
 						<span class="nav-item">Templates</span>
 					</a>
 				</li>
-                <li class="active">
+                <li>
 					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Suppliers</span>
@@ -53,7 +54,7 @@
 						<span class="nav-item">Materials</span>
 					</a>
 				</li>
-				<li>
+				<li class="active">
 					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Account</span>
@@ -69,41 +70,81 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="SupplierAdd">
-                <div class="main-top">
-                    <h1>Add Suppliers</h1>
-                    <i class="fas fa-wrench"></i>
-                </div>
-            </a>
 
             <section class="attendance">
                 <div class="attendance-list">
-                    <h1>Supplier List</h1>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Address</th>
-								<th>Contact Name</th>
-								<th>Contact Number</th>
-								<th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-							@for (int x = 0; x < Model.Count; x++)
-							{
-								<tr>
-									<td>@Model[x].ID</td>
-									<td>@Model[x].Desc</td>
-									<td>@Model[x].Address</td>
-									<td>@Model[x].ContactName</td>
-									<td>@Model[x].ContactNum</td>
-									<td>@Html.ActionLink("View", "SupplierView", "Employee", new { id = Model[x].ID } )</td>
-								</tr>
-							}
-                        </tbody>
-                    </table>
+                    <h1>Account Info</h1>
+					<table style="width:100%">
+						<tr>
+							<td>
+								<div style="width:50%">
+									<h4>Username</h4>
+									<p style="text-indent:20pt;">@Model.username</p>
+								</div>
+							</td>
+							<td>
+								<div style="width:50%">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>First Name</h4>
+									<p style="text-indent:20pt;">@Model.first_name</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Middle Name</h4>
+									<p style="text-indent:20pt;">@Model.middle_name</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Last Name</h4>
+									<p style="text-indent:20pt;">@Model.last_name</p>
+								</div>
+							</td>
+							<td>
+								<div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Mobile Phone Number</h4>
+									<p style="text-indent:20pt;">@Model.contactNum</p>
+								</div>
+							</td>
+							<td>
+								<div>
+									<h4>Email</h4>
+									<p style="text-indent:20pt;">@Model.email</p>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<h4>Address</h4>
+									<p style="text-indent:20pt;">@Model.address</p>
+								</div>
+							</td>
+							<td>
+								<div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					<a class ="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfoEdit">
+						<div>
+							<p>Edit</p>
+						</div>
+					</a>
                 </div>
             </section>
         </section>

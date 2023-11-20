@@ -595,6 +595,7 @@ namespace Green_Asia_UI.Controllers
 				return RedirectToAction("HomePage", "Home");
 			}
 			AddEmployeeModel xmodel = new AddEmployeeModel();
+			xmodel.Role = "2";
 
 			xmodel.roles = new List<RoleList>();
 

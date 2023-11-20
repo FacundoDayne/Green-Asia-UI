@@ -411,26 +411,26 @@ namespace Green_Asia_UI.Controllers
 			double multiplier = 0;
 			JSONSupplierListItem data = new JSONSupplierListItem() { Multiplier = 0, ID = 0 };
 
-				using (SqlConnection conn = new SqlConnection(connectionstring))
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT supplier_material_price, supplier_material_id FROM supplier_materials " +
+					"WHERE supplier_id = @supplier_id AND material_id = @material_id AND supplier_material_archived = 0 " +
+					"AND supplier_material_availability = 1;"))
 				{
-					conn.Open();
-					using (SqlCommand command = new SqlCommand("SELECT supplier_material_price, supplier_material_id FROM supplier_materials " +
-						"WHERE supplier_id = @supplier_id AND material_id = @material_id AND supplier_material_archived = 0 " +
-						"AND supplier_material_availability = 1;"))
+					command.Parameters.AddWithValue("@supplier_id", Convert.ToInt32(selectedValue));
+					command.Parameters.AddWithValue("@material_id", Convert.ToInt32(param1));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
 					{
-						command.Parameters.AddWithValue("@supplier_id", Convert.ToInt32(selectedValue));
-						command.Parameters.AddWithValue("@material_id", Convert.ToInt32(param1));
-						command.Connection = conn;
-						using (SqlDataReader sdr = command.ExecuteReader())
+						while (sdr.Read())
 						{
-							while (sdr.Read())
-							{
-								data.Multiplier = Convert.ToDouble(sdr["supplier_material_price"]);
-								data.ID = Convert.ToInt32(sdr["supplier_material_id"]);
-							}
+							data.Multiplier = Convert.ToDouble(sdr["supplier_material_price"]);
+							data.ID = Convert.ToInt32(sdr["supplier_material_id"]);
 						}
-						multiplier = Convert.ToInt32(command.ExecuteScalar());
 					}
+					multiplier = Convert.ToInt32(command.ExecuteScalar());
+				}
 			}
 			Debug.WriteLine(selectedValue + ";" + param1 + ";" + multiplier);
 			return Json(data);

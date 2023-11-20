@@ -51,11 +51,11 @@ namespace Green_Asia_UI.Controllers
 		public async Task<ActionResult> HomePage(LoginViewModel model)
 		{
 			Debug.WriteLine("a");
-			/*
+			
 			if (!ModelState.IsValid)
 			{
 				return View(model);
-			}*/
+			}
 			
 			int role = 0;
 			int id = 0;

@@ -77,6 +77,18 @@
 					</a>
 				</li>
 				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Materials</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Account</span>
+					</a>
+				</li>
+				<li>
 					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
 						<i class="fas fa-sign-out-alt"></i>
 						<span class="nav-item">Log out</span>
@@ -222,7 +234,7 @@
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount, new { @id="result-amount-" + numOfItems2 })
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
-										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].SupplierMaterialID)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].SupplierMaterialID, new { @id="suppliermaterialid-" + numOfItems2 })
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].Supplier)
 										numOfItems2++;
 									}
@@ -315,7 +327,7 @@
 									}
 									<tr style="background: #BBBBBB">
 										<td colspan="8" style="text-align:right">Amount:</td>
-										<td>@string.Format("{0:N2}", Model.totalCost)</td>
+										<td id="overallCost">@string.Format("{0:N2}", Model.totalCost)</td>
 									</tr>
 								</tbody>
 							</table>
@@ -354,6 +366,8 @@
 							$(`#result-${i}`).text(`${formattedresult}`);
 							$(`#cost-${i}`).text(`${formattedcost}`);
 							$(`#result-amount-${i}`).val(`${result}`);
+							$(`#suppliermaterialid-${i}`).val(`${supplier_price_id}`);
+							AddAll();
 							//$(`#supplier-price-id-${i}`).val(`${supplier_price_id}`);
 						},
 						error: function (error) {
@@ -363,5 +377,14 @@
 				});
 			}
 		});
+		function AddAll ()
+		{
+			let totalCost = 0;
+			for (let i = 0; i < @numOfItems; i++)
+			{
+				totalCost = totalCost + document.getElementById('result-amount-' + i);
+				document.getElementById('overallCost').textContent = totalCost;
+			}
+		}
 	</script>
 </body>

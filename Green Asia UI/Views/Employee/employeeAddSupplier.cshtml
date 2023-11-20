@@ -39,18 +39,30 @@
 
 					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-					<div hidden>
-						<div class="input-box">
-							@Html.LabelFor(m => m.Role, new { @class = "details" })
-							<div class="col-md-10">
-								@Html.DropDownListFor(m => m.Role, new SelectList(Model.roles, "id", "name"), "Select User Role", new { @class="dropdown" })
-								@Html.ValidationMessageFor(m => m.Role, "Choose User Role", new { @class = "text-danger" })
-							</div>
-						</div>
-					
-						<div class="input-box">
+					<div class="input-box">
+						@Html.LabelFor(m => m.Username, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.Username, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.Username, "Enter a Username", new { @class = "" })
 						</div>
 					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.Password, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.Password, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.Password, "Enter a Password", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.Role, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.DropDownListFor(m => m.Role, new SelectList(Model.roles, "id", "name"), "Select User Role", new { @class="dropdown" })
+							@Html.ValidationMessageFor(m => m.Role, "Choose User Role", new { @class = "text-danger" })
+						</div>
+					</div>
+
 					<div class="input-box">
 						@Html.LabelFor(m => m.FirstName, new { @class = "details" })
 						<div class="col-md-10">
@@ -70,27 +82,8 @@
 					<div class="input-box">
 						@Html.LabelFor(m => m.LastName, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.LastName, new { @class = "text-input", @id = "lastname_input", @oninput="handleinput()" })
+							@Html.TextBoxFor(m => m.LastName, new { @class = "text-input" })
 							@Html.ValidationMessageFor(m => m.LastName, "Enter a name", new { @class = "text-danger" })
-						</div>
-					</div>
-
-					<div class="input-box">
-					</div>
-
-					<div class="input-box">
-						@Html.LabelFor(m => m.Username, new { @class = "details" })
-						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.Username, new { @class = "text-input", @id = "username_input", @readonly = "true" })
-							@Html.ValidationMessageFor(m => m.Username, "Enter a Username", new { @class = "" })
-						</div>
-					</div>
-
-					<div class="input-box">
-						@Html.LabelFor(m => m.Password, new { @class = "details" })
-						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.Password, new { @class = "text-input" })
-							@Html.ValidationMessageFor(m => m.Password, "Enter a Password", new { @class = "text-danger" })
 						</div>
 					</div>
 
@@ -135,36 +128,6 @@
 		</div>
 		<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
 		<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script type="text/javascript">
-			var typingTimer;
-			var doneTypingInterval = 1000;
-			var nuts = 'nuts';
-			function handleinput(){
-				console.log("A");
-				clearTimeout(typingTimer);
-				typingTimer = setTimeout(makeAjaxRequest, doneTypingInterval);
-			}
-
-			function makeAjaxRequest() {
-				console.log("B");
-				var lastname = $('#lastname_input').val();
-				if (lastname != "") {
-					console.log("C");
-					$.ajax({
-						url: '/Employee/CheckUsernameExisting?param1=' + nuts,
-						method: 'GET',
-						data: { selectedValue: "" },
-						success: function (data) {
-							$(`#username_input`).val(lastname + '.' + data);
-						},
-						error: function (error) {
-							console.error(error);
-						}
-					});
-				}
-			}
-		</script>
 
 	</body>
 </html>

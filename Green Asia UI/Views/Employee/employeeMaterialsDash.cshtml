@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-@model List<AdminSupplierModel>
+@model List<EmployeeDashboardMaterials>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,13 +41,13 @@
 						<span class="nav-item">Templates</span>
 					</a>
 				</li>
-                <li class="active">
+                <li>
 					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Suppliers</span>
                     </a>
 				</li>
-				<li>
+				<li class="active">
 					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Materials</span>
@@ -69,24 +69,23 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="SupplierAdd">
+            <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeAddMaterial">
                 <div class="main-top">
-                    <h1>Add Suppliers</h1>
+                    <h1>Add Materials</h1>
                     <i class="fas fa-wrench"></i>
                 </div>
             </a>
 
             <section class="attendance">
                 <div class="attendance-list">
-                    <h1>Supplier List</h1>
+                    <h1>Materials List</h1>
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Address</th>
-								<th>Contact Name</th>
-								<th>Contact Number</th>
+                                <th>Description</th>
+								<th>Unit of Measurement</th>
 								<th>Action</th>
                             </tr>
                         </thead>
@@ -95,11 +94,10 @@
 							{
 								<tr>
 									<td>@Model[x].ID</td>
-									<td>@Model[x].Desc</td>
-									<td>@Model[x].Address</td>
-									<td>@Model[x].ContactName</td>
-									<td>@Model[x].ContactNum</td>
-									<td>@Html.ActionLink("View", "SupplierView", "Employee", new { id = Model[x].ID } )</td>
+									<td>@Model[x].Description</td>
+									<td>@Model[x].Description_Long</td>
+									<td>@Model[x].UnitOfMeasurement</td>
+									<td>@Html.ActionLink("Edit", "employeeEditMaterial", "Employee", new { id = Model[x].ID } )</td>
 								</tr>
 							}
                         </tbody>

@@ -37,7 +37,8 @@ using iText.Kernel.Font;
 using iText.IO.Font;
 using iText.Layout.Borders;
 using Org.BouncyCastle.Math.EC.Multiplier;
-
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Green_Asia_UI.Controllers
 {
@@ -580,6 +581,439 @@ namespace Green_Asia_UI.Controllers
 			Debug.WriteLine("Temp" + model.TemplateID);
 			return View(model);
 		}
+
+
+		public IActionResult employeeMaterialsDash()
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			List<EmployeeDashboardMaterials> model = new List<EmployeeDashboardMaterials>();
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM materials a " +
+							"INNER JOIN measurement_units b ON a.measurement_unit_id = b.measurement_unit_id;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.Add(new EmployeeDashboardMaterials()
+							{
+								ID = Convert.ToInt32(sdr["material_id"]),
+								Description = sdr["material_desc"].ToString(),
+								Description_Long = sdr["material_desc_long"].ToString(),
+								UnitOfMeasurement = sdr["measurement_unit_desc"].ToString()
+							});
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+		public IActionResult employeeAddMaterial()
+		{
+			EmployeeAddMaterial model = new EmployeeAddMaterial();
+			model.categories = new List<EmployeeListItem>();
+			model.measurements = new List<EmployeeListItem>();
+			model.measurement_type = new List<EmployeeListItem>();
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM material_categories;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.categories.Add(new EmployeeListItem()
+							{
+								ID = Convert.ToInt32(sdr["category_id"]),
+								Description = sdr["category_desc"].ToString()
+							});
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT * FROM measurement_units;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.measurements.Add(new EmployeeListItem()
+							{
+								ID = Convert.ToInt32(sdr["measurement_unit_id"]),
+								Description = sdr["measurement_unit_desc"].ToString()
+							});
+						}
+					}
+				}
+			}
+
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 1,
+				Description = "Length"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 2,
+				Description = "Area"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 3,
+				Description = "Weight"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 4,
+				Description = "Volume"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 5,
+				Description = "Pieces"
+			});
+
+			return View(model);
+		}
+
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult employeeAddMaterial(EmployeeAddMaterial model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+			return View(model);
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("INSERT INTO materials(material_desc,material_desc_long,category_id,measurement_unit_id,material_measurement_type,material_measurement_value) " +
+					"VALUES (@material_desc,@material_desc_long, @category_id, @measurement_unit_id, @material_measurement_type, @material_measurement_value);"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@material_desc", model.Description);
+					command.Parameters.AddWithValue("@material_desc_long", model.Description_Long);
+					command.Parameters.AddWithValue("@category_id", Convert.ToInt32(model.CategoryID));
+					command.Parameters.AddWithValue("@measurement_unit_id", Convert.ToInt32(model.UnitOfMeasurement));
+					command.Parameters.AddWithValue("@material_measurement_type", Convert.ToInt32(model.MeasurementType));
+					command.Parameters.AddWithValue("@material_measurement_value", model.MeasurementValue);
+
+					conn.Open();
+					command.ExecuteNonQuery();
+					conn.Close();
+				}
+			}
+
+			return RedirectToAction("employeeMaterialsDash");
+		}
+
+		public IActionResult employeeEditMaterial(int? id)
+		{
+			if (id == null || id < 0)
+			{
+				return RedirectToAction("employeeMaterialsDash");
+			}
+			EmployeeAddMaterial model = new EmployeeAddMaterial();
+			model.categories = new List<EmployeeListItem>();
+			model.measurements = new List<EmployeeListItem>();
+			model.measurement_type = new List<EmployeeListItem>();
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM material_categories;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.categories.Add(new EmployeeListItem()
+							{
+								ID = Convert.ToInt32(sdr["category_id"]),
+								Description = sdr["category_desc"].ToString()
+							});
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT * FROM measurement_units;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.measurements.Add(new EmployeeListItem()
+							{
+								ID = Convert.ToInt32(sdr["measurement_unit_id"]),
+								Description = sdr["measurement_unit_desc"].ToString()
+							});
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT * FROM materials WHERE material_id = @material_id;"))
+				{
+					command.Parameters.AddWithValue("@material_id", Convert.ToInt32(id));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.ID = Convert.ToInt32(id);
+							model.Description = sdr["material_desc"].ToString();
+							model.Description_Long = sdr["material_desc_long"].ToString();
+							model.CategoryID = Convert.ToInt32(sdr["category_id"]);
+							model.UnitOfMeasurement = Convert.ToInt32(sdr["measurement_unit_id"]);
+							model.MeasurementType = Convert.ToInt32(sdr["material_measurement_type"]);
+							model.MeasurementValue = Convert.ToDouble(sdr["material_measurement_value"]);
+						}
+					}
+				}
+			}
+
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 1,
+				Description = "Length"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 2,
+				Description = "Area"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 3,
+				Description = "Weight"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 4,
+				Description = "Volume"
+			});
+			model.measurement_type.Add(new EmployeeListItem()
+			{
+				ID = 5,
+				Description = "Pieces"
+			});
+
+			return View(model);
+		}
+
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult employeeEditMaterial(EmployeeAddMaterial model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("UPDATE materials SET " +
+					"material_desc = @material_desc, " +
+					"material_desc_long = @material_desc_long, " +
+					"category_id = @category_id, " +
+					"measurement_unit_id = @measurement_unit_id, " +
+					"material_measurement_type = @material_measurement_type, " +
+					"material_measurement_value = @material_measurement_value " +
+					"WHERE material_id = @material_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@material_id", model.ID);
+					command.Parameters.AddWithValue("@material_desc", model.Description);
+					command.Parameters.AddWithValue("@material_desc_long", model.Description_Long);
+					command.Parameters.AddWithValue("@category_id", Convert.ToInt32(model.CategoryID));
+					command.Parameters.AddWithValue("@measurement_unit_id", Convert.ToInt32(model.UnitOfMeasurement));
+					command.Parameters.AddWithValue("@material_measurement_type", Convert.ToInt32(model.MeasurementType));
+					command.Parameters.AddWithValue("@material_measurement_value", model.MeasurementValue);
+
+					conn.Open();
+					command.ExecuteNonQuery();
+					conn.Close();
+				}
+			}
+
+			return RedirectToAction("employeeMaterialsDash");
+		}
+
+
+
+		public IActionResult employeeInfo()
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			EmployeeInfoModel model = new EmployeeInfoModel();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM employee_info a " +
+					"INNER JOIN user_credentials b " +
+					"ON a.user_credentials_id = b.user_id " +
+					"WHERE employee_info_id = @id;"))
+				{
+					command.Parameters.AddWithValue("@id", HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmployeeID"));
+							model.user_id = Convert.ToInt32(sdr["user_credentials_id"]);
+							model.username = sdr["username"].ToString();
+							model.password = "";
+							model.first_name = sdr["employee_info_firstname"].ToString();
+							model.middle_name = sdr["employee_info_middlename"].ToString();
+							model.last_name = sdr["employee_info_lastname"].ToString();
+							model.contactNum = sdr["employee_info_contactnum"].ToString();
+							model.email = sdr["employee_info_email"].ToString();
+							model.address = sdr["employee_info_address"].ToString();
+							model.status = Convert.ToBoolean(sdr["employee_info_status"]);
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+		public IActionResult employeeInfoEdit()
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			EmployeeInfoModel model = new EmployeeInfoModel();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM employee_info a " +
+					"INNER JOIN user_credentials b " +
+					"ON a.user_credentials_id = b.user_id " +
+					"WHERE employee_info_id = @id;"))
+				{
+					command.Parameters.AddWithValue("@id", HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmployeeID"));
+							model.user_id = Convert.ToInt32(sdr["user_credentials_id"]);
+							model.username = sdr["username"].ToString();
+							model.password = sdr["user_password"].ToString();
+							model.first_name = sdr["employee_info_firstname"].ToString();
+							model.middle_name = sdr["employee_info_middlename"].ToString();
+							model.last_name = sdr["employee_info_lastname"].ToString();
+							model.contactNum = sdr["employee_info_contactnum"].ToString();
+							model.email = sdr["employee_info_email"].ToString();
+							model.address = sdr["employee_info_address"].ToString();
+							model.status = Convert.ToBoolean(sdr["employee_info_status"]);
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult employeeInfoEdit(EmployeeInfoModel model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				Debug.WriteLine("invalid");
+				Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
+
+				foreach (var key in ModelState.Keys)
+				{
+					var errors = ModelState[key].Errors;
+					foreach (var error in errors)
+					{
+						// Log or display the error message
+						var errorMessage = error.ErrorMessage;
+						Debug.WriteLine(": " + errorMessage);
+						// You can also access error.Exception for exceptions if applicable
+					}
+				}
+				return View(model);
+			}
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				Debug.WriteLine("?");
+				using (SqlCommand command = new SqlCommand("UPDATE employee_info SET " +
+					"employee_info_firstname = @employee_info_firstname," +
+					"employee_info_middlename = @employee_info_middlename," +
+					"employee_info_lastname = @employee_info_lastname," +
+					"employee_info_contactnum = @employee_info_contactnum," +
+					"employee_info_email = @employee_info_email," +
+					"employee_info_address = @employee_info_address, " +
+					"employee_info_status = @employee_info_status " +
+					"WHERE employee_info_id = @employee_info_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@employee_info_id", model.ID);
+					command.Parameters.AddWithValue("@employee_info_firstname", model.first_name);
+					command.Parameters.AddWithValue("@employee_info_middlename", model.middle_name);
+					command.Parameters.AddWithValue("@employee_info_lastname", model.last_name);
+					command.Parameters.AddWithValue("@employee_info_contactnum", model.contactNum);
+					command.Parameters.AddWithValue("@employee_info_email", model.email);
+					command.Parameters.AddWithValue("@employee_info_address", model.address);
+					command.Parameters.AddWithValue("@employee_info_status", model.status);
+
+					command.ExecuteNonQuery();
+					Debug.WriteLine("?");
+				}
+				Debug.WriteLine("?");
+				using (SqlCommand command = new SqlCommand(
+					"UPDATE user_credentials SET " +
+					"user_password = @user_password " +
+					"WHERE user_id = @user_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@user_id", model.user_id);
+					command.Parameters.AddWithValue("@user_password", model.password);
+
+					command.ExecuteNonQuery();
+					Debug.WriteLine("?");
+				}
+				conn.Close();
+			}
+			Debug.WriteLine("?");
+
+			return RedirectToAction("employeeInfo");
+
+		}
+
+
 
 		[HttpPost]
 		[AllowAnonymous]
@@ -3036,5 +3470,40 @@ namespace Green_Asia_UI.Controllers
 			return cell;
 		}
 
+
+		public ActionResult CheckUsernameExisting(string input)
+		{
+			// Perform logic to get the multiplier based on selectedValue
+			// For example, you can query a database or use any other data source
+			StringBuilder username = new StringBuilder();
+
+			int user_id = 0;
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT IDENT_CURRENT('user_credentials') AS NextAvailableID;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							user_id = Convert.ToInt32(sdr["NextAvailableID"]);
+						}
+					}
+				}
+			}
+			for (int x = 0; x < 6 - user_id.ToString().Length; x++)
+			{
+				username.Append("0");
+			}
+			username.Append(user_id);
+
+			return Json(username.ToString());
+		}
 	}
+
+
 }
+
