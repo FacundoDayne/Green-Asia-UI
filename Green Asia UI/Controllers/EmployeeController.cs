@@ -2708,7 +2708,115 @@ namespace Green_Asia_UI.Controllers
 
 
 
+		public IActionResult employeeAddSupplier()
+		{
+			return View();
+		}
 
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult employeeAddSupplier(AddSupplierModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				foreach (var x in ModelState.Keys)
+				{
+					var modelStateEntry = ModelState[x];
+					if (modelStateEntry.Errors.Any())
+					{
+						Debug.WriteLine(modelStateEntry.Errors.Select(e => e.ErrorMessage));
+					}
+				}
+				return View(model);
+			}
+			bool username_exists = false;
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username"))
+				{
+					conn.Open();
+					command.Connection = conn;
+					command.Parameters.AddWithValue("@username", model.Username);
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						if (sdr.Read())
+						{
+							username_exists = true;
+						}
+					}
+					conn.Close();
+				}
+			}
+
+			if (username_exists)
+			{
+				return View(model);
+			}
+
+			bool error = false;
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlTransaction transaction = conn.BeginTransaction())
+				{
+					try
+					{
+						int info_id = 0;
+
+						using (SqlCommand command = new SqlCommand("INSERT INTO user_credentials (username,user_password,user_role,user_status) " +
+							"VALUES(@username, @password, @user_role, @user_status); SELECT SCOPE_IDENTITY() FROM user_credentials;"))
+						{
+							command.Connection = conn;
+							command.Transaction = transaction;
+
+							command.Parameters.AddWithValue("@username", model.Username);
+							command.Parameters.AddWithValue("@password", model.Password);
+							command.Parameters.AddWithValue("@user_role", Convert.ToInt32(3));
+							command.Parameters.AddWithValue("@user_status", 1);
+
+							info_id = Convert.ToInt32(command.ExecuteScalar());
+						}
+
+						using (SqlCommand command = new SqlCommand("INSERT INTO supplier_info (user_credentials_id,employee_id,supplier_desc,supplier_address,supplier_city,supplier_admin_district,supplier_country,supplier_coordinates_latitude,supplier_coordinates_longtitude,supplier_contact_name,supplier_contact_number) " +
+							"VALUES (@user_credentials_id,@employee_id, @Desc, @Address, @City, @supplier_admin_district, @supplier_country, @Longtitude, @Latitude, @ContactName, @ContactNumber);"))
+						{
+							command.Connection = conn;
+							command.Transaction = transaction;
+
+							command.Parameters.AddWithValue("@user_credentials_id", info_id);
+							command.Parameters.AddWithValue("@employee_id", HttpContext.Session.GetInt32("EmployeeID"));
+							command.Parameters.AddWithValue("@Desc", model.Description);
+							command.Parameters.AddWithValue("@Address", model.Address);
+							command.Parameters.AddWithValue("@City", model.City);
+							command.Parameters.AddWithValue("@supplier_admin_district", model.AdminDistrict);
+							command.Parameters.AddWithValue("@supplier_country", model.Country);
+							command.Parameters.AddWithValue("@Longtitude", model.Longtitude);
+							command.Parameters.AddWithValue("@Latitude", model.Latitude);
+							command.Parameters.AddWithValue("@ContactName", model.ContactName);
+							command.Parameters.AddWithValue("@ContactNumber", model.ContactNumber);
+
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (SqlException e)
+					{
+						error = true;
+						Debug.WriteLine(e.Message);
+						transaction.Rollback();
+					}
+				}
+				conn.Close();
+			}
+			if (error)
+			{
+				return View(model);
+			}
+
+			return RedirectToAction("employeeSupplierDash", "Employee");
+		}
 
 
 

@@ -57,7 +57,7 @@ namespace Green_Asia_UI.Models
 
 		[Required]
 		[StringLength(100, MinimumLength = 1)]
-		[Display(Name = "Contact Number")]
+		[Display(Name = "Contact Phone Number")]
 		public string ContactNumber { get; set; }
 
 	}

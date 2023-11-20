@@ -1,0 +1,96 @@
+﻿@{
+    Layout = null;
+}
+@model List<SupplierMaterialsItem>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title> Suppliers </title>
+    <link rel="icon" type="images/png" href="images/green asia logo.png" />
+
+    <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+		<nav>
+			<ul>
+				<li>
+					<a class="logo" asp-area="" asp-controller="Supplier" asp-action="supplierDashboard">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo">
+						<span class="nav-item">GACTC</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierDashboard">
+						<i class="fas fa-menorah"></i>
+						<span class="nav-item">Dashboard</span>
+					</a>
+				</li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierMaterialsDash">
+						<i class="fas fa-chart-bar"></i>
+						<span class="nav-item">Prices</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierInfo">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Account</span>
+					</a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+						<i class="fas fa-sign-out-alt"></i>
+						<span class="nav-item">Log out</span>
+					</a>
+				</li>
+			</ul>
+        </nav>
+
+        <section class="main">
+
+            <section class="attendance">
+                <div class="attendance-list">
+                    <h1>Materials List</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+								<th>Description</th>
+								<th>Available</th>
+								<th>Price</th>
+								<th>Measurement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+							@for (int x = 0; x < Model.Count; x++)
+							{
+								<tr>
+									<td>@Model[x].Description</td>
+									<td>@Model[x].Description_Long</td>
+									@if (Model[x].Availability)
+									{
+										<td>Yes</td>
+									}
+									else
+									{
+										<td>No</td>
+									}
+									<td>@Model[x].Price</td>
+									<td>Per <span>@Model[x].Quantity</span> <span>@Model[x].UoM</span></td>
+								</tr>
+							}
+                        </tbody>
+                    </table>
+					<a asp-controller="Supplier" asp-action="supplierMaterialsEdit">
+						<p>Edit</p>
+					</a>
+                </div>
+            </section>
+        </section>
+    </div>
+</body>
+</html>

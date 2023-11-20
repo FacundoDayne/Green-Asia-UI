@@ -118,7 +118,7 @@ namespace Green_Asia_UI.Controllers
 					}
 					HttpContext.Session.SetInt32("UserRole", 3);
 					Debug.WriteLine("sup");
-					return RedirectToAction("SupplierMaterialsView");
+					return RedirectToAction("supplierDashboard", "Supplier");
 				}
 				conn.Close();
 			}
@@ -977,7 +977,7 @@ namespace Green_Asia_UI.Controllers
 				return View(model);
 			}
 
-			return RedirectToAction("Account");
+			return RedirectToAction("employeeSupplierDash", "Employee");
 		}
 
 		public IActionResult EditPartner()

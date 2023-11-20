@@ -1,0 +1,135 @@
+﻿@{
+    Layout = null;
+}
+@model List<SupplierMaterialsItem>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<style>
+		.field-validation-valid {
+			display: none;
+		}
+
+		.validation-summary-valid {
+			display: none;
+		}
+
+		.input-text {
+			width: 80%;
+			border: solid;
+			border-width: 1px;
+			border-color: black;
+			padding: 5px;
+			font-size: 12pt;
+		}
+
+		.input-submit {
+			border: solid;
+			border-width: 1px;
+			border-color: black;
+			padding: 5px;
+			font-size: 12pt;
+		}
+	</style>
+    <meta charset="UTF-8" />
+    <title> Suppliers </title>
+    <link rel="icon" type="images/png" href="images/green asia logo.png" />
+
+    <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li>
+					<a class="logo" asp-area="" asp-controller="Supplier" asp-action="supplierDashboard">
+                        <img src="../../Images/greenAsiaLogo.png" alt="logo">
+                        <span class="nav-item">GACTC</span>
+                    </a>
+                </li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierDashboard">
+                        <i class="fas fa-menorah"></i>
+                        <span class="nav-item">Dashboard</span>
+                    </a>
+                </li>
+				<li class="active">
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierMaterialsDash">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-item">Prices</span>
+                    </a>
+				</li>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierInfo">
+						<i class="fas fa-briefcase"></i>
+						<span class="nav-item">Account</span>
+					</a>
+				</li>
+                <li>
+					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="nav-item">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="main">
+			@using (Html.BeginForm("supplierMaterialsEdit", "Supplier", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+			{
+				<div style="display: none">
+					@Html.EditorFor(m=>m)
+					@for (int x = 0; x < Model.Count; x++)
+					{
+						@Html.HiddenFor(m=>m[x])
+						@Html.HiddenFor(m=>m[x].ID)
+						@Html.HiddenFor(m=>m[x].Material_ID)
+						@Html.HiddenFor(m=>m[x].Description)
+						@Html.HiddenFor(m=>m[x].Description_Long)
+						@Html.HiddenFor(m=>m[x].UoM)
+						@Html.HiddenFor(m=>m[x].Quantity)
+						@Html.HiddenFor(m=>m[x].PreviousAvailability)
+						@Html.HiddenFor(m=>m[x].PreviousPrice)
+					}
+				</div>
+				<section class="attendance">
+					<div class="attendance-list">
+						<h1>Materials List</h1>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Description</th>
+									<th>Available</th>
+									<th>Price</th>
+									<th>Measurement</th>
+								</tr>
+							</thead>
+							<tbody>
+								@for (int x = 0; x < Model.Count; x++)
+								{
+									<tr>
+										<td>@Model[x].Description</td>
+										<td>@Model[x].Description_Long</td>
+										<td>@Html.CheckBoxFor(m=>m[x].Availability)</td>
+										<td>
+											@Html.TextBoxFor(m=>m[x].Price, new { @class = "input-text" })
+											@Html.ValidationMessageFor(m=>m[x].Price, "Enter a numerical price value")
+										</td>
+										<td>Per <span>@Model[x].Quantity</span> <span>@Model[x].UoM</span></td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<input type="submit" value="Save" class="input-submit">
+					</div>
+				</section>
+			}
+        </section>
+	</div>
+	<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+</body>
+</html>
