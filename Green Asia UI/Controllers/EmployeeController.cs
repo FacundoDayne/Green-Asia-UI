@@ -3048,6 +3048,62 @@ namespace Green_Asia_UI.Controllers
 
 
 
+		public SupplierInfoModel getSupplierInfo(int? id)
+		{
+			SupplierInfoModel model = new SupplierInfoModel();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM supplier_info a " +
+					"INNER JOIN user_credentials b " +
+					"ON a.user_credentials_id = b.user_id " +
+					"WHERE supplier_id = @id;"))
+				{
+					command.Connection = conn;
+					command.Parameters.AddWithValue("@id", id);
+
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.ID = Convert.ToInt32(sdr["supplier_id"]);
+							model.CredentialsID = Convert.ToInt32(sdr["user_credentials_id"]);
+							model.EmployeeID = Convert.ToInt32(sdr["employee_id"]);
+							model.Latitude = sdr["supplier_coordinates_latitude"].ToString();
+							model.Longtitude = sdr["supplier_coordinates_longtitude"].ToString();
+							model.Username = sdr["username"].ToString();
+							model.Password = sdr["user_password"].ToString();
+							model.Description = sdr["supplier_desc"].ToString();
+							model.ContactName = sdr["supplier_contact_name"].ToString();
+							model.ContactNumber = sdr["supplier_contact_number"].ToString();
+							model.Address = sdr["supplier_address"].ToString();
+							model.City = sdr["supplier_city"].ToString();
+							model.Region = sdr["supplier_admin_district"].ToString();
+							model.Country = sdr["supplier_country"].ToString();
+						}
+					}
+				}
+			}
+			Debug.WriteLine(model.ID);
+			Debug.WriteLine(model.Username);
+			Debug.WriteLine(model.Description);
+			return model;
+		}
+
+		public IActionResult employeeSupplierView(int? id)
+		{
+			SupplierInfoModel model = getSupplierInfo(id);
+
+			return View(model);
+		}
+
+
+		public IActionResult supplierInfoEdit(int? id)
+		{
+			SupplierInfoModel model = getSupplierInfo(id);
+
+			return View(model);
+		}
 
 
 
