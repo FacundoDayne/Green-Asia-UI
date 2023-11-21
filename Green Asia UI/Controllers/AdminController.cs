@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using System.Drawing.Text;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Text.RegularExpressions;
 
 using Microsoft.Data.SqlClient;
 
@@ -56,12 +57,22 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		
+
 		public async Task<IActionResult> CreateProject(ProjectModel model)
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
 				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+			string pattern = @"^09\d{9}$";
+			if (!Regex.IsMatch(model.ClientContact, pattern))
+			{
+				ModelState.AddModelError("ContactNumber", "This number is not valid. Use format \"09#########\".");
+
 			}
 			uint id = 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -266,17 +277,53 @@ namespace Green_Asia_UI.Controllers
 			ProjectModel model = new ProjectModel();
 			model.EngineerList = GetEngineers();
 			model.BuildingList = GetBuildingTypes();
+			model.Date = DateTime.Today;
+			model.BuildingID = "1";
 			return View(model);
 		}
 
 		[HttpPost]
 		[AllowAnonymous]
-		
+
 		public ActionResult adminAddProject(ProjectModel model)
 		{
+			model.BuildingID = "1";
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
 				return RedirectToAction("HomePage", "Home");
+			}
+			string pattern = @"^09\d{9}$";
+			if (!Regex.IsMatch(model.ClientContact, pattern))
+			{
+				Debug.WriteLine("2");
+				ModelState.AddModelError("ContactNumber", "This number is not valid. Use format \"09#########\".");
+
+			}
+			if (!model.EngineerID.All(Char.IsDigit))
+			{
+				Debug.WriteLine("3");
+				ModelState.AddModelError("EngineerID", "Pick an engineer");
+			}
+			Debug.WriteLine("A" + Convert.ToInt32(model.EngineerID));
+			if (Convert.ToInt32(model.EngineerID) < 0)
+			{
+				Debug.WriteLine("4");
+				ModelState.AddModelError("EngineerID", "Pick an engineer");
+			}
+			if (!ModelState.IsValid)
+			{
+				Debug.WriteLine("1");
+				foreach (var modelStateKey in ModelState.Keys)
+				{
+					var errors = ModelState[modelStateKey].Errors;
+					foreach (var error in errors)
+					{
+						var errorMessage = error.ErrorMessage;
+						// Do something with the error message
+						Debug.WriteLine($"Property: {modelStateKey}, Error: {errorMessage}");
+					}
+				}
+				return View(model);
 			}
 			uint id = 0;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -314,6 +361,62 @@ namespace Green_Asia_UI.Controllers
 			}
 			return RedirectToAction("adminProjectView", new { id = id });
 		}
+		/*
+		[HttpPost]
+		[AllowAnonymous]
+		
+		public ActionResult adminAddProject(ProjectModel model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+			string pattern = @"^09\d{9}$";
+			if (!Regex.IsMatch(model.ClientContact, pattern))
+			{
+				ModelState.AddModelError("ContactNumber", "This number is not valid. Use format \"09#########\".");
+
+			}
+			uint id = 0;
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("INSERT INTO projects " +
+					"(project_title,project_client_name,project_client_contact,project_address,project_city, " +
+					"project_region,project_country,project_latitude,project_longtitude,project_date, " +
+					"project_engineer_id,building_types_id,project_building_storeys,project_building_floorheight, " +
+					"project_building_length,project_building_width) VALUES " +
+					"(@project_title,@project_client_name,@project_client_contact,@project_address,@project_city,@project_region, " +
+					"@project_country,@project_latitude,@project_longtitude,@project_date,@project_engineer_id,@building_types_id, " +
+					"@project_building_storeys,@project_building_floorheight,@project_building_length,@project_building_width)" +
+					"; SELECT SCOPE_IDENTITY() FROM projects;"))
+				{
+					command.Parameters.AddWithValue("@project_title", model.Title);
+					command.Parameters.AddWithValue("@project_client_name", model.ClientName);
+					command.Parameters.AddWithValue("@project_client_contact", model.ClientContact);
+					command.Parameters.AddWithValue("@project_address", model.Address);
+					command.Parameters.AddWithValue("@project_city", model.City);
+					command.Parameters.AddWithValue("@project_region", model.Region);
+					command.Parameters.AddWithValue("@project_country", model.Country);
+					command.Parameters.AddWithValue("@project_latitude", model.Latitude);
+					command.Parameters.AddWithValue("@project_longtitude", model.Longtitude);
+					command.Parameters.AddWithValue("@project_date", model.Date.ToString("yyyy-MM-dd"));
+					command.Parameters.AddWithValue("@project_engineer_id", model.EngineerID.ToString());
+					command.Parameters.AddWithValue("@building_types_id", model.BuildingID.ToString());
+					command.Parameters.AddWithValue("@project_building_storeys", model.NumberOfStoreys);
+					command.Parameters.AddWithValue("@project_building_floorheight", model.FloorHeight);
+					command.Parameters.AddWithValue("@project_building_length", model.BuildingLength);
+					command.Parameters.AddWithValue("@project_building_width", model.BuildingWidth);
+					command.Connection = conn;
+					id = Convert.ToUInt32(command.ExecuteScalar());
+				}
+			}
+			return RedirectToAction("adminProjectView", new { id = id });
+		}*/
 
 		public IActionResult adminAddSupplier()
 		{
@@ -377,7 +480,7 @@ namespace Green_Asia_UI.Controllers
 			}
 			return View(model);
 		}
-
+		
 		public IActionResult adminDashboard()
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
@@ -389,7 +492,7 @@ namespace Green_Asia_UI.Controllers
 			{
 				conn.Open();
 				using (SqlCommand command = new SqlCommand(
-					"SELECT a.project_id, a.project_date, a.project_client_name, a.project_title, " +
+					"SELECT TOP 5 a.project_id, a.project_date, a.project_client_name, a.project_title, " +
 					"SUM(d.mce_subitem_quantity * e.supplier_material_price) AS price, f.description, " +
 					"CASE " +
 					"\tWHEN b.bom_id IS NULL THEN 0 " +
@@ -405,7 +508,7 @@ namespace Green_Asia_UI.Controllers
 					"INNER JOIN building_types f ON f.building_types_id = a.building_types_id " +
 					"INNER JOIN employee_info g ON a.project_engineer_id = g.employee_info_id " +
 					"GROUP BY a.project_id, a.project_date, a.project_client_name, a.project_title, f.description, a.project_city, b.bom_id, c.mce_id, " +
-					"g.employee_info_firstname, g.employee_info_middlename, g.employee_info_lastname;"))
+					"g.employee_info_firstname, g.employee_info_middlename, g.employee_info_lastname ORDER BY project_id DESC;"))
 				{
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
@@ -724,6 +827,126 @@ namespace Green_Asia_UI.Controllers
 			}
 
 			return RedirectToAction("adminContractorDash", "Admin");
+		}
+
+
+		public IActionResult adminEditContractor(int? id)
+		{
+
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			EmployeeInfoModel model = new EmployeeInfoModel();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM employee_info a " +
+					"INNER JOIN user_credentials b " +
+					"ON a.user_credentials_id = b.user_id " +
+					"WHERE employee_info_id = @id;"))
+				{
+					command.Parameters.AddWithValue("@id", Convert.ToInt32(id));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.ID = Convert.ToInt32(id);
+							model.user_id = Convert.ToInt32(sdr["user_credentials_id"]);
+							model.username = sdr["username"].ToString();
+							model.password = sdr["user_password"].ToString();
+							model.first_name = sdr["employee_info_firstname"].ToString();
+							model.middle_name = sdr["employee_info_middlename"].ToString();
+							model.last_name = sdr["employee_info_lastname"].ToString();
+							model.contactNum = sdr["employee_info_contactnum"].ToString();
+							model.email = sdr["employee_info_email"].ToString();
+							model.address = sdr["employee_info_address"].ToString();
+							model.status = Convert.ToBoolean(sdr["employee_info_status"]);
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult adminEditContractor(EmployeeInfoModel model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				Debug.WriteLine("invalid");
+				Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
+
+				foreach (var key in ModelState.Keys)
+				{
+					var errors = ModelState[key].Errors;
+					foreach (var error in errors)
+					{
+						// Log or display the error message
+						var errorMessage = error.ErrorMessage;
+						Debug.WriteLine(": " + errorMessage);
+						// You can also access error.Exception for exceptions if applicable
+					}
+				}
+				return View(model);
+			}
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				Debug.WriteLine("?");
+				using (SqlCommand command = new SqlCommand("UPDATE employee_info SET " +
+					"employee_info_firstname = @employee_info_firstname," +
+					"employee_info_middlename = @employee_info_middlename," +
+					"employee_info_lastname = @employee_info_lastname," +
+					"employee_info_contactnum = @employee_info_contactnum," +
+					"employee_info_email = @employee_info_email," +
+					"employee_info_address = @employee_info_address, " +
+					"employee_info_status = @employee_info_status " +
+					"WHERE employee_info_id = @employee_info_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@employee_info_id", model.ID);
+					command.Parameters.AddWithValue("@employee_info_firstname", model.first_name);
+					command.Parameters.AddWithValue("@employee_info_middlename", model.middle_name);
+					command.Parameters.AddWithValue("@employee_info_lastname", model.last_name);
+					command.Parameters.AddWithValue("@employee_info_contactnum", model.contactNum);
+					command.Parameters.AddWithValue("@employee_info_email", model.email);
+					command.Parameters.AddWithValue("@employee_info_address", model.address);
+					command.Parameters.AddWithValue("@employee_info_status", model.status);
+
+					command.ExecuteNonQuery();
+					Debug.WriteLine("?");
+				}
+				Debug.WriteLine("?");
+				using (SqlCommand command = new SqlCommand(
+					"UPDATE user_credentials SET " +
+					"user_password = @user_password, " +
+					"user_status = @user_status " +
+					"WHERE user_id = @user_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@user_id", model.user_id);
+					command.Parameters.AddWithValue("@user_password", model.password);
+					command.Parameters.AddWithValue("@user_status", model.status);
+
+					command.ExecuteNonQuery();
+					Debug.WriteLine("?");
+				}
+				conn.Close();
+			}
+			Debug.WriteLine("?");
+			return RedirectToAction("adminContractorDash", "Admin");
+
 		}
 
 		public List<RoleList> GetUserRolesFromDB()

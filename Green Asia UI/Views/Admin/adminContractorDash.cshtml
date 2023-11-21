@@ -165,7 +165,7 @@
 									<td>@Model[x].ContactNum</td>
 									<td>@Model[x].Email</td>
 									<!--<td>Model[x].Pending</td>-->
-									<td><button>Edit</button></td>
+									<td>@Html.ActionLink("Edit", "adminEditContractor", "Admin", new { id = Model[x].ID } )</td>
 								</tr>
 							}
                         </tbody>

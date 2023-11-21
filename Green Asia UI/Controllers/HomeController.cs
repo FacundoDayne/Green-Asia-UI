@@ -62,7 +62,7 @@ namespace Green_Asia_UI.Controllers
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
-				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username AND user_password = @password;"))
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username AND user_password = @password AND user_status = 1;"))
 				{
 					command.Connection = conn;
 					command.Parameters.AddWithValue("@username", model.Username);

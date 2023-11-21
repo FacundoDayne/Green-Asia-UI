@@ -58,24 +58,18 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddProject">
-                <div class="main-top">
-                    <h1>Add Projects</h1>
-                    <i class="fas fa-wrench"></i>
-                </div>
-            </a>
 
             <section class="attendance">
                 <div class="attendance-list">
 					<table style="width:100%">
 						<tr>
-							<td>
+							<td style="width:50%">
 								<div style="width:50%">
 									<h4>Project Title</h4>
 									<p style="text-indent:20pt;">@Model.Title</p>
 								</div>
 							</td>
-							<td>
+							<td style="width:50%">
 								<div style="width:50%">
 									<h4>Client Name</h4>
 									<p style="text-indent:20pt;">@Model.ClientName</p>
@@ -86,7 +80,7 @@
 							<td>
 								<div>
 									<h4>Project Date</h4>
-									<p style="text-indent:20pt;">@Model.Date</p>
+									<p style="text-indent:20pt;">@Model.Date.ToString("dd MMMM, yyyy")</p>
 								</div>
 							</td>
 							<td>

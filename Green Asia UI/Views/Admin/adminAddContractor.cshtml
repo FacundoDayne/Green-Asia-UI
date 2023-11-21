@@ -32,7 +32,7 @@
         </a>
         <div class="title">Add Contractor</div>
         <div class="content">
-			@using (Html.BeginForm("AddEmployee", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+			@using (Html.BeginForm("adminAddContractor", "Admin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
 			{
 				<div class="user-details">
 					@Html.AntiForgeryToken()

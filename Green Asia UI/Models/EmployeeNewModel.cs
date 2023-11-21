@@ -112,6 +112,7 @@ namespace Green_Asia_UI.Models
 		[Display(Name = "Address")]
 		public string address { get; set; }
 
+		[Display(Name = "Account Status")]
 		public bool status { get; set; }
 	}
 }

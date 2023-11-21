@@ -13,4 +13,10 @@
 		public bool Availability { get; set; }
 		public bool PreviousAvailability { get; set; }
 	}
+
+	public class SupplierInfo
+	{
+
+
+	}
 }

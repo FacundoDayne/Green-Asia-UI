@@ -114,6 +114,7 @@ namespace Green_Asia_UI.Models
 
 		[Required]
 		[Display(Name = "Project Date")]
+		[DataType(DataType.Date)]
 		public DateTime Date { get; set; }
 
 		[StringLength(100, MinimumLength = 1)]
@@ -148,7 +149,6 @@ namespace Green_Asia_UI.Models
 		[Display(Name = "Engineer")]
 		public string EngineerID { get; set; }
 
-		[Required]
 		[Display(Name = "Building Type")]
 		public string BuildingID { get; set; }
 

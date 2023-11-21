@@ -58,7 +58,7 @@
         </a>
         <div class="title">Add Project</div>
         <div class="content">
-			@using (Html.BeginForm("CreateProject", "Admin", FormMethod.Post, new { @id = "myForm" }))
+			@using (Html.BeginForm("adminAddProject", "Admin", FormMethod.Post, new { @id = "myForm" }))
 			{
 				@Html.AntiForgeryToken()
 
@@ -88,28 +88,35 @@
 					</div>-->
                     <div class="input-box">
                         <span class="details">Project Title</span>
-                        @Html.TextBoxFor(m=>m.Title)
+						@Html.TextBoxFor(m=>m.Title)
+						@Html.ValidationMessageFor(m => m.Title, "Enter project title", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
 						<span class="details">Project Client</span>
 						@Html.TextBoxFor(m=>m.ClientName)
+						@Html.ValidationMessageFor(m => m.Title, "Enter project client name", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
 						<span class="details">Client Contact</span>
 						@Html.TextBoxFor(m=>m.ClientContact)
+						@Html.ValidationMessageFor(m => m.Title, "Enter a mobile number", new { @class = "text-danger" })
 					</div>
                     <div class="input-box">
 						<span class="details">Contractor in charge</span>
 						@Html.DropDownListFor(m => m.EngineerID, new SelectList(Model.EngineerList, "ID", "Description"), "Select a category", new { @id = "ContractorList" })
+						@Html.ValidationMessageFor(m => m.Title, "Pick an engineer", new { @class = "text-danger" })
 						<p>Number of active projects <span id="numProject">0</span></p>
                     </div>
-                    <div class="input-box">
+                    <div hidden>
 						<span class="details">Residential Type</span>
 						@Html.DropDownListFor(m => m.BuildingID, new SelectList(Model.BuildingList, "ID", "Description"), "Select a category")
                     </div>
 					<div class="input-box">
 						<span class="details">Project Date</span>
-						@Html.EditorFor(m=>m.Date, new { htmlAttributes = new { @class = "datepicker" } })
+						@Html.EditorFor(m=>m.Date)
+						@Html.ValidationMessageFor(m => m.Date, "Pick a date", new { @class = "text-danger" })
+					</div>
+					<div class="input-box">
 					</div>
 					<div class="input-box" style="display: none">
 						<span class="details">Street</span>
@@ -159,6 +166,7 @@
 								border-bottom-width: 2px;
 								transition: all 0.3s ease;
 						">
+						@Html.ValidationMessageFor(m => m.Address, "Pick a valid address", new { @class = "text-danger" })
 					</div>
 				</div>
 				<div class="title">Project Details</div>
@@ -166,18 +174,22 @@
                     <div class="input-box">
 						<span class="details">Number of Storeys</span>
 						@Html.TextBoxFor(m => m.NumberOfStoreys, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
-						<span class="details">Floor height</span>
+						<span class="details">Floor height (metres)</span>
 						@Html.TextBoxFor(m => m.FloorHeight, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
                     <div class="input-box">
-						<span class="details">Building width</span>
+						<span class="details">Building width (metres)</span>
 						@Html.TextBoxFor(m => m.BuildingLength, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
-						<span class="details">Building length</span>
+						<span class="details">Building length (metres)</span>
 						@Html.TextBoxFor(m => m.BuildingWidth, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
                 </div>
                 <div class="button">
