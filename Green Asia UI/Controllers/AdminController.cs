@@ -940,7 +940,9 @@ namespace Green_Asia_UI.Controllers
 					command.Parameters.AddWithValue("@user_status", model.status);
 
 					command.ExecuteNonQuery();
-					Debug.WriteLine("?");
+					Debug.WriteLine("!?" + model.user_id);
+					Debug.WriteLine("!?" + model.password);
+					Debug.WriteLine("!?" + model.status);
 				}
 				conn.Close();
 			}
