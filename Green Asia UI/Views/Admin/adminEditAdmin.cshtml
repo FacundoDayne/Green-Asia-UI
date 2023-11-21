@@ -1,0 +1,130 @@
+﻿@{
+    Layout = null;
+}
+@model EmployeeInfoModel
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<style>
+		.field-validation-valid {
+			display: none;
+		}
+
+		.validation-summary-valid {
+			display: none;
+		}
+	</style>
+    <meta charset="UTF-8">
+    <title> Edit Admin </title>
+	<link rel="stylesheet" href="~/css/newAdminAddContractor.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+		<a class="dashboard-link" asp-area="" asp-controller="Admin" asp-action="adminProjectDash">
+            <div class="main-top">
+                <i class="fas fa-user"></i>
+            </div>
+        </a>
+        <div class="title">Edit Admin</div>
+        <div class="content">
+			@using (Html.BeginForm("adminEditContractor", "Admin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+			{
+				<div class="user-details">
+					@Html.AntiForgeryToken()
+
+					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					@Html.HiddenFor(m=>m.user_id)
+					<div class="input-box">
+						@Html.LabelFor(m => m.first_name, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.first_name, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.first_name, "Enter a name", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.middle_name, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.middle_name, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.middle_name, "Enter a name", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.last_name, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.last_name, new { @class = "text-input", @id = "lastname_input", @oninput="handleinput()" })
+							@Html.ValidationMessageFor(m => m.last_name, "Enter a name", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.username, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.username, new { @class = "text-input", @id = "username_input", @readonly = "true" })
+							@Html.ValidationMessageFor(m => m.username, "Enter a Username", new { @class = "" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.password, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.password, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.password, "Enter a Password", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.contactNum, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.contactNum, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.contactNum, "Enter a contact number", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.email, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.email, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.email, "Enter an email", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.address, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.TextBoxFor(m => m.address, new { @class = "text-input" })
+							@Html.ValidationMessageFor(m => m.address, "Enter an address", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="input-box">
+						@Html.LabelFor(m => m.status, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.CheckBoxFor(m => m.status)
+							@Html.ValidationMessageFor(m => m.status, "Enter an address", new { @class = "text-danger" })
+						</div>
+					</div>
+
+					<div class="button">
+							<input type="submit" value="Submit" />
+					</div>
+            
+				</div>
+			}
+		</div>
+		<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+		<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		
+
+	</body>
+</html>

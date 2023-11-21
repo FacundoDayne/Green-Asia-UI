@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title> Contractors </title>
+    <title> Admins </title>
     <link rel="icon" type="images/png" href="images/green asia logo.png" />
 
     <link rel="stylesheet" href="~/css/contractor.css" asp-append-version="true" />
@@ -36,13 +36,13 @@
                         <span class="nav-item">Projects</span>
                     </a>
                 </li>
-                <li class="active">
+                <li>
 					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminContractorDash">
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Contractors</span>
                     </a>
 				</li>
-				<li>
+				<li class="active">
 					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAdminDash">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Admins</span>
@@ -64,9 +64,9 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddContractor">
+            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddAdmin">
                 <div class="main-top">
-                    <h1>Add Contractors</h1>
+                    <h1>Add Admins</h1>
                     <i class="fas fa-user-plus"></i>
                 </div>
             </a>
@@ -171,7 +171,7 @@
 									<td>@Model[x].ContactNum</td>
 									<td>@Model[x].Email</td>
 									<!--<td>Model[x].Pending</td>-->
-									<td>@Html.ActionLink("Edit", "adminEditContractor", "Admin", new { id = Model[x].ID } )</td>
+									<td>@Html.ActionLink("Edit", "adminEditAdmin", "Admin", new { id = Model[x].ID } )</td>
 								</tr>
 							}
                         </tbody>

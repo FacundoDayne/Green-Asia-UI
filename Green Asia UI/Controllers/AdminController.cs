@@ -1011,5 +1011,306 @@ namespace Green_Asia_UI.Controllers
 			Debug.WriteLine(selectedValue + ": " + numOfProjects);
 			return Json(numOfProjects.ToString());
 		}
+
+
+
+		public ActionResult adminAddAdmin()
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			AddEmployeeModel xmodel = new AddEmployeeModel();
+			xmodel.Role = "1";
+
+			xmodel.roles = new List<RoleList>();
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_roles;"))
+				{
+					command.Connection = conn;
+					conn.Open();
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							//xmodel.measurements.Add(new SelectListItem
+							xmodel.roles.Add(new RoleList
+							{
+								id = sdr["role_id"].ToString(),
+								name = sdr["role_name"].ToString()
+							}
+							);
+						}
+					}
+					conn.Close();
+				}
+			}
+			return View(xmodel);
+		}
+
+		[HttpPost]
+		[AllowAnonymous]
+		public ActionResult adminAddAdmin(AddEmployeeModel model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				model.roles = GetUserRolesFromDB();
+				return View(model);
+			}
+			bool username_exists = false;
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username"))
+				{
+					conn.Open();
+					command.Connection = conn;
+					command.Parameters.AddWithValue("@username", model.Username);
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						if (sdr.Read())
+						{
+							username_exists = true;
+						}
+					}
+					conn.Close();
+				}
+			}
+
+			if (username_exists)
+			{
+				model.roles = GetUserRolesFromDB();
+				return View(model);
+			}
+
+			bool error = false;
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlTransaction transaction = conn.BeginTransaction())
+				{
+					try
+					{
+						int info_id = 0;
+
+						using (SqlCommand command = new SqlCommand("INSERT INTO user_credentials (username,user_password,user_role,user_status) " +
+							" VALUES (@username, @password, @user_role, @user_status); SELECT SCOPE_IDENTITY() FROM user_credentials;"))
+						{
+							command.Connection = conn;
+							command.Transaction = transaction;
+
+							command.Parameters.AddWithValue("@username", model.Username);
+							command.Parameters.AddWithValue("@password", model.Password);
+							command.Parameters.AddWithValue("@user_role", Convert.ToInt32("1"));
+							command.Parameters.AddWithValue("@user_status", 1);
+
+							info_id = Convert.ToInt32(command.ExecuteScalar());
+						}
+
+						using (SqlCommand command = new SqlCommand("INSERT INTO employee_info (user_credentials_id, employee_info_firstname, employee_info_middlename, employee_info_lastname, employee_info_contactnum, employee_info_email, employee_info_address, employee_info_city, employee_info_status) " +
+							" VALUES (@user_credentials_id, @FirstName, @MiddleName, @LastName, @Contact, @Email, @Address, @City, @Status); "))
+						{
+							command.Connection = conn;
+							command.Transaction = transaction;
+
+							command.Parameters.AddWithValue("@user_credentials_id", info_id);
+							command.Parameters.AddWithValue("@FirstName", model.FirstName);
+							command.Parameters.AddWithValue("@MiddleName", model.MiddleName);
+							command.Parameters.AddWithValue("@LastName", model.LastName);
+							command.Parameters.AddWithValue("@Contact", model.Contact);
+							command.Parameters.AddWithValue("@Email", model.Email);
+							command.Parameters.AddWithValue("@Address", model.Address);
+							command.Parameters.AddWithValue("@City", model.City);
+							command.Parameters.AddWithValue("@Status", 1);
+
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (SqlException e)
+					{
+						error = true;
+						Debug.WriteLine(e.Message);
+						transaction.Rollback();
+					}
+				}
+				conn.Close();
+			}
+			if (error)
+			{
+				model.roles = GetUserRolesFromDB();
+				return View(model);
+			}
+
+			return RedirectToAction("adminAdminDash", "Admin");
+		}
+
+
+		public IActionResult adminEditAdmin(int? id)
+		{
+
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			EmployeeInfoModel model = new EmployeeInfoModel();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM employee_info a " +
+					"INNER JOIN user_credentials b " +
+					"ON a.user_credentials_id = b.user_id " +
+					"WHERE employee_info_id = @id;"))
+				{
+					command.Parameters.AddWithValue("@id", Convert.ToInt32(id));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.ID = Convert.ToInt32(id);
+							model.user_id = Convert.ToInt32(sdr["user_credentials_id"]);
+							model.username = sdr["username"].ToString();
+							model.password = sdr["user_password"].ToString();
+							model.first_name = sdr["employee_info_firstname"].ToString();
+							model.middle_name = sdr["employee_info_middlename"].ToString();
+							model.last_name = sdr["employee_info_lastname"].ToString();
+							model.contactNum = sdr["employee_info_contactnum"].ToString();
+							model.email = sdr["employee_info_email"].ToString();
+							model.address = sdr["employee_info_address"].ToString();
+							model.status = Convert.ToBoolean(sdr["employee_info_status"]);
+						}
+					}
+				}
+			}
+			return View(model);
+		}
+
+
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult adminEditAdmin(EmployeeInfoModel model)
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			if (!ModelState.IsValid)
+			{
+				Debug.WriteLine("invalid");
+				Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
+
+				foreach (var key in ModelState.Keys)
+				{
+					var errors = ModelState[key].Errors;
+					foreach (var error in errors)
+					{
+						// Log or display the error message
+						var errorMessage = error.ErrorMessage;
+						Debug.WriteLine(": " + errorMessage);
+						// You can also access error.Exception for exceptions if applicable
+					}
+				}
+				return View(model);
+			}
+
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				Debug.WriteLine("?");
+				using (SqlCommand command = new SqlCommand("UPDATE employee_info SET " +
+					"employee_info_firstname = @employee_info_firstname," +
+					"employee_info_middlename = @employee_info_middlename," +
+					"employee_info_lastname = @employee_info_lastname," +
+					"employee_info_contactnum = @employee_info_contactnum," +
+					"employee_info_email = @employee_info_email," +
+					"employee_info_address = @employee_info_address, " +
+					"employee_info_status = @employee_info_status " +
+					"WHERE employee_info_id = @employee_info_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@employee_info_id", model.ID);
+					command.Parameters.AddWithValue("@employee_info_firstname", model.first_name);
+					command.Parameters.AddWithValue("@employee_info_middlename", model.middle_name);
+					command.Parameters.AddWithValue("@employee_info_lastname", model.last_name);
+					command.Parameters.AddWithValue("@employee_info_contactnum", model.contactNum);
+					command.Parameters.AddWithValue("@employee_info_email", model.email);
+					command.Parameters.AddWithValue("@employee_info_address", model.address);
+					command.Parameters.AddWithValue("@employee_info_status", model.status);
+
+					command.ExecuteNonQuery();
+					Debug.WriteLine("?");
+				}
+				Debug.WriteLine("?");
+				using (SqlCommand command = new SqlCommand(
+					"UPDATE user_credentials SET " +
+					"user_password = @user_password, " +
+					"user_status = @user_status " +
+					"WHERE user_id = @user_id;"))
+				{
+					command.Connection = conn;
+
+					command.Parameters.AddWithValue("@user_id", model.user_id);
+					command.Parameters.AddWithValue("@user_password", model.password);
+					command.Parameters.AddWithValue("@user_status", model.status);
+
+					command.ExecuteNonQuery();
+					Debug.WriteLine("!?" + model.user_id);
+					Debug.WriteLine("!?" + model.password);
+					Debug.WriteLine("!?" + model.status);
+				}
+				conn.Close();
+			}
+			Debug.WriteLine("?");
+			return RedirectToAction("adminContractorDash", "Admin");
+
+		}
+
+		public IActionResult adminAdminDash()
+		{
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			List<ContractorModel> model = new List<ContractorModel>();
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				using (SqlCommand command = new SqlCommand(
+					"select *," +
+					"CONCAT(a.employee_info_firstname,' ',LEFT(a.employee_info_middlename,1),' ',a.employee_info_lastname) AS contractor_name " +
+					" from employee_info a " +
+					"INNER JOIN user_credentials e ON e.user_id = a.user_credentials_id " +
+					"WHERE e.user_role = 1 ;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.Add(new ContractorModel()
+							{
+								ID = Convert.ToInt32(sdr["employee_info_id"]),
+								ContractorName = sdr["contractor_name"].ToString(),
+								ContactNum = sdr["employee_info_contactnum"].ToString(),
+								Email = sdr["employee_info_email"].ToString(),
+								Address = sdr["employee_info_city"].ToString(),
+								Pending = 0
+							});
+
+						}
+					}
+				}
+			}
+			return View(model);
+		}
 	}
 }
