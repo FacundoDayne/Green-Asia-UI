@@ -230,5 +230,40 @@ namespace Green_Asia_UI.Controllers
 
 			return View(model);
 		}
+
+
+		[HttpPost]
+		[AllowAnonymous]
+		public IActionResult supplierInfoEdit(SupplierInfoModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				conn.Open();
+				
+				using (SqlCommand command = new SqlCommand(";"))
+				{
+					command.Connection = conn;
+					command.Parameters.AddWithValue("@supplier_material_id", model.ID);
+					command.Parameters.AddWithValue("@supplier_material_id", model.CredentialsID);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Description);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Password);
+					command.Parameters.AddWithValue("@supplier_material_id", model.ContactName);
+					command.Parameters.AddWithValue("@supplier_material_id", model.ContactNumber);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Address);
+					command.Parameters.AddWithValue("@supplier_material_id", model.City);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Region);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Country);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Latitude);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Longtitude);
+					command.Parameters.AddWithValue("@supplier_material_id", model.Longtitude);
+					command.ExecuteNonQuery();
+				}
+			}
+			return RedirectToAction("supplierInfo");
+		}
 	}
 }

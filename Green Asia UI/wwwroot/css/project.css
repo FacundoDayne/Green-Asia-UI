@@ -93,6 +93,8 @@ a:hover {
 
 .container {
     display: flex;
+    width: 100%;
+    
 }
 
     .container li:hover,
