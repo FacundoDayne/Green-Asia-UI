@@ -61,6 +61,7 @@
 					@Html.AntiForgeryToken()
 
 					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					@Html.HiddenFor(m=>m.Status)
 
 					<div class="input-box">
 						@Html.LabelFor(m => m.Username, new { @class = "details" })
@@ -103,8 +104,11 @@
 					</div>
 
 					<div class="input-box">
-						<label class="details" for="ContactNumber">Account Status</label>
-						<input checked="checked" data-val="true" data-val-required="The Account Status field is required." id="status" name="status" type="checkbox" value="true">
+						@Html.LabelFor(m => m.Status, new { @class = "details" })
+						<div class="col-md-10">
+							@Html.CheckBoxFor(m => m.Status)
+							@Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+						</div>
 					</div>
 
 					<div class="input-box" style="display: none">

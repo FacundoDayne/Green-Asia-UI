@@ -61,6 +61,10 @@
 					@Html.AntiForgeryToken()
 
 					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					@Html.HiddenFor(m=>m.Status)
+					@Html.HiddenFor(m=>m.ID)
+					@Html.HiddenFor(m=>m.CredentialsID)
+					@Html.HiddenFor(m=>m.EmployeeID)
 
 					<div class="input-box">
 						@Html.LabelFor(m => m.Username, new { @class = "details" })

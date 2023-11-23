@@ -110,7 +110,7 @@
 						@Html.LabelFor(m => m.status, new { @class = "details" })
 						<div class="col-md-10">
 							@Html.CheckBoxFor(m => m.status)
-							@Html.ValidationMessageFor(m => m.status, "Enter an address", new { @class = "text-danger" })
+							@Html.ValidationMessageFor(m => m.status, "", new { @class = "text-danger" })
 						</div>
 					</div>
 

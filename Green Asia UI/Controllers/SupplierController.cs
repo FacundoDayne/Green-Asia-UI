@@ -206,6 +206,7 @@ namespace Green_Asia_UI.Controllers
 							model.City = sdr["supplier_city"].ToString();
 							model.Region = sdr["supplier_admin_district"].ToString();
 							model.Country = sdr["supplier_country"].ToString();
+							model.Status = Convert.ToBoolean(sdr["user_status"]);
 						}
 					}
 				}
@@ -244,22 +245,36 @@ namespace Green_Asia_UI.Controllers
 			{
 				conn.Open();
 				
-				using (SqlCommand command = new SqlCommand(";"))
+				using (SqlCommand command = new SqlCommand("UPDATE supplier_info SET " +
+					"supplier_desc = @suppleir_desc, " +
+					"supplier_address = @supplier_address, " +
+					"supplier_city = @supplier_city, " +
+					"supplier_admin_district = @supplier_admin_district, " +
+					"supplier_country = @supplier_country, " +
+					"supplier_coordinates_latitude = @supplier_coordinates_latitude, " +
+					"supplier_coordinates_longtitude = @supplier_coordinates_longtitude, " +
+					"supplier_contact_name = @supplier_contact_name, " +
+					"supplier_contact_number = @supplier_contact_number " +
+					"WHERE supplier_id = @supplier_id;" +
+					"UPDATE user_credentials SET " +
+					"user_password = @user_password, " +
+					"user_status = @user_status " +
+					"WHERE user_id = @user_id;"))
 				{
 					command.Connection = conn;
-					command.Parameters.AddWithValue("@supplier_material_id", model.ID);
-					command.Parameters.AddWithValue("@supplier_material_id", model.CredentialsID);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Description);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Password);
-					command.Parameters.AddWithValue("@supplier_material_id", model.ContactName);
-					command.Parameters.AddWithValue("@supplier_material_id", model.ContactNumber);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Address);
-					command.Parameters.AddWithValue("@supplier_material_id", model.City);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Region);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Country);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Latitude);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Longtitude);
-					command.Parameters.AddWithValue("@supplier_material_id", model.Longtitude);
+					command.Parameters.AddWithValue("@supplier_id", model.ID);
+					command.Parameters.AddWithValue("@user_id", model.CredentialsID);
+					command.Parameters.AddWithValue("@suppleir_desc", model.Description);
+					command.Parameters.AddWithValue("@user_password", model.Password);
+					command.Parameters.AddWithValue("@supplier_contact_name", model.ContactName);
+					command.Parameters.AddWithValue("@supplier_contact_number", model.ContactNumber);
+					command.Parameters.AddWithValue("@supplier_address", model.Address);
+					command.Parameters.AddWithValue("@supplier_city", model.City);
+					command.Parameters.AddWithValue("@supplier_admin_district", model.Region);
+					command.Parameters.AddWithValue("@supplier_country", model.Country);
+					command.Parameters.AddWithValue("@supplier_coordinates_latitude", model.Latitude);
+					command.Parameters.AddWithValue("@supplier_coordinates_longtitude", model.Longtitude);
+					command.Parameters.AddWithValue("@user_status", model.Status);
 					command.ExecuteNonQuery();
 				}
 			}

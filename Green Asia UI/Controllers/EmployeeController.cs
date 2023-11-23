@@ -2484,6 +2484,7 @@ namespace Green_Asia_UI.Controllers
 							model.ID = Convert.ToInt32(sdr["supplier_id"]);
 							model.CredentialsID = Convert.ToInt32(sdr["user_credentials_id"]);
 							model.EmployeeID = Convert.ToInt32(sdr["employee_id"]);
+							model.EmployeeID = Convert.ToInt32(sdr["employee_id"]);
 							model.Description = sdr["supplier_desc"].ToString();
 							model.Address = sdr["supplier_address"].ToString();
 							model.City = sdr["supplier_city"].ToString();
@@ -2495,6 +2496,7 @@ namespace Green_Asia_UI.Controllers
 							model.ContactNumber = sdr["supplier_contact_number"].ToString();
 							model.Username = sdr["username"].ToString();
 							model.Password = sdr["user_password"].ToString();
+							model.Status = Convert.ToBoolean(sdr["user_status"]);
 						}
 					};
 				}
@@ -3080,6 +3082,7 @@ namespace Green_Asia_UI.Controllers
 							model.City = sdr["supplier_city"].ToString();
 							model.Region = sdr["supplier_admin_district"].ToString();
 							model.Country = sdr["supplier_country"].ToString();
+							model.Status = Convert.ToBoolean(sdr["user_status"]);
 						}
 					}
 				}

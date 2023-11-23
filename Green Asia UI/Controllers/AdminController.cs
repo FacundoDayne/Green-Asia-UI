@@ -1270,7 +1270,7 @@ namespace Green_Asia_UI.Controllers
 				conn.Close();
 			}
 			Debug.WriteLine("?");
-			return RedirectToAction("adminContractorDash", "Admin");
+			return RedirectToAction("adminAdminDash", "Admin");
 
 		}
 
