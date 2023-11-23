@@ -5,6 +5,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<style>
+		.pagination {
+			display: flex;
+			list-style: none;
+			padding: 0;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.pagination-item {
+			margin: 0 5px;
+			padding: 5px 10px;
+			border: 1px solid #ccc;
+			cursor: pointer;
+		}
+
+			.pagination-item.active {
+				background-color: #007bff;
+				color: #fff;
+			}
+
+			.pagination-item.disabled {
+				pointer-events: none;
+				color: #ccc;
+			}
+	</style>
     <meta charset="UTF-8" />
     <title> Admins </title>
     <link rel="icon" type="images/png" href="images/green asia logo.png" />
@@ -19,43 +45,43 @@
             <ul>
                 <li>
 
-					<a class="logo" asp-area="" asp-controller="Admin" asp-action="adminDashboard">
+					<a class="logo links" asp-area="" asp-controller="Admin" asp-action="adminDashboard">
                         <img src="../../Images/greenAsiaLogo.png" alt="logo">
                         <span class="nav-item">GACTC</span>
                     </a>
                 </li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminDashboard">
+					<a class="nav-link links" asp-area="" asp-controller="Admin" asp-action="adminDashboard">
                         <i class="fas fa-menorah"></i>
                         <span class="nav-item">Dashboard</span>
                     </a>
                 </li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminProjectDash">
+					<a class="nav-link links" asp-area="" asp-controller="Admin" asp-action="adminProjectDash">
                         <i class="fas fa-chart-bar"></i>
                         <span class="nav-item">Projects</span>
                     </a>
                 </li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminContractorDash">
+					<a class="nav-link links" asp-area="" asp-controller="Admin" asp-action="adminContractorDash">
                         <i class="fas fa-user"></i>
                         <span class="nav-item">Contractors</span>
                     </a>
 				</li>
 				<li class="active">
-					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAdminDash">
+					<a class="nav-link links" asp-area="" asp-controller="Admin" asp-action="adminAdminDash">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Admins</span>
 					</a>
 				</li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminSupplierDash">
+					<a class="nav-link links" asp-area="" asp-controller="Admin" asp-action="adminSupplierDash">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Suppliers</span>
                     </a>
                 </li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+					<a class="nav-link links" asp-area="" asp-controller="Home" asp-action="HomePage">
                         <i class="fas fa-sign-out-alt"></i>
                         <span class="nav-item">Log out</span>
                     </a>
@@ -64,92 +90,17 @@
         </nav>
 
         <section class="main">
-            <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="adminAddAdmin">
+			<a class="nav-link links" asp-area="" asp-controller="Admin" asp-action="adminAddAdmin">
                 <div class="main-top">
                     <h1>Add Admins</h1>
                     <i class="fas fa-user-plus"></i>
                 </div>
             </a>
-			<!--
-            <div class="users">
-                <div class="card">
-                    <img src="./images/profile.jpg" alt="">
-                    <h4>Sam David</h4>
-                    <p>Contractor</p>
-                    <div class="per">
-                        <table>
-                            <tr>
-                                <td><span>July</span></td>
-                                <td><span>2017</span></td>
-                            </tr>
-                            <tr>
-                                <td>Month</td>
-                                <td>Year</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <button>Profile</button>
-                </div>
-                <div class="card">
-                    <img src="./images/profile.jpg">
-                    <h4>Baron Gomez</h4>
-                    <p>Contractor</p>
-                    <div class="per">
-                        <table>
-                            <tr>
-                                <td><span>April</span></td>
-                                <td><span>2003</span></td>
-                            </tr>
-                            <tr>
-                                <td>Month</td>
-                                <td>Year</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <button>Profile</button>
-                </div>
-                <div class="card">
-                    <img src="./images/profile.jpg">
-                    <h4>Juan Dela Cruz</h4>
-                    <p>Contractor</p>
-                    <div class="per">
-                        <table>
-                            <tr>
-                                <td><span>February</span></td>
-                                <td><span>2002</span></td>
-                            </tr>
-                            <tr>
-                                <td>Month</td>
-                                <td>Year</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <button>Profile</button>
-                </div>
-                <div class="card">
-                    <img src="./images/profile.jpg">
-                    <h4>Michael Solis</h4>
-                    <p>Contractor</p>
-                    <div class="per">
-                        <table>
-                            <tr>
-                                <td><span>September</span></td>
-                                <td><span>1992</span></td>
-                            </tr>
-                            <tr>
-                                <td>Month</td>
-                                <td>Year</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <button>Profile</button>
-                </div>
-            </div>
-			-->
             <section class="attendance">
                 <div class="attendance-list">
-                    <h1>Contractor List</h1>
-                    <table class="table">
+					<h1>Admin List</h1>
+					<input type="text" id="searchbox" placeholder="Search Admin Name" onkeydown="handleEnterKey(event)" /> <button onclick="performFunction()">Search</button>
+					<table class="table" id="dataTable">
                         <thead>
 							<tr>
                                 <th>ID</th>
@@ -179,6 +130,127 @@
                 </div>
             </section>
         </section>
-    </div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script>
+		function updatePagination(currentPage) {
+			const pagination = document.getElementById('pagination');
+			pagination.innerHTML = '';
+
+			const totalPages = @ViewBag.Pages; // Replace with the total number of pages
+			const visiblePages = 5; // Number of visible pages
+			const halfVisible = Math.floor(visiblePages / 2);
+			const startPage = Math.max(1, currentPage - halfVisible);
+			const endPage = Math.min(totalPages, startPage + visiblePages - 1);
+
+			const ellipsisStart = startPage > 1;
+			const ellipsisEnd = endPage < totalPages;
+
+			if (ellipsisStart) {
+				addPaginationItem('<<', currentPage - 1, 'pagination-item', currentPage === 1);
+			}
+
+			if (ellipsisStart && startPage > 2) {
+				addPaginationItem('...', Math.max(1, currentPage - halfVisible * 2), 'pagination-item disabled');
+			}
+
+			for (let i = startPage; i <= endPage; i++) {
+				const isActive = i === currentPage;
+				addPaginationItem(i, i, `pagination-item${isActive ? ' active' : ''}`);
+			}
+
+			if (ellipsisEnd && totalPages - endPage > 1) {
+				addPaginationItem('...', Math.min(totalPages, endPage + halfVisible * 2), 'pagination-item disabled');
+			}
+
+			if (ellipsisEnd) {
+				addPaginationItem('>>', currentPage + 1, 'pagination-item', currentPage === totalPages);
+			}
+			loadData(currentPage)
+		}
+
+		function addPaginationItem(text, page, className, disabled = false) {
+			const pagination = document.getElementById('pagination');
+			const li = document.createElement('li');
+			li.className = className;
+			li.innerHTML = `<a href="#" onclick="updatePagination(${page})">${text}</a>`;
+			if (disabled) {
+				li.classList.add('disabled');
+			}
+			pagination.appendChild(li);
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			updatePagination(@ViewBag.Page); // Initialize with the current page
+		});
+
+		function updateTable(data) {
+			var tableBody = $('#dataTable tbody');
+			tableBody.empty(); // Clear existing rows
+
+			// Iterate through the data and append rows to the table
+			$.each(data, function (index, item) {
+				var status = "";
+				var stat = parseInt(item.status);
+				if (stat == 0) {
+					status = "BOM Pending";
+				}
+				else if (stat == 1) {
+					status = "MCE Pending"
+				}
+				else if (stat == 2) {
+					status = "Processed";
+				}
+				var row = '<tr>' +
+					'<td>' + item.id + '</td>' +
+					'<td>' + item.contractorName + '</td>' +
+					'<td>' + item.address + '</td>' +
+					'<td>' + item.contactNum + '</td>' +
+					'<td>' + item.email + '</td>' +
+					'<td><a href="/Admin/adminEditAdmin/' + item.id + '">View</a></td>' +
+					// Add other cells as needed
+					'</tr>';
+				tableBody.append(row);
+			});
+		}
+
+		function loadData(page) {
+			$.ajax({
+				url: '/Admin/getAdminPageData',
+				type: 'GET',
+				data: { page: page },
+				success: function (data) {
+					updateTable(data);
+				}
+			});
+		}
+
+		function handleEnterKey(event) {
+			// Check if the pressed key is Enter (key code 13)
+			if (event.keyCode === 13) {
+				// Call the function you want to execute
+				performFunction();
+			}
+		}
+
+		function performFunction() {
+			// Replace this with the function you want to execute
+			var textbox = document.getElementById('searchbox');
+			if (textbox.value != "") {
+				searchData(textbox.value)
+			}
+		}
+
+		function searchData(searchquery) {
+			$.ajax({
+				url: '/Admin/searchAdmin',
+				type: 'GET',
+				data: { search: searchquery },
+				success: function (data) {
+					updateTable(data);
+				}
+			});
+		}
+	</script>
 </body>
 </html>

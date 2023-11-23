@@ -197,8 +197,8 @@
 								@Html.HiddenFor(m=>m.suppliers[x])
 								@Html.HiddenFor(m=>m.suppliers[x].ID)
 								@Html.HiddenFor(m=>m.suppliers[x].Description)
-								@Html.HiddenFor(m=>m.suppliers[x].ContactName)
-								@Html.HiddenFor(m=>m.suppliers[x].ContactNumber)
+								@Html.HiddenFor(m=>m.suppliers[x].ContactName, new { @Value = "0" })
+								@Html.HiddenFor(m=>m.suppliers[x].ContactNumber, new { @Value = "0" })
 							}
 
 							@Html.DisplayFor(m=>m.lists)
@@ -208,7 +208,8 @@
 								@Html.HiddenFor(m=>m.lists[i])
 								@Html.HiddenFor(m=>m.lists[i].Description)
 								@Html.HiddenFor(m=>m.lists[i].ListNumber)
-								@Html.HiddenFor(m=>m.lists[i].ListLetter)
+								@Html.HiddenFor(m=>m.lists[i].ListLetter, new { @Value = "A" })
+								@Html.HiddenFor(m=>m.lists[i].ListID)
 								@Html.DisplayFor(m=>m.lists[i].Items)
 
 								@for (int x = 0; x < Model.lists[i].Items.Count; x++)
@@ -217,6 +218,7 @@
 									@Html.HiddenFor(m=>m.lists[i].Items[x])
 									@Html.HiddenFor(m=>m.lists[i].Items[x].ItemNumber)
 									@Html.HiddenFor(m=>m.lists[i].Items[x].Description)
+									@Html.HiddenFor(m=>m.lists[i].Items[x].ItemID)
 									@Html.DisplayFor(m=>m.lists[i].Items[x].Subitems)
 
 									@for (int y = 0; y < Model.lists[i].Items[x].Subitems.Count; y++)
@@ -230,12 +232,13 @@
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialQuantityProvisions)
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialUoM)
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialCost)
-										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MarkedUpCost)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MarkedUpCost, new { @Value = "0" })
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].MaterialAmount, new { @id="result-amount-" + numOfItems2 })
-										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].LabourCost, new { @Value = "0" })
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].TotalUnitRate)
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].SupplierMaterialID, new { @id="suppliermaterialid-" + numOfItems2 })
 										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].Supplier)
+										@Html.HiddenFor(m=>m.lists[i].Items[x].Subitems[y].SupplierID)
 										numOfItems2++;
 									}
 								}
@@ -247,7 +250,7 @@
 								  
 							@Html.HiddenFor(m=>m.Wastage)
 							@Html.HiddenFor(m=>m.Provisions)
-							@Html.HiddenFor(m=>m.Markup)
+							@Html.HiddenFor(m=>m.Markup, new { @Value = "0" })
 							@Html.HiddenFor(m=>m.BOMCreationDate)
 							@Html.HiddenFor(m=>m.totalCost)
 								  

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.Features;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,8 +14,19 @@ builder.Services.AddSession(options =>
 	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
 });
+builder.Services.Configure<FormOptions>(x =>
+{
+	x.BufferBody = true;
+	x.ValueLengthLimit = 1073741822; // 32 MiB
+	x.ValueCountLimit = 64048;// 1024
+	x.MultipartHeadersCountLimit = 256; // 16
+	x.MultipartHeadersLengthLimit = 1024768; // 16384
+	x.MultipartBoundaryLengthLimit = 1024; // 128
+	x.MultipartBodyLengthLimit = 134217728; // 128 MiB
+});
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

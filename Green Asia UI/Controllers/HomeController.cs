@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using System.Drawing.Text;
 using Microsoft.AspNetCore.RateLimiting;
 
+using System.Security.Cryptography;
 //using Sql.Data.SqlClient;
 //using SqlX.XDevAPI;
 
@@ -62,7 +63,7 @@ namespace Green_Asia_UI.Controllers
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
-				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username AND user_password = @password AND user_status = 1;"))
+				using (SqlCommand command = new SqlCommand("SELECT * FROM user_credentials WHERE username = @username AND user_status = 1;"))
 				{
 					command.Connection = conn;
 					command.Parameters.AddWithValue("@username", model.Username);
@@ -76,10 +77,18 @@ namespace Green_Asia_UI.Controllers
 						}
 						else
 						{
-							role = Convert.ToInt32(sdr["user_role"]);
-							id = Convert.ToInt32(sdr["user_id"]);
-							Debug.WriteLine("id");
-							HttpContext.Session.SetInt32("UserID", Convert.ToInt32(sdr["user_id"])); //.Session["UserID"] = Convert.ToInt32(sdr["user_id"]);
+							if (PasswordEncryptor.VerifyPassword(model.Password, sdr["user_password"].ToString()))
+							{
+								role = Convert.ToInt32(sdr["user_role"]);
+								id = Convert.ToInt32(sdr["user_id"]);
+								Debug.WriteLine("id");
+								HttpContext.Session.SetInt32("UserID", Convert.ToInt32(sdr["user_id"])); //.Session["UserID"] = Convert.ToInt32(sdr["user_id"]);
+							}
+							else
+							{
+								ModelState.AddModelError("Password", "Password is invalid");
+								return View(model);
+							}
 						}
 					}
 				}
@@ -2101,5 +2110,59 @@ namespace Green_Asia_UI.Controllers
 				throw new Exception($"Error: {response.StatusCode}");
 			}
 		}
+	}
+}
+public class PasswordEncryptor
+{
+	public static string EncryptPassword(string password)
+	{
+		// Generate a random salt
+		byte[] salt;
+		new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+
+		// Derive a 256-bit subkey (use more iterations for increased security)
+		var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256);
+		byte[] hash = pbkdf2.GetBytes(32); // 256 bits
+
+		// Combine salt and hash
+		byte[] hashBytes = new byte[48]; // 16 (salt) + 32 (hash)
+		Array.Copy(salt, 0, hashBytes, 0, 16);
+		Array.Copy(hash, 0, hashBytes, 16, 32);
+
+		// Convert to Base64 for storage
+		string encryptedPassword = Convert.ToBase64String(hashBytes);
+
+		// Truncate to 64 characters if necessary
+		if (encryptedPassword.Length > 64)
+		{
+			encryptedPassword = encryptedPassword.Substring(0, 64);
+		}
+
+		return encryptedPassword;
+	}
+
+	public static bool VerifyPassword(string enteredPassword, string storedEncryptedPassword)
+	{
+		// Convert the stored encrypted password from Base64
+		byte[] hashBytes = Convert.FromBase64String(storedEncryptedPassword);
+
+		// Extract the salt
+		byte[] salt = new byte[16];
+		Array.Copy(hashBytes, 0, salt, 0, 16);
+
+		// Derive the key using the same salt and iteration count
+		var pbkdf2 = new Rfc2898DeriveBytes(enteredPassword, salt, 10000, HashAlgorithmName.SHA256);
+		byte[] enteredHash = pbkdf2.GetBytes(32);
+
+		// Compare the derived key with the stored hash
+		for (int i = 0; i < 32; i++)
+		{
+			if (enteredHash[i] != hashBytes[i + 16])
+			{
+				return false; // Passwords don't match
+			}
+		}
+
+		return true; // Passwords match
 	}
 }

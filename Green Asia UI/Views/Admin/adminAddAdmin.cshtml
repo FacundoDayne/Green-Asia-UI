@@ -32,13 +32,17 @@
         </a>
         <div class="title">Add Admin</div>
         <div class="content">
-			@using (Html.BeginForm("adminAddContractor", "Admin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+			@using (Html.BeginForm("adminAddAdmin", "Admin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
 			{
 				<div class="user-details">
 					@Html.AntiForgeryToken()
 
-					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					<div class="input-box">
+						@Html.ValidationSummary()
+					</div>
 
+					<div class="input-box">
+					</div>
 					<div hidden>
 						<div class="input-box">
 							@Html.LabelFor(m => m.Role, new { @class = "details" })
@@ -98,7 +102,7 @@
 						@Html.LabelFor(m => m.Contact, new { @class = "details" })
 						<div class="col-md-10">
 							@Html.TextBoxFor(m => m.Contact, new { @class = "text-input" })
-							@Html.ValidationMessageFor(m => m.Contact, "Enter a contact number", new { @class = "text-danger" })
+							@Html.ValidationMessageFor(m => m.Contact)
 						</div>
 					</div>
 
@@ -106,7 +110,7 @@
 						@Html.LabelFor(m => m.Email, new { @class = "details" })
 						<div class="col-md-10">
 							@Html.TextBoxFor(m => m.Email, new { @class = "text-input" })
-							@Html.ValidationMessageFor(m => m.Email, "Enter an email", new { @class = "text-danger" })
+							@Html.ValidationMessageFor(m => m.Email )
 						</div>
 					</div>
 
