@@ -239,12 +239,10 @@
 						<table class="table">
 							<thead>
 								<tr>
-									<th></th>
 									<th colspan="4">Proposed Materials</th>
 									<th colspan="4">Cost Estimate</th>
 								</tr>
 								<tr>
-									<th>Item No.</th>
 									<th>Material Name</th>
 									<th>Quantity</th>
 									<th>UoM</th>
@@ -259,7 +257,6 @@
 								@for (int x = 0; x < Model.materials.Count; x++)
 								{
 									<tr>
-										<td>@Model.materials[x].SubitemNumber</td>
 										<td>@Model.materials[x].MaterialDesc</td>
 										<td>@Model.materials[x].MaterialQuantityProvisions</td>
 										<td>@Model.materials[x].MaterialUoM</td>
@@ -271,23 +268,23 @@
 									</tr>
 								}
 								<tr style="background: #BBBBBB;font-weight:bold">
-									<td colspan="7" style="text-align:right">Total Cost of Items:</td>
+									<td colspan="6" style="text-align:right">Total Cost of Items:</td>
 									<td colspan ="2">P @string.Format("{0:N2}", @Model.totalIndirectCost)</td>
 								</tr>
 								<tr style="background: #BBBBBB">
-									<td colspan="7" style="text-align:right">Profit (Php):</td>
+									<td colspan="6" style="text-align:right">Profit (Php):</td>
 									<td colspan="2">@string.Format("{0:N2}", @Model.profit)</td>
 								</tr>
 								<tr style="background: #BBBBBB;font-weight:bold">
-									<td colspan="7" style="text-align:right">Sub-Total:</td>
+									<td colspan="6" style="text-align:right">Sub-Total:</td>
 									<td colspan ="2">P @string.Format("{0:N2}", @Model.subtotalCost)</td>
 								</tr>
 								<tr style="background: #BBBBBB">
-									<td colspan="7" style="text-align:right">VAT(5%):</td>
+									<td colspan="6" style="text-align:right">VAT(5%):</td>
 									<td colspan ="2">@string.Format("{0:N2}", @Model.tax)</td>
 								</tr>
 								<tr style="background: #BBBBBB;font-weight:bold">
-									<td colspan="7" style="text-align:right">Total Estimated Cost:</td>
+									<td colspan="6" style="text-align:right">Total Estimated Cost:</td>
 									<td colspan="2">P @string.Format("{0:N2}", @Model.totalCost)</td>
 								</tr>
 							</tbody>

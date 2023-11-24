@@ -2308,7 +2308,7 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult MCEAdd(Employee_MCE model)
 		{
-
+			model.templates = new List<Employee_BOM_Template_List>();
 			//Employee_MCE model = JsonConvert.DeserializeObject<Employee_MCE>(TempData["MCEData"].ToString());
 			return View(model);
 		}
@@ -2325,7 +2325,22 @@ namespace Green_Asia_UI.Controllers
 			Debug.WriteLine(model == null);
 			Debug.WriteLine("Menshevik");
 			Debug.WriteLine(model.ProjectID);
-			
+			model.templates = new List<Employee_BOM_Template_List>();
+			model.TemplateID = "1";
+			if (!ModelState.IsValid)
+			{
+				foreach (var modelStateKey in ModelState.Keys)
+				{
+					var errors = ModelState[modelStateKey].Errors;
+					foreach (var error in errors)
+					{
+						var errorMessage = error.ErrorMessage;
+						// Do something with the error message
+						Debug.WriteLine($"Property: {modelStateKey}, Error: {errorMessage}");
+					}
+				}
+				return View(model);
+			}
 			if (submitButton == "Update")
 			{
 				for (int x = 0; x < model.materials.Count; x++)

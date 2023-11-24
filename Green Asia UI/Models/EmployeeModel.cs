@@ -369,7 +369,7 @@ namespace Green_Asia_UI.Models
 	public class Employee_MCE
 	{
 		public List<Employee_MCE_Materials_Subitems> materials { get; set; }
-		public List<Employee_BOM_Template_List> templates { get; set; }
+		public List<Employee_BOM_Template_List>? templates { get; set; }
 
 		public double totalIndirectCost { get; set; }
 		public double OCM { get; set; }
@@ -394,7 +394,7 @@ namespace Green_Asia_UI.Models
 		public DateTime BOMCreationDate { get; set; }
 
 		[Display(Name = "Template")]
-		public string TemplateID { get; set; }
+		public string? TemplateID { get; set; }
 
 		[StringLength(100, MinimumLength = 1)]
 		[Display(Name = "Project Title")]

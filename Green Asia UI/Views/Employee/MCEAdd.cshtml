@@ -206,6 +206,7 @@
 						@Html.HiddenFor(m=>m.BuildingWidth)
 						@Html.HiddenFor(m=>m.TemplateID)
 						@Html.HiddenFor(m=>m.BOMID)
+						@Html.HiddenFor(m=>m.templates)
 
 						<div style="display: none">
 							@Html.DisplayFor(m=>m.materials)
@@ -236,19 +237,17 @@
 						<table class="table">
 							<thead>
 								<tr>
-									<th></th>
 									<th colspan="4">Proposed Materials</th>
 									<th colspan="4">Cost Estimate</th>
 								</tr>
 								<tr>
-									<th>Item No.</th>
 									<th>Material Name</th>
 									<th>Quantity</th>
 									<th>UoM</th>
 									<th>Cost per unit (Php)</th>
 									<th>Marked Up Cost (Php)</th>
 									<th>Labour cost (Php)</th>
-									<th>Total unit rate (Php)/th>
+									<th>Total unit rate (Php)</th>
 									<th>Total Amount (Php)</th>
 								</tr>
 							</thead>
@@ -256,7 +255,6 @@
 								@for (int x = 0; x < Model.materials.Count; x++)
 								{
 									<tr>
-										<td>@Model.materials[x].SubitemNumber</td>
 										<td>@Model.materials[x].MaterialDesc</td>
 										<td><span id="quantity-@x">@Model.materials[x].MaterialQuantityProvisions</span></td>
 										<td>@Model.materials[x].MaterialUoM</td>
@@ -268,27 +266,27 @@
 									</tr>
 								}
 								<tr style="background: #BBBBBB;font-weight:bold">
-									<td colspan="7" style="text-align:right">Total Cost of Items:</td>
+									<td colspan="6" style="text-align:right">Total Cost of Items:</td>
 									<td colspan ="2">P @string.Format("{0:N2}", @Model.totalIndirectCost)</td>
 								</tr>
 								<!--<tr style="background: #BBBBBB">
-									<td colspan="7" style="text-align:right">OCM:</td>
+									<td colspan="6" style="text-align:right">OCM:</td>
 									<td colspan="2">string.Format("{0:N2}", Model.OCM)</td>
 								</tr>-->
 								<tr style="background: #BBBBBB">
-									<td colspan="7" style="text-align:right">Profit:</td>
+									<td colspan="6" style="text-align:right">Profit:</td>
 									<td colspan="2">@string.Format("{0:N2}", @Model.profit)</td>
 								</tr>
 								<tr style="background: #BBBBBB;font-weight:bold">
-									<td colspan="7" style="text-align:right">Sub-Total:</td>
+									<td colspan="6" style="text-align:right">Sub-Total:</td>
 									<td colspan ="2">P @string.Format("{0:N2}", @Model.subtotalCost)</td>
 								</tr>
 								<tr style="background: #BBBBBB">
-									<td colspan="7" style="text-align:right">VAT(5%):</td>
+									<td colspan="6" style="text-align:right">VAT(5%):</td>
 									<td colspan ="2">@string.Format("{0:N2}", @Model.tax)</td>
 								</tr>
 								<tr style="background: #BBBBBB;font-weight:bold">
-									<td colspan="7" style="text-align:right">Total Estimated Cost:</td>
+									<td colspan="6" style="text-align:right">Total Estimated Cost:</td>
 									<td colspan="2">P @string.Format("{0:N2}", @Model.totalCost)</td>
 								</tr>
 							</tbody>
