@@ -34,19 +34,19 @@ namespace Green_Asia_UI.Models
 
 		[Display(Name = "Number of Storeys")]
 		[Range(1, 1000000000)]
-		public int NumberOfStoreys { get; set; }
+		public int? NumberOfStoreys { get; set; }
 
 		[Display(Name = "Height of floors (m)")]
 		[Range(1, 1000000000)]
-		public double FloorHeight { get; set; }
+		public double? FloorHeight { get; set; }
 
 		[Display(Name = "Building Length (m)")]
 		[Range(1, 1000000000)]
-		public double BuildingLength { get; set; }
+		public double? BuildingLength { get; set; }
 
 		[Display(Name = "Building Width (m)")]
 		[Range(1, 1000000000)]
-		public double BuildingWidth { get; set; }
+		public double? BuildingWidth { get; set; }
 
 
 
@@ -124,19 +124,19 @@ namespace Green_Asia_UI.Models
 
 		[Display(Name = "Number of Storeys")]
 		[Range(1, 1000000000)]
-		public int NumberOfStoreys { get; set; }
+		public int? NumberOfStoreys { get; set; }
 
 		[Display(Name = "Height of floors (m)")]
 		[Range(1, 1000000000)]
-		public double FloorHeight { get; set; }
+		public double? FloorHeight { get; set; }
 
 		[Display(Name = "Building Length (m)")]
 		[Range(1, 1000000000)]
-		public double BuildingLength { get; set; }
+		public double? BuildingLength { get; set; }
 
 		[Display(Name = "Building Width (m)")]
 		[Range(1, 1000000000)]
-		public double BuildingWidth { get; set; }
+		public double? BuildingWidth { get; set; }
 
 
 

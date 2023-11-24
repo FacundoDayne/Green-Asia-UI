@@ -236,13 +236,23 @@ namespace Green_Asia_UI.Controllers
 			{
 				return RedirectToAction("SessionExpired", "Home");
 			}
-			model.NumberOfStoreys = 1;
-			model.FloorHeight = 1;
-			model.BuildingWidth = 1;
-			model.BuildingLength = 1;
+			model.NumberOfStoreys = 2;
+			model.FloorHeight = 2;
+			model.BuildingWidth = 2;
+			model.BuildingLength = 2;
 			if (!ModelState.IsValid)
 			{
 
+				foreach (var modelStateKey in ModelState.Keys)
+				{
+					var errors = ModelState[modelStateKey].Errors;
+					foreach (var a in errors)
+					{
+						var errorMessage = a.ErrorMessage;
+						// Do something with the error message
+						Debug.WriteLine($"Property: {modelStateKey}, Error: {errorMessage}");
+					}
+				}
 				return View(model);
 			}
 			int id = 0, id2= 0;
@@ -293,10 +303,10 @@ namespace Green_Asia_UI.Controllers
 						command.Parameters.AddWithValue("@formula_constants_id", id);
 						command.Parameters.AddWithValue("@template_description", model.Descritpion);
 						command.Parameters.AddWithValue("@template_descritpion_long", model.Long_Description);
-						command.Parameters.AddWithValue("@template_building_length", model.BuildingLength);
-						command.Parameters.AddWithValue("@template_building_width", model.BuildingWidth);
-						command.Parameters.AddWithValue("@template_building_floor_height", model.FloorHeight);
-						command.Parameters.AddWithValue("@template_building_storeys", model.NumberOfStoreys);
+						command.Parameters.AddWithValue("@template_building_length", 1);
+						command.Parameters.AddWithValue("@template_building_width", 1);
+						command.Parameters.AddWithValue("@template_building_floor_height", 1);
+						command.Parameters.AddWithValue("@template_building_storeys", 1);
 						command.Connection = conn;
 						command.Transaction = transaction;
 						id2 = Convert.ToInt32(command.ExecuteScalar());
@@ -380,6 +390,7 @@ namespace Green_Asia_UI.Controllers
 									plywoodWidth = Convert.ToDouble(sdr["plywood_width"]),
 									riserHeight = Convert.ToDouble(sdr["riser_height"]),
 									threadDepth = Convert.ToDouble(sdr["thread_depth"]),
+									stairsWidth = Convert.ToDouble(sdr["stairs_width"]),
 									wasteage = Math.Round((Convert.ToDouble(sdr["wastage"]) -1) * 100),
 									provisions = Math.Round((Convert.ToDouble(sdr["provisions"]) -1) * 100)
 								};
@@ -425,14 +436,22 @@ namespace Green_Asia_UI.Controllers
 			{
 				return RedirectToAction("SessionExpired", "Home");
 			}
-
 			model.NumberOfStoreys = 1;
 			model.FloorHeight = 1;
 			model.BuildingWidth = 1;
 			model.BuildingLength = 1;
 			if (!ModelState.IsValid)
 			{
-
+				foreach (var modelStateKey in ModelState.Keys)
+				{
+					var errors = ModelState[modelStateKey].Errors;
+					foreach (var error in errors)
+					{
+						var errorMessage = error.ErrorMessage;
+						// Do something with the error message
+						Debug.WriteLine($"Property: {modelStateKey}, Error: {errorMessage}");
+					}
+				}
 				return View(model);
 			}
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -440,6 +459,7 @@ namespace Green_Asia_UI.Controllers
 				conn.Open();
 				using (SqlTransaction transaction = conn.BeginTransaction())
 				{
+					Debug.WriteLine("A");
 					using (SqlCommand command = new SqlCommand("UPDATE employee_templates SET " +
 					"template_description = @template_description, template_descritpion_long = @template_descritpion_long, " +
 					"template_building_length = @template_building_length, template_building_width = @template_building_width, " +
@@ -483,6 +503,7 @@ namespace Green_Asia_UI.Controllers
 						command.Parameters.AddWithValue("@template_building_floor_height", model.FloorHeight);
 						command.Parameters.AddWithValue("@template_building_storeys", model.NumberOfStoreys);
 						command.ExecuteNonQuery();
+						Debug.WriteLine("A");
 					}
 					using (SqlCommand command = new SqlCommand("UPDATE template_used_materials SET is_used = @is_used " +
 						"WHERE template_used_materials_id = @template_used_materials_id;"))
@@ -502,8 +523,10 @@ namespace Green_Asia_UI.Controllers
 							template_used_materials_id.Value = x.ID_Template;
 							command.ExecuteNonQuery();
 						}
+						Debug.WriteLine("A");
 					}
 					transaction.Commit();
+					Debug.WriteLine("R");
 				}
 			}
 
@@ -2833,6 +2856,16 @@ namespace Green_Asia_UI.Controllers
 			}
 			if (!ModelState.IsValid)
 			{
+				foreach (var modelStateKey in ModelState.Keys)
+				{
+					var errors = ModelState[modelStateKey].Errors;
+					foreach (var a in errors)
+					{
+						var errorMessage = a.ErrorMessage;
+						// Do something with the error message
+						Debug.WriteLine($"Property: {modelStateKey}, Error: {errorMessage}");
+					}
+				}
 				return View(model);
 			}
 			bool username_exists = false;
