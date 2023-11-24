@@ -116,7 +116,7 @@
 								<td>
 									<div style="width:50%">
 										<h4>Password</h4>
-										@Html.PasswordFor(m=>m.password, new { @class = "input-text" })
+										@Html.PasswordFor(m=>m.password, new { @class = "input-text",  @autocomplete = "new-password"  })
 										@Html.ValidationMessageFor(m=>m.password, "Enter password", new { @class = "text-danger" })
 									</div>
 								</td>

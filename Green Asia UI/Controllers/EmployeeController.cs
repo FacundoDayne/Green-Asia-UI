@@ -1031,6 +1031,40 @@ namespace Green_Asia_UI.Controllers
 			{
 				return RedirectToAction("HomePage", "Home");
 			}
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
+			{
+				return RedirectToAction("HomePage", "Home");
+			}
+			string pattern = @"^09\d{9}$";
+			if (model.contactNum != null)
+			{
+				if (!Regex.IsMatch(model.contactNum, pattern))
+				{
+					Debug.WriteLine("2");
+					ModelState.AddModelError("contactNum", "This number is not valid. Use format \"09#########\".");
+
+				}
+			}
+			string emailPattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+			if (model.email != null)
+			{
+				if (!Regex.IsMatch(model.email, emailPattern))
+				{
+					ModelState.AddModelError("email", "This email is not valid. Use the format of example \"abc@domain.com\".");
+
+				}
+				if (model.email.Length > 62)
+				{
+					ModelState.AddModelError("email", "This email too long. Enter an email less than 63 characters long.");
+				}
+			}
+			if (model.password != null)
+			{
+				if (model.password.Length > 0 && model.password.Length < 6)
+				{
+					ModelState.AddModelError("password", "Enter a password at least 6 characters long.");
+				}
+			}
 			if (!ModelState.IsValid)
 			{
 				Debug.WriteLine("invalid");
@@ -1079,18 +1113,43 @@ namespace Green_Asia_UI.Controllers
 					Debug.WriteLine("?");
 				}
 				Debug.WriteLine("?");
-				using (SqlCommand command = new SqlCommand(
-					"UPDATE user_credentials SET " +
-					"user_password = @user_password " +
-					"WHERE user_id = @user_id;"))
+				if (model.password == null || model.password.Length == 0)
 				{
-					command.Connection = conn;
+					using (SqlCommand command = new SqlCommand(
+						"UPDATE user_credentials SET " +
+						"user_status = @user_status " +
+						"WHERE user_id = @user_id;"))
+					{
+						command.Connection = conn;
 
-					command.Parameters.AddWithValue("@user_id", model.user_id);
-					command.Parameters.AddWithValue("@user_password", model.password);
+						command.Parameters.AddWithValue("@user_id", model.user_id);
+						command.Parameters.AddWithValue("@user_status", model.status);
 
-					command.ExecuteNonQuery();
-					Debug.WriteLine("?");
+						command.ExecuteNonQuery();
+						Debug.WriteLine("!?" + model.user_id);
+						Debug.WriteLine("!?" + model.password);
+						Debug.WriteLine("!?" + model.status);
+					}
+				}
+				else if (model.password.Length != 0 && model.password.Length > 5)
+				{
+					using (SqlCommand command = new SqlCommand(
+						"UPDATE user_credentials SET " +
+						"user_password = @user_password, " +
+						"user_status = @user_status " +
+						"WHERE user_id = @user_id;"))
+					{
+						command.Connection = conn;
+
+						command.Parameters.AddWithValue("@user_id", model.user_id);
+						command.Parameters.AddWithValue("@user_password", PasswordEncryptor.EncryptPassword(model.password));
+						command.Parameters.AddWithValue("@user_status", model.status);
+
+						command.ExecuteNonQuery();
+						Debug.WriteLine("!?" + model.user_id);
+						Debug.WriteLine("!?" + model.password);
+						Debug.WriteLine("!?" + model.status);
+					}
 				}
 				conn.Close();
 			}
@@ -1207,7 +1266,7 @@ namespace Green_Asia_UI.Controllers
 								plywoodLength = Convert.ToDouble(sdr["plywood_length"]);
 							plywoodWidth = Convert.ToDouble(sdr["plywood_width"]);
 							plywoodArea = plywoodLength * plywoodWidth;
-								plywoodSheetsPerSqm = (double)Math.Ceiling(10764 / plywoodArea);
+							plywoodSheetsPerSqm = (double)Math.Ceiling(plywoodArea);
 							riserHeight = Convert.ToDouble(sdr["riser_height"]);
 								threadDepth = Convert.ToDouble(sdr["thread_depth"]);
 							stairWidth = Convert.ToDouble(sdr["stairs_width"]);
@@ -1379,29 +1438,34 @@ namespace Green_Asia_UI.Controllers
 
 
 				;
+				if (model.materialpicker[0].IsChecked == true)
+				{
+					int floorPlywood = (int)Math.Ceiling(storeyFloorPlywood);
+					model.lists[i].Items[0].Subitems.Add(GetMaterial(1, floorPlywood, location, 1, plywoodPrice, wastage, provisions, PlywoodCostID));
+				}
 
 				if (model.materialpicker[1].IsChecked == true)
 				{
 					int floorConcreteCement = (int)Math.Ceiling(storeyFloorConcrete * cementRatio);
-					model.lists[i].Items[0].Subitems.Add(GetMaterial(2, floorConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
+					model.lists[i].Items[0].Subitems.Add(GetMaterial(2, floorConcreteCement, location, 2, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
 					int floorConcreteSand = (int)Math.Ceiling(storeyFloorConcrete * sandRatio);
-					model.lists[i].Items[0].Subitems.Add(GetMaterial(3, floorConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
+					model.lists[i].Items[0].Subitems.Add(GetMaterial(3, floorConcreteSand, location, 3, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
 					int floorConcreteAggregate = (int)Math.Ceiling(storeyFloorConcrete * aggregateRatio);
-					model.lists[i].Items[0].Subitems.Add(GetMaterial(4, floorConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
+					model.lists[i].Items[0].Subitems.Add(GetMaterial(4, floorConcreteAggregate, location, 4, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
 					int floorRebarAmount = (int)Math.Ceiling(storeyFloorRebar);
-					model.lists[i].Items[0].Subitems.Add(GetMaterial(5, floorRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
+					model.lists[i].Items[0].Subitems.Add(GetMaterial(5, floorRebarAmount, location, 5, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
 				//wall
