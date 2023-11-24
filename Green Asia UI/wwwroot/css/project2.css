@@ -53,13 +53,23 @@ nav {
         text-transform: uppercase;
     }
 
+
 a {
+    position: relative;
+    width: 280px;
+    font-size: 14px;
+    color: rgb(85, 83, 83);
+    padding: 10px;
+}
+
+.links {
     position: relative;
     width: 280px;
     font-size: 14px;
     color: rgb(85, 83, 83);
     display: table;
     padding: 10px;
+    display: table;
 }
 
 nav .fas {

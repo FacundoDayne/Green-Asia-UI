@@ -48,7 +48,7 @@
 <body>
 
     <div class="container">
-		<a class="dashboard-link" asp-area="" asp-controller="Admin" asp-action="adminProjectDash">
+		<a class="dashboard-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
             <div class="main-top">
                 <i class="fas fa-user"></i>
             </div>
@@ -65,7 +65,7 @@
 					<div class="input-box">
 						@Html.LabelFor(m => m.Username, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.Username, new { @class = "text-input" })
+							@Html.TextBoxFor(m => m.Username, new { @class = "text-input", @id = "username_input", @readonly = "true"  })
 							@Html.ValidationMessageFor(m => m.Username, "Enter a Username", new { @class = "" })
 						</div>
 					</div>
@@ -81,7 +81,7 @@
 					<div class="input-box">
 						@Html.LabelFor(m => m.Description, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.Description, new { @class = "text-input" })
+							@Html.TextBoxFor(m => m.Description, new { @class = "text-input", @id = "lastname_input", @oninput="handleinput()" })
 							@Html.ValidationMessageFor(m => m.Description, "Enter Supplier description", new { @class = "text-danger" })
 						</div>
 					</div>
@@ -277,7 +277,38 @@
 
 			const body = document.querySelector('body');
 			body.onload = loadMapScenario;
+			
 
+		</script>
+		<script type="text/javascript">
+			var typingTimer;
+			var doneTypingInterval = 1000;
+			var nuts = 'nuts';
+			function handleinput() {
+				console.log("A");
+				clearTimeout(typingTimer);
+				typingTimer = setTimeout(makeAjaxRequest, doneTypingInterval);
+			}
+
+			function makeAjaxRequest() {
+				console.log("B");
+				var lastname = $('#lastname_input').val();
+				if (true) {
+					console.log("C");
+					$.ajax({
+						url: '/Employee/CheckUsernameExisting?param1=' + nuts,
+						method: 'GET',
+						data: { selectedValue: "" },
+						success: function (data) {
+							$(`#username_input`).val('Supplier.' + data);
+						},
+						error: function (error) {
+							console.error(error);
+						}
+					});
+				}
+			} 
+			document.addEventListener("DOMContentLoaded", makeAjaxRequest);
 		</script>
 		<script>
 			document.getElementById('myForm').addEventListener('keypress', function (e) {

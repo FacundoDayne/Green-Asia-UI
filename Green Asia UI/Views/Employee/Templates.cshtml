@@ -9,6 +9,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<style>
+		.pagination {
+			display: flex;
+			list-style: none;
+			padding: 0;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.pagination-item {
+			margin: 0 5px;
+			padding: 5px 10px;
+			border: 1px solid #ccc;
+			cursor: pointer;
+		}
+
+			.pagination-item.active {
+				background-color: #007bff;
+				color: #fff;
+			}
+
+			.pagination-item.disabled {
+				pointer-events: none;
+				color: #ccc;
+			}
+	</style>
 	<meta charset="UTF-8" />
 	<title> Templates </title>
 	<link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
@@ -23,49 +49,49 @@
 		<nav>
 			<ul>
 				<li>
-					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+					<a class="logo links" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
 						<img src="../../Images/greenAsiaLogo.png" alt="logo">
 						<span class="nav-item">GACTC</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
 						<i class="fas fa-menorah"></i>
 						<span class="nav-item">Dashboard</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
 						<i class="fas fa-chart-bar"></i>
 						<span class="nav-item">Projects</span>
 					</a>
 				</li>
 				<li class="active">
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="Templates">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Templates</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Suppliers</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Materials</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Account</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+					<a class="nav-link links" asp-area="" asp-controller="Home" asp-action="HomePage">
 						<i class="fas fa-sign-out-alt"></i>
 						<span class="nav-item">Log out</span>
 					</a>
@@ -73,7 +99,7 @@
 			</ul>
 		</nav>
 		<section class="main">
-			<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="NewTemplate">
+			<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="NewTemplate">
 				<div class="main-top">
 					<h1>Add Template</h1>
 					<i class="fas fa-wrench"></i>
@@ -82,7 +108,7 @@
 			<section class="attendance">
 				<div class="attendance-list">
 					<h1>Templates List</h1>
-					<table class="table">
+					<table class="table" id="dataTable">
 						<thead>
 							<tr>
 								<th>Name</th>
@@ -110,8 +136,115 @@
 							}
 						</tbody>
 					</table>
+					<ul class="pagination" id="pagination"></ul>
 				</div>
 			</section>
 		</section>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script>
+		function updatePagination(currentPage) {
+			const pagination = document.getElementById('pagination');
+			pagination.innerHTML = '';
+
+			const totalPages = @ViewBag.Pages; // Replace with the total number of pages
+			const visiblePages = 5; // Number of visible pages
+			const halfVisible = Math.floor(visiblePages / 2);
+			const startPage = Math.max(1, currentPage - halfVisible);
+			const endPage = Math.min(totalPages, startPage + visiblePages - 1);
+
+			const ellipsisStart = startPage > 1;
+			const ellipsisEnd = endPage < totalPages;
+
+			if (ellipsisStart) {
+				addPaginationItem('<<', currentPage - 1, 'pagination-item', currentPage === 1);
+			}
+
+			if (ellipsisStart && startPage > 2) {
+				addPaginationItem('...', Math.max(1, currentPage - halfVisible * 2), 'pagination-item disabled');
+			}
+
+			for (let i = startPage; i <= endPage; i++) {
+				const isActive = i === currentPage;
+				addPaginationItem(i, i, `pagination-item${isActive ? ' active' : ''}`);
+			}
+
+			if (ellipsisEnd && totalPages - endPage > 1) {
+				addPaginationItem('...', Math.min(totalPages, endPage + halfVisible * 2), 'pagination-item disabled');
+			}
+
+			if (ellipsisEnd) {
+				addPaginationItem('>>', currentPage + 1, 'pagination-item', currentPage === totalPages);
+			}
+			loadData(currentPage)
+		}
+
+		function addPaginationItem(text, page, className, disabled = false) {
+			const pagination = document.getElementById('pagination');
+			const li = document.createElement('li');
+			li.className = className;
+			li.innerHTML = `<a href="#" onclick="updatePagination(${page})">${text}</a>`;
+			if (disabled) {
+				li.classList.add('disabled');
+			}
+			pagination.appendChild(li);
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			updatePagination(@ViewBag.Page); // Initialize with the current page
+		});
+
+		function updateTable(data) {
+			var tableBody = $('#dataTable tbody');
+			tableBody.empty(); // Clear existing rows
+
+			// Iterate through the data and append rows to the table
+			$.each(data, function (index, item) {
+				var row = '<tr>' +
+					'<td>' + item.descritpion + '</td>' +
+					'<td>' + item.long_Description + '</td>' +
+					'<td><a class="links" href = "/Employee/TemplatesEdit/' + item.id + '" >View</a></td>' +
+					'</tr>';
+				tableBody.append(row);
+			});
+		}
+
+		function loadData(page) {
+			$.ajax({
+				url: '/Employee/getTemplatePageData',
+				type: 'GET',
+				data: { page: page },
+				success: function (data) {
+					updateTable(data);
+				}
+			});
+		}
+
+		function handleEnterKey(event) {
+			// Check if the pressed key is Enter (key code 13)
+			if (event.keyCode === 13) {
+				// Call the function you want to execute
+				performFunction();
+			}
+		}
+
+		function performFunction() {
+			// Replace this with the function you want to execute
+			var textbox = document.getElementById('searchbox');
+			if (textbox.value != "") {
+				searchData(textbox.value)
+			}
+		}
+
+		function searchData(searchquery) {
+			$.ajax({
+				url: '/Employee/searchTemplate',
+				type: 'GET',
+				data: { search: searchquery },
+				success: function (data) {
+					updateTable(data);
+				}
+			});
+		}
+	</script>
 </body>

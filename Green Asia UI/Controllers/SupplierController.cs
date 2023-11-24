@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace Green_Asia_UI.Controllers
 {
@@ -237,6 +238,23 @@ namespace Green_Asia_UI.Controllers
 		[AllowAnonymous]
 		public IActionResult supplierInfoEdit(SupplierInfoModel model)
 		{
+			string pattern = @"^09\d{9}$";
+			if (model.ContactNumber != null)
+			{
+				if (!Regex.IsMatch(model.ContactNumber, pattern))
+				{
+					Debug.WriteLine("2");
+					ModelState.AddModelError("ContactNumber", "This number is not valid. Use format \"09#########\".");
+
+				}
+			}
+			if (model.Password != null)
+			{
+				if (model.Password.Length > 0 && model.Password.Length < 6)
+				{
+					ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+				}
+			}
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -244,8 +262,43 @@ namespace Green_Asia_UI.Controllers
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
 				conn.Open();
-				
-				using (SqlCommand command = new SqlCommand("UPDATE supplier_info SET " +
+
+				if (model.Password == null || model.Password.Length == 0)
+				{
+					using (SqlCommand command = new SqlCommand("UPDATE supplier_info SET " +
+					"supplier_desc = @suppleir_desc, " +
+					"supplier_address = @supplier_address, " +
+					"supplier_city = @supplier_city, " +
+					"supplier_admin_district = @supplier_admin_district, " +
+					"supplier_country = @supplier_country, " +
+					"supplier_coordinates_latitude = @supplier_coordinates_latitude, " +
+					"supplier_coordinates_longtitude = @supplier_coordinates_longtitude, " +
+					"supplier_contact_name = @supplier_contact_name, " +
+					"supplier_contact_number = @supplier_contact_number " +
+					"WHERE supplier_id = @supplier_id;" +
+					"UPDATE user_credentials SET " +
+					"user_status = @user_status " +
+					"WHERE user_id = @user_id;"))
+					{
+						command.Connection = conn;
+						command.Parameters.AddWithValue("@supplier_id", model.ID);
+						command.Parameters.AddWithValue("@user_id", model.CredentialsID);
+						command.Parameters.AddWithValue("@suppleir_desc", model.Description);
+						command.Parameters.AddWithValue("@supplier_contact_name", model.ContactName);
+						command.Parameters.AddWithValue("@supplier_contact_number", model.ContactNumber);
+						command.Parameters.AddWithValue("@supplier_address", model.Address);
+						command.Parameters.AddWithValue("@supplier_city", model.City);
+						command.Parameters.AddWithValue("@supplier_admin_district", model.Region);
+						command.Parameters.AddWithValue("@supplier_country", model.Country);
+						command.Parameters.AddWithValue("@supplier_coordinates_latitude", model.Latitude);
+						command.Parameters.AddWithValue("@supplier_coordinates_longtitude", model.Longtitude);
+						command.Parameters.AddWithValue("@user_status", model.Status);
+						command.ExecuteNonQuery();
+					}
+				}
+				else if (model.Password.Length != 0 && model.Password.Length > 5)
+				{
+					using (SqlCommand command = new SqlCommand("UPDATE supplier_info SET " +
 					"supplier_desc = @suppleir_desc, " +
 					"supplier_address = @supplier_address, " +
 					"supplier_city = @supplier_city, " +
@@ -260,22 +313,24 @@ namespace Green_Asia_UI.Controllers
 					"user_password = @user_password, " +
 					"user_status = @user_status " +
 					"WHERE user_id = @user_id;"))
-				{
-					command.Connection = conn;
-					command.Parameters.AddWithValue("@supplier_id", model.ID);
-					command.Parameters.AddWithValue("@user_id", model.CredentialsID);
-					command.Parameters.AddWithValue("@suppleir_desc", model.Description);
-					command.Parameters.AddWithValue("@user_password", model.Password);
-					command.Parameters.AddWithValue("@supplier_contact_name", model.ContactName);
-					command.Parameters.AddWithValue("@supplier_contact_number", model.ContactNumber);
-					command.Parameters.AddWithValue("@supplier_address", model.Address);
-					command.Parameters.AddWithValue("@supplier_city", model.City);
-					command.Parameters.AddWithValue("@supplier_admin_district", model.Region);
-					command.Parameters.AddWithValue("@supplier_country", model.Country);
-					command.Parameters.AddWithValue("@supplier_coordinates_latitude", model.Latitude);
-					command.Parameters.AddWithValue("@supplier_coordinates_longtitude", model.Longtitude);
-					command.Parameters.AddWithValue("@user_status", model.Status);
-					command.ExecuteNonQuery();
+					{
+						command.Connection = conn;
+						command.Parameters.AddWithValue("@supplier_id", model.ID);
+						command.Parameters.AddWithValue("@user_id", model.CredentialsID);
+						command.Parameters.AddWithValue("@suppleir_desc", model.Description);
+						command.Parameters.AddWithValue("@user_password", PasswordEncryptor.EncryptPassword(model.Password));
+						command.Parameters.AddWithValue("@supplier_contact_name", model.ContactName);
+						command.Parameters.AddWithValue("@supplier_contact_number", model.ContactNumber);
+						command.Parameters.AddWithValue("@supplier_address", model.Address);
+						command.Parameters.AddWithValue("@supplier_city", model.City);
+						command.Parameters.AddWithValue("@supplier_admin_district", model.Region);
+						command.Parameters.AddWithValue("@supplier_country", model.Country);
+						command.Parameters.AddWithValue("@supplier_coordinates_latitude", model.Latitude);
+						command.Parameters.AddWithValue("@supplier_coordinates_longtitude", model.Longtitude);
+						command.Parameters.AddWithValue("@user_status", model.Status);
+						command.ExecuteNonQuery();
+						Debug.WriteLine("P");
+					}
 				}
 			}
 			return RedirectToAction("supplierInfo");

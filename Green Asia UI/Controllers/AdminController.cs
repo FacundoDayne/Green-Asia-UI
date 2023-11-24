@@ -444,7 +444,8 @@ namespace Green_Asia_UI.Controllers
 					"WHERE e.user_role = 2;"))
 				{
 					command.Connection = conn;
-					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(command.ExecuteScalar())) / pageSize);
+					double numOfRecords = Convert.ToDouble(command.ExecuteScalar());
+					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Math.Ceiling(numOfRecords) / pageSize));
 					ViewBag.Page = page;
 					ViewBag.PageSize = pageSize;
 				}
@@ -586,7 +587,8 @@ namespace Green_Asia_UI.Controllers
 					"SELECT COUNT(project_id)  FROM projects;"))
 				{
 					command.Connection = conn;
-					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(command.ExecuteScalar())) / pageSize);
+					double numOfRecords = Convert.ToDouble(command.ExecuteScalar());
+					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Math.Ceiling(numOfRecords) / pageSize));
 					ViewBag.Page = page;
 					ViewBag.PageSize = pageSize;
 				}
@@ -766,7 +768,8 @@ namespace Green_Asia_UI.Controllers
 					"SELECT COUNT(supplier_id)  FROM supplier_info;"))
 				{
 					command.Connection = conn;
-					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(command.ExecuteScalar())) / pageSize);
+					double numOfRecords = Convert.ToDouble(command.ExecuteScalar());
+					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Math.Ceiling(numOfRecords) / pageSize));
 					ViewBag.Page = page;
 					ViewBag.PageSize = pageSize;
 				}
@@ -976,9 +979,16 @@ namespace Green_Asia_UI.Controllers
 					ModelState.AddModelError("Email", "This email too long. Enter an email less than 63 characters long.");
 				}
 			}
-			if (model.Password.Length < 6)
+			if (model.Password == null)
 			{
 				ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+			}
+			else if (model.Password != null)
+			{
+				if (model.Password.Length < 6)
+				{
+					ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+				}
 			}
 			if (!ModelState.IsValid)
 			{
@@ -1151,7 +1161,7 @@ namespace Green_Asia_UI.Controllers
 			{
 				if (model.password.Length > 0 && model.password.Length < 6)
 				{
-					ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+					ModelState.AddModelError("password", "Enter a password at least 6 characters long.");
 				}
 			}
 			if (!ModelState.IsValid)
@@ -1377,9 +1387,16 @@ namespace Green_Asia_UI.Controllers
 					ModelState.AddModelError("Email", "This email too long. Enter an email less than 63 characters long.");
 				}
 			}
-			if (model.Password.Length < 6)
+			if (model.Password == null)
 			{
 				ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+			}	
+			else if (model.Password != null)
+			{
+				if (model.Password.Length < 6)
+				{
+					ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+				}
 			}
 			if (!ModelState.IsValid)
 			{
@@ -1553,7 +1570,7 @@ namespace Green_Asia_UI.Controllers
 			{
 				if (model.password.Length > 0 && model.password.Length < 6)
 				{
-					ModelState.AddModelError("Password", "Enter a password at least 6 characters long.");
+					ModelState.AddModelError("password", "Enter a password at least 6 characters long.");
 				}
 			}
 			if (!ModelState.IsValid)
@@ -1573,6 +1590,7 @@ namespace Green_Asia_UI.Controllers
 						// You can also access error.Exception for exceptions if applicable
 					}
 				}
+				return View(model);
 			}
 
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -1667,7 +1685,8 @@ namespace Green_Asia_UI.Controllers
 					"WHERE e.user_role = 1;"))
 				{
 					command.Connection = conn;
-					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(command.ExecuteScalar())) / pageSize);
+					double numOfRecords = Convert.ToDouble(command.ExecuteScalar());
+					ViewBag.Pages = Convert.ToInt32(Math.Ceiling(Math.Ceiling(numOfRecords) / pageSize));
 					ViewBag.Page = page;
 					ViewBag.PageSize = pageSize;
 				}
@@ -1688,8 +1707,13 @@ namespace Green_Asia_UI.Controllers
 					"CONCAT(a.employee_info_firstname,' ',LEFT(a.employee_info_middlename,1),' ',a.employee_info_lastname) AS contractor_name " +
 					" from employee_info a " +
 					"INNER JOIN user_credentials e ON e.user_id = a.user_credentials_id " +
-					"WHERE e.user_role = 1 ;"))
+					"WHERE e.user_role = 1  " +
+					"ORDER BY employee_info_id " +
+					"OFFSET (@pagesize * (@pagenumber - 1)) ROWS " +
+					"FETCH NEXT @pagesize ROWS ONLY;"))
 				{
+					command.Parameters.AddWithValue("@pagesize", pageSize);
+					command.Parameters.AddWithValue("@pagenumber", page);
 					command.Connection = conn;
 					using (SqlDataReader sdr = command.ExecuteReader())
 					{

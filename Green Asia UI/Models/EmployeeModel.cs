@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Green_Asia_UI.Models
 {
@@ -473,17 +474,47 @@ namespace Green_Asia_UI.Models
 		public int ID { get; set; }
 		public int CredentialsID { get; set; }
 		public int EmployeeID { get; set; }
+
+		[Display(Name = "Supplier Password")]
+		public string? Password { get; set; }
+
+		[Required]
+		[Display(Name = "Supplier Name")]
 		public string Description { get; set; }
+
+		[Display(Name = "Supplier Address")]
 		public string Address { get; set; }
+
+		[Display(Name = "Supplier City")]
 		public string City { get; set; }
+
+		[Display(Name = "Supplier Region")]
 		public string Region { get; set; }
+
+		[Display(Name = "Supplier Country")]
 		public string Country { get; set; }
+
+		[Required]
+		[Display(Name = "Supplier Location Longtitude")]
 		public string Longtitude { get; set; }
+
+		[Required]
+		[Display(Name = "Supplier Location Latitude")]
 		public string Latitude { get; set; }
+
+		[Required]
+		[Display(Name = "Supplier Contact Name")]
 		public string ContactName { get; set; }
+
+		[Required]
+		[Display(Name = "Supplier Contact Phone Number")]
 		public string ContactNumber { get; set; }
+
+		[Required]
+		[Display(Name = "Supplier Username")]
 		public string Username { get; set; }
-		public string Password { get; set; }
+
+		[Display(Name = "Account Status")]
 		public bool Status { get; set; }
 	}
 }

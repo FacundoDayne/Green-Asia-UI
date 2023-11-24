@@ -6,6 +6,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<style>
+		.pagination {
+			display: flex;
+			list-style: none;
+			padding: 0;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.pagination-item {
+			margin: 0 5px;
+			padding: 5px 10px;
+			border: 1px solid #ccc;
+			cursor: pointer;
+		}
+
+			.pagination-item.active {
+				background-color: #007bff;
+				color: #fff;
+			}
+
+			.pagination-item.disabled {
+				pointer-events: none;
+				color: #ccc;
+			}
+	</style>
     <meta charset="UTF-8" />
     <title> Projects </title>
     <link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
@@ -19,49 +45,49 @@
         <nav>
             <ul>
                 <li>
-					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+					<a class="logo links" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
                         <img src="../../Images/greenAsiaLogo.png" alt="logo">
                         <span class="nav-item">GACTC</span>
                     </a>
                 </li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
                         <i class="fas fa-menorah"></i>
                         <span class="nav-item">Dashboard</span>
                     </a>
                 </li>
                 <li class="active">
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
                         <i class="fas fa-chart-bar"></i>
                         <span class="nav-item">Projects</span>
                     </a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="Templates">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Templates</span>
 					</a>
 				</li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
                         <i class="fas fa-briefcase"></i>
                         <span class="nav-item">Suppliers</span>
                     </a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Materials</span>
 					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
+					<a class="nav-link links" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
 						<i class="fas fa-briefcase"></i>
 						<span class="nav-item">Account</span>
 					</a>
 				</li>
                 <li>
-					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
+					<a class="nav-link links" asp-area="" asp-controller="Home" asp-action="HomePage">
                         <i class="fas fa-sign-out-alt"></i>
                         <span class="nav-item">Log out</span>
                     </a>
@@ -70,38 +96,34 @@
         </nav>
 
         <section class="main">
-            <a>
-                <div class="main-top">
-                    <h1>Projects</h1>
-                    <i class="fas fa-wrench"></i>
-                </div>
-            </a>
 
             <section class="attendance">
                 <div class="attendance-list">
-                    <h1>Project List</h1>
-                    <table class="table">
+					<h1>Project List</h1>
+					<input type="text" id="searchbox" placeholder="Search Project Title" onkeydown="handleEnterKey(event)" /> <button onclick="performFunction()">Search</button>
+					<table class="table" id="dataTable">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Title</th>
-                                <th>Contractor in charge</th>
-                                <th>Type</th>
+                                <th>Client Name</th>
 								<th>Address</th>
 								<th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-							@for (int x = 0; x < Model.Count; x++)
+						<tbody>
+
+						</tbody>
+                        <!--<tbody>
+							for (int x = 0; x < Model.Count; x++)
 							{
 								<tr>
-									<td>@Model[x].ID</td>
-									<td>@Model[x].Description</td>
-									<td>@Model[x].ContractorName</td>
-									<td>@Model[x].Category</td>
-									<td>@Model[x].Address</td>
-									@if (Model[x].Status == 0)
+									<td>Model[x].ID</td>
+									<td>Model[x].Description</td>
+									<td>Model[x].ClientName</td>
+									<td>Model[x].Address</td>
+									if (Model[x].Status == 0)
 									{
 										<td>BOM Pending</td>
 									}
@@ -114,32 +136,174 @@
 										<td>Processed</td>
 									}
 									<td>
-										<span>@Html.ActionLink("View", "employeeProjectView", "Employee", new { id = Model[x].ID } )</span>
-										@if (Model[x].BOMID != 0)
+										<span>Html.ActionLink("View", "employeeProjectView", "Employee", new { id = Model[x].ID } )</span>
+										if (Model[x].BOMID != 0)
 										{
-											<span>@Html.ActionLink("View BOM", "BOMView", "Employee", new { id = Model[x].ID } ) </span>
-											<span>@Html.ActionLink("BOM Client View", "BOMViewClient", "Employee", new { id = Model[x].ID } ) </span>
-											@if (Model[x].MCEID == 0)
+											<span>Html.ActionLink("View BOM", "BOMView", "Employee", new { id = Model[x].ID } ) </span>
+											<span>Html.ActionLink("BOM Client View", "BOMViewClient", "Employee", new { id = Model[x].ID } ) </span>
+											if (Model[x].MCEID == 0)
 											{
-												<span>@Html.ActionLink("Create MCE", "MCEAdd_New", "Employee", new { id = Model[x].ID } ) </span>
+												<span>Html.ActionLink("Create MCE", "MCEAdd_New", "Employee", new { id = Model[x].ID } ) </span>
 											}
 											else if (Model[x].MCEID != 0)
 											{
-												<span>@Html.ActionLink("View MCE", "MCEView", "Employee", new { id = Model[x].ID } ) </span>
+												<span>Html.ActionLink("View MCE", "MCEView", "Employee", new { id = Model[x].ID } ) </span>
 											}
 										}
 										else if (Model[x].BOMID == 0)
 										{
-											<span>@Html.ActionLink("Create BOM", "BOMGenerate", "Employee", new { id = Model[x].ID } ) </span>
+											<span>Html.ActionLink("Create BOM", "BOMGenerate", "Employee", new { id = Model[x].ID } ) </span>
 										}
 									</td>
 								</tr>
 							}
                         </tbody>
-                    </table>
+						-->
+					</table>
+					<ul class="pagination" id="pagination"></ul>
                 </div>
             </section>
         </section>
-    </div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script>
+		function updatePagination(currentPage) {
+			const pagination = document.getElementById('pagination');
+			pagination.innerHTML = '';
+
+			const totalPages = @ViewBag.Pages; // Replace with the total number of pages
+			const visiblePages = 5; // Number of visible pages
+			const halfVisible = Math.floor(visiblePages / 2);
+			const startPage = Math.max(1, currentPage - halfVisible);
+			const endPage = Math.min(totalPages, startPage + visiblePages - 1);
+
+			const ellipsisStart = startPage > 1;
+			const ellipsisEnd = endPage < totalPages;
+
+			if (ellipsisStart) {
+				addPaginationItem('<<', currentPage - 1, 'pagination-item', currentPage === 1);
+			}
+
+			if (ellipsisStart && startPage > 2) {
+				addPaginationItem('...', Math.max(1, currentPage - halfVisible * 2), 'pagination-item disabled');
+			}
+
+			for (let i = startPage; i <= endPage; i++) {
+				const isActive = i === currentPage;
+				addPaginationItem(i, i, `pagination-item${isActive ? ' active' : ''}`);
+			}
+
+			if (ellipsisEnd && totalPages - endPage > 1) {
+				addPaginationItem('...', Math.min(totalPages, endPage + halfVisible * 2), 'pagination-item disabled');
+			}
+
+			if (ellipsisEnd) {
+				addPaginationItem('>>', currentPage + 1, 'pagination-item', currentPage === totalPages);
+			}
+			loadData(currentPage)
+		}
+
+		function addPaginationItem(text, page, className, disabled = false) {
+			const pagination = document.getElementById('pagination');
+			const li = document.createElement('li');
+			li.className = className;
+			li.innerHTML = `<a href="#" onclick="updatePagination(${page})">${text}</a>`;
+			if (disabled) {
+				li.classList.add('disabled');
+			}
+			pagination.appendChild(li);
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			updatePagination(@ViewBag.Page); // Initialize with the current page
+		});
+
+		function updateTable(data) {
+			var tableBody = $('#dataTable tbody');
+			tableBody.empty(); // Clear existing rows
+
+			// Iterate through the data and append rows to the table
+			$.each(data, function (index, item) {
+				var status = "";
+				var stat = parseInt(item.status);
+				if (stat == 0) {
+					status = "BOM Pending";
+				}
+				else if (stat == 1) {
+					status = "MCE Pending"
+				}
+				else if (stat == 2) {
+					status = "Processed";
+				}
+				var ActionString = '' +
+					'<span><a class="links" href="/Employee/employeeProjectView/' + item.id + '">View</a></span>';
+				var BOMID = parseInt(item.bomid);
+				var MCEID = parseInt(item.mceid);
+				if (BOMID != 0)
+										{
+					ActionString += '<span><a class="links" href="/Employee/BOMView/' + item.id + '">BOM View</a></span>';
+					ActionString += '<span><a class="links" href="/Employee/BOMViewClient/' + item.id + '">Client BOM View</a></span>';
+					if (MCEID == 0) {
+						ActionString += '<span><a class="links" href="/Employee/MCEAdd_New/' + item.id + '">Create MCE</a></span>';
+					}
+					else if (MCEID != 0) {
+						ActionString += '<span><a class="links" href="/Employee/MCEView/' + item.id + '">View MCE</a></span>';
+					}
+				}
+				else if (BOMID == 0) {
+					ActionString += '<span><a class="links" href="/Employee/BOMGenerate/' + item.id + '">Create BOM</a></span>';
+				}
+				ActionString += '';
+				var row = '<tr>' +
+					'<td>' + item.id + '</td>' +
+					'<td>' + item.description + '</td>' +
+					'<td>' + item.clientName + '</td>' +
+					'<td>' + item.address + '</td>' +
+					'<td>' + status + '</td>' +
+					'<td>' + ActionString + '</td>' +
+					// Add other cells as needed
+					'</tr>';
+				tableBody.append(row);
+			});
+		}
+
+		function loadData(page) {
+			$.ajax({
+				url: '/Employee/getPageData',
+				type: 'GET',
+				data: { page: page },
+				success: function (data) {
+					updateTable(data);
+				}
+			});
+		}
+
+		function handleEnterKey(event) {
+			// Check if the pressed key is Enter (key code 13)
+			if (event.keyCode === 13) {
+				// Call the function you want to execute
+				performFunction();
+			}
+		}
+
+		function performFunction() {
+			// Replace this with the function you want to execute
+			var textbox = document.getElementById('searchbox');
+			if (textbox.value != "") {
+				searchData(textbox.value)
+			}
+		}
+
+		function searchData(searchquery) {
+			$.ajax({
+				url: '/Employee/searchProject',
+				type: 'GET',
+				data: { search: searchquery },
+				success: function (data) {
+					updateTable(data);
+				}
+			});
+		}
+	</script>
 </body>
 </html>

@@ -74,7 +74,6 @@ namespace Green_Asia_UI.Models
 		public int user_id { get; set; }
 		public string username { get; set; }
 		
-		[BindNever]
 		[Display(Name = "Password")]
 		public string? password { get; set; }
 

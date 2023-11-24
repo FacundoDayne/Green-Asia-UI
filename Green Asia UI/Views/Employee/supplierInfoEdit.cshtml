@@ -48,25 +48,32 @@
 <body>
 
     <div class="container">
-		<a class="dashboard-link" asp-area="" asp-controller="Admin" asp-action="adminProjectDash">
+		<a class="dashboard-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
             <div class="main-top">
                 <i class="fas fa-user"></i>
             </div>
         </a>
         <div class="title">Edit Supplier</div>
         <div class="content">
-			@using (Html.BeginForm("supplierInfoEdit", "Supplier", FormMethod.Post, new { @id = "myForm" }))
+			@using (Html.BeginForm("supplierInfoEdit", "Employee", FormMethod.Post, new { @id = "myForm" }))
 			{
 				<div class="user-details">
 					@Html.AntiForgeryToken()
 
-					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					<div class="input-box">
+						@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					</div>
 					@Html.HiddenFor(m=>m.Status)
 
+					@Html.HiddenFor(m=>m.ID)
+					@Html.HiddenFor(m=>m.CredentialsID)
+					@Html.HiddenFor(m=>m.EmployeeID)
+					<div class="input-box">
+					</div>
 					<div class="input-box">
 						@Html.LabelFor(m => m.Username, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.Username, new { @class = "text-input", @readonly = "true" })
+							@Html.TextBoxFor(m => m.Username, new { @class = "text-input", @readonly = "true",  @autocomplete = "off" })
 							@Html.ValidationMessageFor(m => m.Username, "Enter a Username", new { @class = "" })
 						</div>
 					</div>
@@ -74,7 +81,7 @@
 					<div class="input-box">
 						@Html.LabelFor(m => m.Password, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.PasswordFor(m => m.Password, new { @class = "text-input" })
+							@Html.PasswordFor(m => m.Password, new { @class = "text-input",  @autocomplete = "new-password" })
 							@Html.ValidationMessageFor(m => m.Password, "Enter a Password", new { @class = "text-danger" })
 						</div>
 					</div>
@@ -82,13 +89,13 @@
 					<div class="input-box">
 						@Html.LabelFor(m => m.Description, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.Description, new { @class = "text-input" })
+							@Html.TextBoxFor(m => m.Description, new { @class = "text-input",  @autocomplete = "off" })
 							@Html.ValidationMessageFor(m => m.Description, "Enter Supplier description", new { @class = "text-danger" })
 						</div>
 					</div>
 
 					<div class="input-box">
-						@Html.LabelFor(m => m.ContactName, new { @class = "details" })
+						@Html.LabelFor(m => m.ContactName, new { @class = "details",  @autocomplete = "off" })
 						<div class="col-md-10">
 							@Html.TextBoxFor(m => m.ContactName, new { @class = "text-input" })
 							@Html.ValidationMessageFor(m => m.ContactName, "Enter a name", new { @class = "text-danger" })
@@ -98,8 +105,8 @@
 					<div class="input-box">
 						@Html.LabelFor(m => m.ContactNumber, new { @class = "details" })
 						<div class="col-md-10">
-							@Html.TextBoxFor(m => m.ContactNumber, new { @class = "text-input" })
-							@Html.ValidationMessageFor(m => m.ContactNumber, "Enter a name", new { @class = "text-danger" })
+							@Html.TextBoxFor(m => m.ContactNumber, new { @class = "text-input",  @autocomplete = "off" })
+							@Html.ValidationMessageFor(m => m.ContactNumber, "Enter a Phone Number", new { @class = "text-danger" })
 						</div>
 					</div>
 
@@ -113,25 +120,25 @@
 
 					<div class="input-box" style="display: none">
 						<span class="details">Street</span>
-						@Html.TextBoxFor(m=>m.Address, new { @class = "form-control", @id="address"  })
+						@Html.TextBoxFor(m=>m.Address, new { @class = "form-control", @id="address",  @autocomplete = "off"  })
 					</div>
 					<div class="input-box" style="display: none">
 						<span class="details">City</span>
-						@Html.TextBoxFor(m=>m.City, new { @class = "form-control", @id="city"  })
+						@Html.TextBoxFor(m=>m.City, new { @class = "form-control", @id="city",  @autocomplete = "off"  })
 					</div>
 					<div class="input-box" style="display: none">
 						<span class="details">Region</span>
-						@Html.TextBoxFor(m=>m.Region, new { @class = "form-control" , @id="AdminDistrict" })
+						@Html.TextBoxFor(m=>m.Region, new { @class = "form-control" , @id="AdminDistrict",  @autocomplete = "off" })
 					</div>
 					<div class="input-box" style="display: none">
 						<span class="details">Country</span>
-						@Html.TextBoxFor(m=>m.Country, new { @class = "form-control", @id="Country" })
+						@Html.TextBoxFor(m=>m.Country, new { @class = "form-control", @id="Country",  @autocomplete = "off" })
 					</div>
 				</div>
 
 				<div>
 					<div class="input-box">
-						<input type="text" id="searchInput" placeholder="Enter a location and press Enter" style="
+						<input type="text" id="searchInput" placeholder="Enter a location and press Enter" autocomplete="off" style="
 								height: 45px;
 								width: 100%;
 								outline: none;
@@ -149,7 +156,7 @@
 					<br>
 					<div class="input-box">
 						<span class="details">Address</span>
-						<input type="text" id="fullAddress" placeholder="Use the search bar or select from the map" style="
+						<input type="text" id="fullAddress" placeholder="Use the search bar or select from the map" autocomplete="off" style="
 								height: 45px;
 								width: 100%;
 								outline: none;
