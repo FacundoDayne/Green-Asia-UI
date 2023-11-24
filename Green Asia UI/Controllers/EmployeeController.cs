@@ -686,6 +686,8 @@ namespace Green_Asia_UI.Controllers
 			}
 			model.TemplateID = template_id.ToString();
 			Debug.WriteLine("Temp" + model.TemplateID);
+			model.lists = new List<Employee_BOM_Materials_Lists>();
+			model.suppliers = new List<SupplierListItem>();
 			return View(model);
 		}
 
@@ -1189,6 +1191,9 @@ namespace Green_Asia_UI.Controllers
 			{
 				return RedirectToAction("SessionExpired", "Home");
 			}
+
+			bool anError = false;
+
 			if (submitButton == "Select a Template")
 			{
 				TempData["BOMInfo"] = JsonConvert.SerializeObject(model);
@@ -1196,6 +1201,97 @@ namespace Green_Asia_UI.Controllers
 
 				//EmployeeBOMModel model = JsonConvert.DeserializeObject<EmployeeBOMModel>(TempData["BOMGenerateData"].ToString());
 			}
+
+			if (model.TemplateID == null || Convert.ToInt32(model.TemplateID) <= 0)
+			{
+				ModelState.AddModelError("ValidationSummary", "No template selected");
+				anError = true;
+				Debug.WriteLine("E");
+			}
+			Debug.WriteLine("F");
+			using (SqlConnection conn = new SqlConnection(connectionstring))
+			{
+				List<string> materialNames = new List<string>();
+				conn.Open();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM materials WHERE material_id < 7;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							materialNames.Add(sdr["material_desc"].ToString());
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT COUNT(a.supplier_material_id) AS available FROM supplier_materials a " +
+					"LEFT JOIN supplier_info b ON a.supplier_id = b.supplier_id " +
+					"WHERE b.employee_id = @id AND a.supplier_material_archived = 0 " +
+					"AND a.supplier_material_availability = 1 AND a.material_id = @material"))
+				{
+					SqlParameter param1 = new SqlParameter("@id", SqlDbType.Int);
+					SqlParameter param2 = new SqlParameter("@material", SqlDbType.Int);
+					command.Parameters.Add(param1);
+					command.Parameters.Add(param2);
+					command.Connection = conn;
+					for(int x = 1; x <= 6; x++)
+					{
+						param1.Value = HttpContext.Session.GetInt32("EmployeeID");
+						param2.Value = x;
+						using (SqlDataReader sdr = command.ExecuteReader())
+						{
+							while (sdr.Read())
+							{
+								if (Convert.ToInt32(sdr["available"]) == 0)
+								{
+									ModelState.AddModelError("ValidationSummary", materialNames[x-1] + ": No supplier available to determine pricing");
+									Debug.WriteLine("G"); 
+									anError = true;
+								}
+							}
+						}
+					}
+				}
+				model.materialpicker = new List<BOMMaterialPickItem>();
+				using (SqlCommand command = new SqlCommand("SELECT * FROM materials;"))
+				{
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.materialpicker.Add(new BOMMaterialPickItem()
+							{
+								ID = sdr["material_id"].ToString(),
+								Description = sdr["material_desc"].ToString(),
+								IsChecked = true
+							});
+						}
+					}
+				}
+			}
+			if (anError)
+			{
+				return View(model);
+			}
+			/*
+			if (!ModelState.IsValid)
+			{
+				foreach (var modelStateKey in ModelState.Keys)
+				{
+					var errors = ModelState[modelStateKey].Errors;
+					foreach (var error in errors)
+					{
+						var errorMessage = error.ErrorMessage;
+						// Do something with the error message
+						Debug.WriteLine($"Property: {modelStateKey}, Error: {errorMessage}");
+					}
+				}
+				TempData["BOMInfo"] = JsonConvert.SerializeObject(model);
+				return View(model);
+			}*/
+
+
 			string location = model.Latitude + "," + model.Longtitude;
 			Debug.WriteLine("Lat: " + model.Latitude);
 			Debug.WriteLine("Lon: " + model.Longtitude);
@@ -1205,7 +1301,7 @@ namespace Green_Asia_UI.Controllers
 			 double heightOfFloors = model.FloorHeight,
 								lengthOfBuilding = model.BuildingLength,
 								widthOfBuilding = model.BuildingWidth,
-								sqmOfBuilding = heightOfFloors * lengthOfBuilding,
+								sqmOfBuilding = widthOfBuilding * lengthOfBuilding,
 								π = 3.14159
 
 				;
@@ -1285,7 +1381,7 @@ namespace Green_Asia_UI.Controllers
 								plywoodLength = Convert.ToDouble(sdr["plywood_length"]);
 							plywoodWidth = Convert.ToDouble(sdr["plywood_width"]);
 							plywoodArea = plywoodLength * plywoodWidth;
-							plywoodSheetsPerSqm = (double)Math.Ceiling(plywoodArea);
+							plywoodSheetsPerSqm = (double)Math.Ceiling(10764 / plywoodArea);
 							riserHeight = Convert.ToDouble(sdr["riser_height"]);
 								threadDepth = Convert.ToDouble(sdr["thread_depth"]);
 							stairWidth = Convert.ToDouble(sdr["stairs_width"]);
@@ -1300,10 +1396,6 @@ namespace Green_Asia_UI.Controllers
 					}
 				}
 			}
-
-			Debug.WriteLine(floorThickness);
-			Debug.WriteLine(supportBeamSpace);
-			Debug.WriteLine(stairWidth);
 
 			// prices, are changeable
 			MaterialsCostComparisonItem
@@ -1352,6 +1444,9 @@ namespace Green_Asia_UI.Controllers
 			/*new*/             foundationRebar = (lengthOfBuilding * widthOfBuilding * rebarPercentage) * foundationHeight,
 								foundationConcrete = foundationVolume
 				;
+
+			Debug.WriteLine(foundationConcrete);
+
 			model.lists = new List<Employee_BOM_Materials_Lists>();
 			model.lists.Add(new Employee_BOM_Materials_Lists()
 			{
@@ -1367,32 +1462,32 @@ namespace Green_Asia_UI.Controllers
 
 			if (model.materialpicker[1].IsChecked == true)
 			{
-				int foundationConcreteCement = (int)Math.Ceiling(foundationConcrete * cementRatio);
+				int foundationConcreteCement = (int)Math.Round(foundationConcrete * cementRatio);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(2, foundationConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 			}
 
 			if (model.materialpicker[2].IsChecked == true)
 			{
-				int foundationConcreteSand = (int)Math.Ceiling(foundationConcrete * sandRatio);
+				int foundationConcreteSand = (int)Math.Round(foundationConcrete * sandRatio);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(3, foundationConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 			}
 
 
 			if (model.materialpicker[3].IsChecked == true)
 			{
-				int foundationConcreteAggregate = (int)Math.Ceiling(foundationConcrete * aggregateRatio);
+				int foundationConcreteAggregate = (int)Math.Round(foundationConcrete * aggregateRatio);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(4, foundationConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 			}
 
 			if (model.materialpicker[4].IsChecked == true)
 			{
-				int foundationRebarAmount = (int)Math.Ceiling(foundationRebar);
+				int foundationRebarAmount = (int)Math.Round(foundationRebar);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(5, foundationRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 			}
 
 			if (model.materialpicker[5].IsChecked == true)
 			{
-				int foundationHollowBlock = (int)Math.Ceiling(foundationNoOfHollowBlock);
+				int foundationHollowBlock = (int)Math.Round(foundationNoOfHollowBlock);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(6, foundationHollowBlock, location, 5, hollowBlockPrice, wastage, provisions, HollowBlockCostID));
 			}
 
@@ -1459,31 +1554,31 @@ namespace Green_Asia_UI.Controllers
 				;
 				if (model.materialpicker[0].IsChecked == true)
 				{
-					int floorPlywood = (int)Math.Ceiling(storeyFloorPlywood);
+					int floorPlywood = (int)Math.Round(storeyFloorPlywood);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(1, floorPlywood, location, 1, plywoodPrice, wastage, provisions, PlywoodCostID));
 				}
 
 				if (model.materialpicker[1].IsChecked == true)
 				{
-					int floorConcreteCement = (int)Math.Ceiling(storeyFloorConcrete * cementRatio);
+					int floorConcreteCement = (int)Math.Round(storeyFloorConcrete * cementRatio);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(2, floorConcreteCement, location, 2, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
-					int floorConcreteSand = (int)Math.Ceiling(storeyFloorConcrete * sandRatio);
+					int floorConcreteSand = (int)Math.Round(storeyFloorConcrete * sandRatio);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(3, floorConcreteSand, location, 3, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
-					int floorConcreteAggregate = (int)Math.Ceiling(storeyFloorConcrete * aggregateRatio);
+					int floorConcreteAggregate = (int)Math.Round(storeyFloorConcrete * aggregateRatio);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(4, floorConcreteAggregate, location, 4, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
-					int floorRebarAmount = (int)Math.Ceiling(storeyFloorRebar);
+					int floorRebarAmount = (int)Math.Round(storeyFloorRebar);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(5, floorRebarAmount, location, 5, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
@@ -1491,25 +1586,25 @@ namespace Green_Asia_UI.Controllers
 
 				if (model.materialpicker[1].IsChecked == true)
 				{
-					int wallConcreteCement = (int)Math.Ceiling(storeyWallConcrete * cementRatio);
+					int wallConcreteCement = (int)Math.Round(storeyWallConcrete * cementRatio);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(2, wallConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
-					int wallConcreteSand = (int)Math.Ceiling(storeyWallConcrete * sandRatio);
+					int wallConcreteSand = (int)Math.Round(storeyWallConcrete * sandRatio);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(3, wallConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
-					int wallConcreteAggregate = (int)Math.Ceiling(storeyWallConcrete * aggregateRatio);
+					int wallConcreteAggregate = (int)Math.Round(storeyWallConcrete * aggregateRatio);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(4, wallConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
-					int wallRebarAmount = (int)Math.Ceiling(storeyWallRebar);
+					int wallRebarAmount = (int)Math.Round(storeyWallRebar);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(5, wallRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
@@ -1517,25 +1612,25 @@ namespace Green_Asia_UI.Controllers
 				if (model.materialpicker[1].IsChecked == true)
 				{
 					//beam
-					int beamConcreteCement = (int)Math.Ceiling(storeySupportBeamsConcrete * cementRatio);
+					int beamConcreteCement = (int)Math.Round(storeySupportBeamsConcrete * cementRatio);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(2, beamConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
-					int beamConcreteSand = (int)Math.Ceiling(storeySupportBeamsConcrete * sandRatio);
+					int beamConcreteSand = (int)Math.Round(storeySupportBeamsConcrete * sandRatio);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(3, beamConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
-					int beamConcreteAggregate = (int)Math.Ceiling(storeySupportBeamsConcrete * aggregateRatio);
+					int beamConcreteAggregate = (int)Math.Round(storeySupportBeamsConcrete * aggregateRatio);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(4, beamConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
-					int beamRebarAmount = (int)Math.Ceiling(storeySupportBeamsRebar);
+					int beamRebarAmount = (int)Math.Round(storeySupportBeamsRebar);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(5, beamRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
@@ -1545,25 +1640,25 @@ namespace Green_Asia_UI.Controllers
 
 					if (model.materialpicker[1].IsChecked == true)
 					{
-						int stairsConcreteCement = (int)Math.Ceiling(stairsConcrete * cementRatio);
+						int stairsConcreteCement = (int)Math.Round(stairsConcrete * cementRatio);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(2, stairsConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 					}
 
 					if (model.materialpicker[2].IsChecked == true)
 					{
-						int stairsConcreteSand = (int)Math.Ceiling(stairsConcrete * sandRatio);
+						int stairsConcreteSand = (int)Math.Round(stairsConcrete * sandRatio);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(3, stairsConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 					}
 
 					if (model.materialpicker[3].IsChecked == true)
 					{
-						int stairsConcreteAggregate = (int)Math.Ceiling(stairsConcrete * aggregateRatio);
+						int stairsConcreteAggregate = (int)Math.Round(stairsConcrete * aggregateRatio);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(4, stairsConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 					}
 
 					if (model.materialpicker[4].IsChecked == true)
 					{
-						int stairsRebarAmount = (int)Math.Ceiling(stairsRebar);
+						int stairsRebarAmount = (int)Math.Round(stairsRebar);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(5, stairsRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 					}
 				}
@@ -1606,7 +1701,18 @@ namespace Green_Asia_UI.Controllers
 					}
 				}
 			}
+			Debug.WriteLine(model.ProjectID);
+			Debug.WriteLine(model.totalCost);
 
+			Debug.WriteLine("Wood");
+			Debug.WriteLine(plywoodLength);
+			Debug.WriteLine(plywoodWidth);
+			Debug.WriteLine(plywoodArea);
+			Debug.WriteLine(plywoodSheetsPerSqm);
+			Debug.WriteLine(sqmOfBuilding);
+
+			Debug.WriteLine(plywoodSheetsPerSqm * sqmOfBuilding);
+			Debug.WriteLine("Wood");
 			//TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
 			//return RedirectToAction("BOMToAdd");
 			return View("BOMAdd", model);
@@ -2227,15 +2333,15 @@ namespace Green_Asia_UI.Controllers
 							Debug.WriteLine("Bolshevik");
 							Debug.WriteLine(Math.Round(((double)model.Markup / 100.00) + 1.00, 2));
 							model.materials[x].MarkedUpCost =
-								Math.Ceiling(
+								Math.Round(
 								model.materials[x].MaterialCost *
 								Math.Round((model.Markup / 100) + 1, 2));
 							model.materials[x].TotalUnitRate =
-								Math.Ceiling(
+								Math.Round(
 								model.materials[x].MarkedUpCost +
 								model.materials[x].LabourCost);
 							model.materials[x].MaterialAmount =
-								Math.Ceiling(
+								Math.Round(
 								model.materials[x].TotalUnitRate *
 								model.materials[x].MaterialQuantityProvisions);
 				}
@@ -3547,7 +3653,19 @@ namespace Green_Asia_UI.Controllers
 							item.MaterialAmount = Math.Ceiling(Math.Ceiling(Math.Ceiling(Quantity) * wastage) * provisions) * cost;
 							item.SupplierMaterialID = SupplierMaterialID;
 							item.SupplierID = sdr["supplier_id"].ToString();
-							item.Supplier = "0";
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT a.supplier_desc FROM supplier_info a " +
+					"INNER JOIN supplier_materials b ON a.supplier_id = b.supplier_id WHERE b.supplier_material_id = @supplier_material_id;"))
+				{
+					command.Parameters.AddWithValue("@supplier_material_id", SupplierMaterialID);
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							item.Supplier = sdr["supplier_desc"].ToString();
 						}
 					}
 				}

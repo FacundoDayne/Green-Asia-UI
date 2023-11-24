@@ -11,63 +11,45 @@
     <link rel="icon" type="images/png" img src="../../Images/greenAsiaLogo.png" alt="logo" />
 
     <link rel="stylesheet" href="~/css/project.css" asp-append-version="true" />
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-    <div class="container">
-        <nav>
-            <ul>
-                <li>
-					<a class="logo" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
-                        <img src="../../Images/greenAsiaLogo.png" alt="logo">
-                        <span class="nav-item">GACTC</span>
-                    </a>
-                </li>
-                <li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeDashboard">
-                        <i class="fas fa-menorah"></i>
-                        <span class="nav-item">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeProjectDash">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="nav-item">Projects</span>
-                    </a>
-				</li>
+	<div class="container">
+		<nav>
+			<ul>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Templates">
-						<i class="fas fa-briefcase"></i>
-						<span class="nav-item">Templates</span>
+					<a class="logo" asp-area="" asp-controller="Supplier" asp-action="supplierDashboard">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo">
+						<span class="nav-item">GACTC</span>
 					</a>
 				</li>
-                <li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeSupplierDash">
-                        <i class="fas fa-briefcase"></i>
-                        <span class="nav-item">Suppliers</span>
-                    </a>
+				<li>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierDashboard">
+						<i class="fas fa-menorah"></i>
+						<span class="nav-item">Dashboard</span>
+					</a>
 				</li>
 				<li>
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeMaterialsDash">
-						<i class="fas fa-briefcase"></i>
-						<span class="nav-item">Materials</span>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierMaterialsDash">
+						<i class="fas fa-boxes-stacked"></i>
+						<span class="nav-item">Prices</span>
 					</a>
 				</li>
 				<li class="active">
-					<a class="nav-link" asp-area="" asp-controller="Employee" asp-action="employeeInfo">
-						<i class="fas fa-briefcase"></i>
+					<a class="nav-link" asp-area="" asp-controller="Supplier" asp-action="supplierInfo">
+						<i class="fas fa-address-card"></i>
 						<span class="nav-item">Account</span>
 					</a>
 				</li>
-                <li>
-					<a class="nav-link" asp-area="" asp-controller="Home" asp-action="HomePage">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span class="nav-item">Log out</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+				<li class="logout">
+					<a asp-action="HomePage" asp-controller="Home">
+						<i class="fas fa-sign-out-alt"></i>
+						<span class="nav-item">Logout</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+
 
         <section class="main">
 
