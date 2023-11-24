@@ -399,9 +399,9 @@ namespace Green_Asia_UI.Controllers
 		
 		public IActionResult adminDashboard()
 		{
-			if (HttpContext.Session.GetInt32("SessionExpired") == null)
+			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<ClientDataModel> model = new List<ClientDataModel>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))

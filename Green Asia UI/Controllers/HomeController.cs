@@ -54,12 +54,13 @@ namespace Green_Asia_UI.Controllers
 
 		[HttpPost]
 		[AllowAnonymous]
-		public async Task<ActionResult> HomePage(LoginViewModel model)
+		public ActionResult HomePage(LoginViewModel model)
 		{
 			Debug.WriteLine("a");
 			
 			if (!ModelState.IsValid)
 			{
+				Debug.WriteLine("a");
 				return View(model);
 			}
 			
@@ -75,6 +76,7 @@ namespace Green_Asia_UI.Controllers
 					command.Parameters.AddWithValue("@password", model.Password);
 					using (SqlDataReader sdr = command.ExecuteReader())
 					{
+						Debug.WriteLine("a");
 						if (!sdr.Read())
 						{
 							ModelState.AddModelError("ValidationSummary", "Username or password is invalid");
