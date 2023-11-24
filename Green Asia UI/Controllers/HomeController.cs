@@ -47,6 +47,11 @@ namespace Green_Asia_UI.Controllers
             return View();
 		}
 
+		public IActionResult SessionExpired()
+		{
+			return View();
+		}
+
 		[HttpPost]
 		[AllowAnonymous]
 		public async Task<ActionResult> HomePage(LoginViewModel model)
@@ -999,12 +1004,10 @@ namespace Green_Asia_UI.Controllers
             return View();
         }
 
-        public IActionResult AccountPartner(MaterialCostEstimateModel send)
+        public IActionResult AccountPartner()
 		{
-			MaterialCostEstimateModel model = JsonConvert.DeserializeObject<MaterialCostEstimateModel>(TempData["MVCModel"].ToString());
 			Debug.WriteLine("wead");
-			Debug.WriteLine(model.lists[0].Desc);
-			return View(model);
+			return View();
         }
 
         public IActionResult AccountEmployee()

@@ -60,7 +60,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			EmployeeDashboardModel model = new EmployeeDashboardModel();
 			model.projects = GetNewProjects(HttpContext.Session.GetInt32("EmployeeID"));
@@ -137,7 +137,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 
 			List<TemplateListItem> model = GetTemplateList(page, pageSize);
@@ -199,7 +199,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			NewTemplateModel model = new NewTemplateModel();
 			model.materials = new List<TemplateMaterial>();
@@ -234,7 +234,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			model.NumberOfStoreys = 1;
 			model.FloorHeight = 1;
@@ -336,7 +336,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			EditTemplateModel model = new EditTemplateModel();
 			model.ID = (int)id;
@@ -423,7 +423,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 
 			model.NumberOfStoreys = 1;
@@ -515,7 +515,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<Employee_BOMTemplate> model = new List<Employee_BOMTemplate>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -547,7 +547,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			
 			EmployeeBOMModel model = new EmployeeBOMModel();
@@ -671,7 +671,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<EmployeeDashboardMaterials> model = new List<EmployeeDashboardMaterials>();
 
@@ -905,7 +905,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			if (!ModelState.IsValid)
 			{
@@ -948,7 +948,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			EmployeeInfoModel model = new EmployeeInfoModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -987,7 +987,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			EmployeeInfoModel model = new EmployeeInfoModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -1029,11 +1029,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
-			}
-			if (HttpContext.Session.GetInt32("EmployeeID") == null)
-			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			string pattern = @"^09\d{9}$";
 			if (model.contactNum != null)
@@ -1168,7 +1164,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			if (submitButton == "Select a Template")
 			{
@@ -1597,7 +1593,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			/*
 			if (model == null)
@@ -1622,7 +1618,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			//TempData["BOMGenerateData"] = JsonConvert.SerializeObject(model);
 			Debug.WriteLine("boolet");
@@ -1718,7 +1714,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			int bom = 0;
 			Debug.WriteLine(id);
@@ -1861,7 +1857,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			int bom = 0;
 			EmployeeBOMModel model = new EmployeeBOMModel();
@@ -2003,7 +1999,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<Employee_BOM_List_Item> projects = new List<Employee_BOM_List_Item>();
 
@@ -2043,7 +2039,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			EmployeeBOMModel model = new EmployeeBOMModel();
 			model.templates = new List<Employee_BOM_Template_List>();
@@ -2195,7 +2191,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			Debug.WriteLine(model == null);
 			Debug.WriteLine("Menshevik");
@@ -2299,7 +2295,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			int bom = 0;
 			Employee_MCE model = new Employee_MCE();
@@ -2416,7 +2412,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			Employee_MCE model = new Employee_MCE();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -2524,7 +2520,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<SupplierListItem> model = new List<SupplierListItem>();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -2556,7 +2552,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			SupplierInfoModel model = new SupplierInfoModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -2602,7 +2598,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 
 			TempData["SupplierData"] = JsonConvert.SerializeObject(model);
@@ -2613,7 +2609,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			SupplierInfoModel model = JsonConvert.DeserializeObject<SupplierInfoModel>(TempData["SupplierData"].ToString());
 			TempData["SupplierData"] = JsonConvert.SerializeObject(model);
@@ -2627,7 +2623,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			bool error = false;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -2698,7 +2694,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			if (!ModelState.IsValid)
 			{
@@ -2934,7 +2930,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			NewEmployeeDashboardModel model = new NewEmployeeDashboardModel();
 			model.projects = new List<EmployeeDashboardProjects>();
@@ -3068,7 +3064,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<ClientDataModel> model = getProjectList(page, pageSize);
 
@@ -3165,7 +3161,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			ProjectViewModel model = new ProjectViewModel();
 			using (SqlConnection conn = new SqlConnection(connectionstring))
@@ -3221,7 +3217,7 @@ namespace Green_Asia_UI.Controllers
 		{
 			if (HttpContext.Session.GetInt32("EmployeeID") == null)
 			{
-				return RedirectToAction("HomePage", "Home");
+				return RedirectToAction("SessionExpired", "Home");
 			}
 			List<AdminSupplierModel> model = getSupplierList(page, pageSize);
 			using (SqlConnection conn = new SqlConnection(connectionstring))

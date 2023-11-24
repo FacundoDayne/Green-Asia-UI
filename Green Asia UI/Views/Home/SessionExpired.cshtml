@@ -1,0 +1,73 @@
+﻿@using Green_Asia_UI.Models
+@{
+	ViewData["Title"] = "Login";
+	Layout = null;
+}
+@model LoginViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="~/css/newLogin.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,0,0" />
+	<title>Login</title>
+	<style>
+		.field-validation-valid {
+			display: none;
+		}
+
+		.validation-summary-valid {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="align-content:center;">
+		@using (Html.BeginForm("HomePage", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+		{
+			<div class="login-card-container">
+				<div class="login-card">
+					<div class="login-card-logo">
+						<img src="../../Images/greenAsiaLogo.png" alt="logo" />
+					</div>
+					<div class="login-card-header">
+						<h1>Log In</h1>
+						<div>Please login to use the platform</div>
+					</div>
+					<div class="login-card-form">
+						@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+						<div class="form-item">
+							<span class="form-item-icon material-symbols-rounded">mail</span>
+							@Html.TextBoxFor(m => m.Username, new { id = "usernameInput", @placeholder="Enter Username" })
+							<!--Html.ValidationMessageFor(m => m.Username, "", new { class = "text-danger" })-->
+						</div>
+						<div class="form-item">
+							<span class="form-item-icon material-symbols-rounded">lock</span>
+							@Html.PasswordFor(m => m.Password, new { id = "passwordInput", placeholder="Enter Password" })
+							<!--Html.ValidationMessageFor(m => m.Password, "", new { class = "text-danger" })-->
+						</div>
+						<!--<div class="form-item-other">
+							<div class="checkbox">
+								<input type="checkbox" id="rememberMeCheckbox" checked>
+								<label for="rememberMeCheckbox">Remember me</label>
+							</div>
+						</div>-->
+						<input type="submit" value="Login" id="loginButton" />
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+	<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+	<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+	<script>
+		alert("Session expired due to 60 minutes of inactivity");
+	</script>
+</body>
+
+</html>

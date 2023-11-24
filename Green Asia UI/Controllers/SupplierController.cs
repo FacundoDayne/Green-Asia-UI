@@ -36,6 +36,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult supplierDashboard()
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			return View();
 		}
 
@@ -126,6 +130,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult supplierMaterialsDash()
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			List<SupplierMaterialsItem> materials = GetMaterials();
 			
 			return View(materials);
@@ -133,6 +141,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult supplierMaterialsEdit()
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			List<SupplierMaterialsItem> materials = GetMaterials();
 
 			return View(materials);
@@ -142,6 +154,10 @@ namespace Green_Asia_UI.Controllers
 		[AllowAnonymous]
 		public IActionResult supplierMaterialsEdit(List<SupplierMaterialsItem> model)
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -220,6 +236,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult supplierInfo()
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			SupplierInfoModel model = getSupplierInfo();
 
 			return View(model);
@@ -228,6 +248,10 @@ namespace Green_Asia_UI.Controllers
 
 		public IActionResult supplierInfoEdit()
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			SupplierInfoModel model = getSupplierInfo();
 
 			return View(model);
@@ -238,6 +262,10 @@ namespace Green_Asia_UI.Controllers
 		[AllowAnonymous]
 		public IActionResult supplierInfoEdit(SupplierInfoModel model)
 		{
+			if (HttpContext.Session.GetInt32("SupplierID") == null)
+			{
+				return RedirectToAction("SessionExpired", "Home");
+			}
 			string pattern = @"^09\d{9}$";
 			if (model.ContactNumber != null)
 			{
