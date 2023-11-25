@@ -11,10 +11,10 @@ namespace Green_Asia_UI.Models
 		public string UoM { get; set; }
 		public string Quantity { get; set; }
 
-		[Range(typeof(double), "0", "double.MaxValue", ErrorMessage = "Value must be 0 or above")]
+		[Range(typeof(double), "0", "100000000", ErrorMessage = "Value must be 0 or above")]
 		public double Price { get; set; }
 
-		[Range(typeof(double), "0", "double.MaxValue", ErrorMessage = "Value must be 0 or above")]
+		[Range(typeof(double), "0", "100000000", ErrorMessage = "Value must be 0 or above")]
 		public double PreviousPrice { get; set; }
 		public bool Availability { get; set; }
 		public bool PreviousAvailability { get; set; }

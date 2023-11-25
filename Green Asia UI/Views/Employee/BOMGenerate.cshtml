@@ -175,11 +175,14 @@
 								@Html.HiddenFor(m=>m.materialpicker[x].ID)
 								@Html.HiddenFor(m=>m.materialpicker[x].Description)
 							}
-							@for (int x = 0; x < Model.templates.Count; x++)
+							@if (Model.templates != null)
 							{
-								@Html.EditorFor(m=>m.templates[x])
-								@Html.EditorFor(m=>m.templates[x].ID)
-								@Html.EditorFor(m=>m.templates[x].Description)
+								@for (int x = 0; x < Model.templates.Count; x++)
+								{
+									@Html.EditorFor(m=>m.templates[x])
+									@Html.EditorFor(m=>m.templates[x].ID)
+									@Html.EditorFor(m=>m.templates[x].Description)
+								}
 							}
 							@Html.EditorFor(m=>m.Title)
 							@Html.EditorFor(m=>m.ClientName)

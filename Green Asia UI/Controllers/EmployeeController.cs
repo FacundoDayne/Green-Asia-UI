@@ -1201,7 +1201,7 @@ namespace Green_Asia_UI.Controllers
 
 				//EmployeeBOMModel model = JsonConvert.DeserializeObject<EmployeeBOMModel>(TempData["BOMGenerateData"].ToString());
 			}
-
+			model.templates = new List<Employee_BOM_Template_List>();
 			if (model.TemplateID == null || Convert.ToInt32(model.TemplateID) <= 0)
 			{
 				ModelState.AddModelError("ValidationSummary", "No template selected");
@@ -1249,6 +1249,22 @@ namespace Green_Asia_UI.Controllers
 									anError = true;
 								}
 							}
+						}
+					}
+				}
+				using (SqlCommand command = new SqlCommand("SELECT * FROM employee_templates WHERE employee_id = @employee_id;"))
+				{
+					command.Parameters.AddWithValue("@employee_id", HttpContext.Session.GetInt32("EmployeeID"));
+					command.Connection = conn;
+					using (SqlDataReader sdr = command.ExecuteReader())
+					{
+						while (sdr.Read())
+						{
+							model.templates.Add(new Employee_BOM_Template_List()
+							{
+								ID = sdr["template_id"].ToString(),
+								Description = sdr["template_description"].ToString()
+							});
 						}
 					}
 				}

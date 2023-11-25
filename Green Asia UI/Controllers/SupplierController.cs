@@ -99,7 +99,7 @@ namespace Green_Asia_UI.Controllers
 				using (SqlCommand command = new SqlCommand("SELECT * FROM supplier_materials a " +
 					"INNER JOIN materials b ON a.material_id = b.material_id " +
 					"INNER JOIN measurement_units c ON b.measurement_unit_id = c.measurement_unit_id " +
-					"WHERE supplier_id = @supplier_id AND supplier_material_archived = 0 ORDER BY b.material_id ASC;"))
+					"WHERE supplier_id = @supplier_id AND supplier_material_archived = 0 AND b.material_id < 7 ORDER BY b.material_id ASC;"))
 				{
 					command.Connection = conn;
 					command.Parameters.AddWithValue("@supplier_id", HttpContext.Session.GetInt32("SupplierID"));
