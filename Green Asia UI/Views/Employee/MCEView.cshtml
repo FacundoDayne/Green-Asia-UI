@@ -258,13 +258,13 @@
 								{
 									<tr>
 										<td>@Model.materials[x].MaterialDesc</td>
-										<td>@Model.materials[x].MaterialQuantityProvisions</td>
+										<td style="text-align:right">@Model.materials[x].MaterialQuantityProvisions</td>
 										<td>@Model.materials[x].MaterialUoM</td>
-										<td>@string.Format("{0:N2}", @Model.materials[x].MaterialCost)</td>
-										<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MarkedUpCost))</td>
-										<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].LabourCost))</td>
-										<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].TotalUnitRate))</td>
-										<td>@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MaterialAmount))</td>
+										<td style="text-align:right">@string.Format("{0:N2}", @Model.materials[x].MaterialCost)</td>
+										<td style="text-align:right">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MarkedUpCost))</td>
+										<td style="text-align:right">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].LabourCost))</td>
+										<td style="text-align:right">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].TotalUnitRate))</td>
+										<td style="text-align:right">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MaterialAmount))</td>
 									</tr>
 								}
 								<tr style="background: #BBBBBB;font-weight:bold">

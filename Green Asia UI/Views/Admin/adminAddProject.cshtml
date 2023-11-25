@@ -94,17 +94,17 @@
 					<div class="input-box">
 						<span class="details">Project Client</span>
 						@Html.TextBoxFor(m=>m.ClientName)
-						@Html.ValidationMessageFor(m => m.Title, "Enter project client name", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.ClientName, "Enter project client name", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
 						<span class="details">Client Contact</span>
 						@Html.TextBoxFor(m=>m.ClientContact)
-						@Html.ValidationMessageFor(m => m.Title, "Enter a mobile number", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.ClientContact, "Enter a mobile number", new { @class = "text-danger" })
 					</div>
                     <div class="input-box">
 						<span class="details">Contractor in charge</span>
 						@Html.DropDownListFor(m => m.EngineerID, new SelectList(Model.EngineerList, "ID", "Description"), "Select a category", new { @id = "ContractorList" })
-						@Html.ValidationMessageFor(m => m.Title, "Pick an engineer", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.EngineerID, "Pick an engineer", new { @class = "text-danger" })
 						<p>Number of active projects <span id="numProject">0</span></p>
                     </div>
                     <div hidden>

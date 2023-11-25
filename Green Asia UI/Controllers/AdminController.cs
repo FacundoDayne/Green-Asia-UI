@@ -291,6 +291,26 @@ namespace Green_Asia_UI.Controllers
 			{
 				return RedirectToAction("SessionExpired", "Home");
 			}
+			if (model.EngineerID == null || model.EngineerID == "")
+			{
+				ModelState.AddModelError("EngineerID", "Choose an engineer");
+			}
+			if (model.BuildingLength <= 0)
+			{
+				ModelState.AddModelError("BuildingLength", "Enter a number greater than 0");
+			}
+			if (model.BuildingWidth <= 0)
+			{
+				ModelState.AddModelError("BuildingWidth", "Enter a number greater than 0");
+			}
+			if (model.NumberOfStoreys <= 0)
+			{
+				ModelState.AddModelError("NumberOfStoreys", "Enter a number greater than 0");
+			}
+			if (model.FloorHeight <= 0)
+			{
+				ModelState.AddModelError("FloorHeight", "Enter a number greater than 0");
+			}
 			string pattern = @"^09\d{9}$";
 			if (!Regex.IsMatch(model.ClientContact, pattern))
 			{

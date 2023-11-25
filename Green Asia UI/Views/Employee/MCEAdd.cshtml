@@ -256,13 +256,13 @@
 								{
 									<tr>
 										<td>@Model.materials[x].MaterialDesc</td>
-										<td><span id="quantity-@x">@Model.materials[x].MaterialQuantityProvisions</span></td>
+										<td style="text-align:right"><span id="quantity-@x">@Model.materials[x].MaterialQuantityProvisions</span></td>
 										<td>@Model.materials[x].MaterialUoM</td>
-										<td><span id="cost-@x">@string.Format("{0:N2}", @Model.materials[x].MaterialCost)</span></td>
-										<td><span id="markedupcost-@x">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MarkedUpCost))</span></td>
+										<td style="text-align:right"><span id="cost-@x">@string.Format("{0:N2}", @Model.materials[x].MaterialCost)</span></td>
+										<td style="text-align:right"><span id="markedupcost-@x">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MarkedUpCost))</span></td>
 										<td>@Html.TextBoxFor(m=>m.materials[x].LabourCost, new { @id = "labour-" + x})</td>
-										<td><span id="totalrate-@x">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].TotalUnitRate))</span></td>
-										<td><span id="amount-@x">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MaterialAmount))</span></td>
+										<td style="text-align:right"><span id="totalrate-@x">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].TotalUnitRate))</span></td>
+										<td style="text-align:right"><span id="amount-@x">@string.Format("{0:N2}", @Math.Ceiling(Model.materials[x].MaterialAmount))</span></td>
 									</tr>
 								}
 								<tr style="background: #BBBBBB;font-weight:bold">
