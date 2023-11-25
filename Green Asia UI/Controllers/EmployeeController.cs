@@ -1478,32 +1478,32 @@ namespace Green_Asia_UI.Controllers
 
 			if (model.materialpicker[1].IsChecked == true)
 			{
-				int foundationConcreteCement = (int)Math.Round(foundationConcrete * cementRatio);
+				int foundationConcreteCement = (int)Math.Ceiling(foundationConcrete * cementRatio);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(2, foundationConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 			}
 
 			if (model.materialpicker[2].IsChecked == true)
 			{
-				int foundationConcreteSand = (int)Math.Round(foundationConcrete * sandRatio);
+				int foundationConcreteSand = (int)Math.Ceiling(foundationConcrete * sandRatio);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(3, foundationConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 			}
 
 
 			if (model.materialpicker[3].IsChecked == true)
 			{
-				int foundationConcreteAggregate = (int)Math.Round(foundationConcrete * aggregateRatio);
+				int foundationConcreteAggregate = (int)Math.Ceiling(foundationConcrete * aggregateRatio);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(4, foundationConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 			}
 
 			if (model.materialpicker[4].IsChecked == true)
 			{
-				int foundationRebarAmount = (int)Math.Round(foundationRebar);
+				int foundationRebarAmount = (int)Math.Ceiling(foundationRebar);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(5, foundationRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 			}
 
 			if (model.materialpicker[5].IsChecked == true)
 			{
-				int foundationHollowBlock = (int)Math.Round(foundationNoOfHollowBlock);
+				int foundationHollowBlock = (int)Math.Ceiling(foundationNoOfHollowBlock);
 				model.lists[0].Items[0].Subitems.Add(GetMaterial(6, foundationHollowBlock, location, 5, hollowBlockPrice, wastage, provisions, HollowBlockCostID));
 			}
 
@@ -1570,31 +1570,31 @@ namespace Green_Asia_UI.Controllers
 				;
 				if (model.materialpicker[0].IsChecked == true)
 				{
-					int floorPlywood = (int)Math.Round(storeyFloorPlywood);
+					int floorPlywood = (int)Math.Ceiling(storeyFloorPlywood);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(1, floorPlywood, location, 1, plywoodPrice, wastage, provisions, PlywoodCostID));
 				}
 
 				if (model.materialpicker[1].IsChecked == true)
 				{
-					int floorConcreteCement = (int)Math.Round(storeyFloorConcrete * cementRatio);
+					int floorConcreteCement = (int)Math.Ceiling(storeyFloorConcrete * cementRatio);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(2, floorConcreteCement, location, 2, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
-					int floorConcreteSand = (int)Math.Round(storeyFloorConcrete * sandRatio);
+					int floorConcreteSand = (int)Math.Ceiling(storeyFloorConcrete * sandRatio);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(3, floorConcreteSand, location, 3, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
-					int floorConcreteAggregate = (int)Math.Round(storeyFloorConcrete * aggregateRatio);
+					int floorConcreteAggregate = (int)Math.Ceiling(storeyFloorConcrete * aggregateRatio);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(4, floorConcreteAggregate, location, 4, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
-					int floorRebarAmount = (int)Math.Round(storeyFloorRebar);
+					int floorRebarAmount = (int)Math.Ceiling(storeyFloorRebar);
 					model.lists[i].Items[0].Subitems.Add(GetMaterial(5, floorRebarAmount, location, 5, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
@@ -1602,25 +1602,25 @@ namespace Green_Asia_UI.Controllers
 
 				if (model.materialpicker[1].IsChecked == true)
 				{
-					int wallConcreteCement = (int)Math.Round(storeyWallConcrete * cementRatio);
+					int wallConcreteCement = (int)Math.Ceiling(storeyWallConcrete * cementRatio);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(2, wallConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
-					int wallConcreteSand = (int)Math.Round(storeyWallConcrete * sandRatio);
+					int wallConcreteSand = (int)Math.Ceiling(storeyWallConcrete * sandRatio);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(3, wallConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
-					int wallConcreteAggregate = (int)Math.Round(storeyWallConcrete * aggregateRatio);
+					int wallConcreteAggregate = (int)Math.Ceiling(storeyWallConcrete * aggregateRatio);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(4, wallConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
-					int wallRebarAmount = (int)Math.Round(storeyWallRebar);
+					int wallRebarAmount = (int)Math.Ceiling(storeyWallRebar);
 					model.lists[i].Items[1].Subitems.Add(GetMaterial(5, wallRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
@@ -1628,25 +1628,25 @@ namespace Green_Asia_UI.Controllers
 				if (model.materialpicker[1].IsChecked == true)
 				{
 					//beam
-					int beamConcreteCement = (int)Math.Round(storeySupportBeamsConcrete * cementRatio);
+					int beamConcreteCement = (int)Math.Ceiling(storeySupportBeamsConcrete * cementRatio);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(2, beamConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 				}
 
 				if (model.materialpicker[2].IsChecked == true)
 				{
-					int beamConcreteSand = (int)Math.Round(storeySupportBeamsConcrete * sandRatio);
+					int beamConcreteSand = (int)Math.Ceiling(storeySupportBeamsConcrete * sandRatio);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(3, beamConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 				}
 
 				if (model.materialpicker[3].IsChecked == true)
 				{
-					int beamConcreteAggregate = (int)Math.Round(storeySupportBeamsConcrete * aggregateRatio);
+					int beamConcreteAggregate = (int)Math.Ceiling(storeySupportBeamsConcrete * aggregateRatio);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(4, beamConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 				}
 
 				if (model.materialpicker[4].IsChecked == true)
 				{
-					int beamRebarAmount = (int)Math.Round(storeySupportBeamsRebar);
+					int beamRebarAmount = (int)Math.Ceiling(storeySupportBeamsRebar);
 					model.lists[i].Items[2].Subitems.Add(GetMaterial(5, beamRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 				}
 
@@ -1656,25 +1656,25 @@ namespace Green_Asia_UI.Controllers
 
 					if (model.materialpicker[1].IsChecked == true)
 					{
-						int stairsConcreteCement = (int)Math.Round(stairsConcrete * cementRatio);
+						int stairsConcreteCement = (int)Math.Ceiling(stairsConcrete * cementRatio);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(2, stairsConcreteCement, location, 1, cementPrice, wastage, provisions, CementCostID));
 					}
 
 					if (model.materialpicker[2].IsChecked == true)
 					{
-						int stairsConcreteSand = (int)Math.Round(stairsConcrete * sandRatio);
+						int stairsConcreteSand = (int)Math.Ceiling(stairsConcrete * sandRatio);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(3, stairsConcreteSand, location, 2, sandPrice, wastage, provisions, SandCostID));
 					}
 
 					if (model.materialpicker[3].IsChecked == true)
 					{
-						int stairsConcreteAggregate = (int)Math.Round(stairsConcrete * aggregateRatio);
+						int stairsConcreteAggregate = (int)Math.Ceiling(stairsConcrete * aggregateRatio);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(4, stairsConcreteAggregate, location, 3, aggregatePrice, wastage, provisions, AggregateCostID));
 					}
 
 					if (model.materialpicker[4].IsChecked == true)
 					{
-						int stairsRebarAmount = (int)Math.Round(stairsRebar);
+						int stairsRebarAmount = (int)Math.Ceiling(stairsRebar);
 						model.lists[i].Items[3].Subitems.Add(GetMaterial(5, stairsRebarAmount, location, 4, rebarPrice, wastage, provisions, RebarCostID));
 					}
 				}
