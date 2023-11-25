@@ -174,22 +174,22 @@
                     <div class="input-box">
 						<span class="details">Number of Storeys</span>
 						@Html.TextBoxFor(m => m.NumberOfStoreys, new { @class = "form-control" })
-						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.NumberOfStoreys, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
 						<span class="details">Floor height (metres)</span>
 						@Html.TextBoxFor(m => m.FloorHeight, new { @class = "form-control" })
-						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.FloorHeight, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
                     <div class="input-box">
 						<span class="details">Building width (metres)</span>
 						@Html.TextBoxFor(m => m.BuildingLength, new { @class = "form-control" })
-						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.BuildingLength, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
 					<div class="input-box">
 						<span class="details">Building length (metres)</span>
 						@Html.TextBoxFor(m => m.BuildingWidth, new { @class = "form-control" })
-						@Html.ValidationMessageFor(m => m.Address, "Enter a non-zero, postive number", new { @class = "text-danger" })
+						@Html.ValidationMessageFor(m => m.BuildingWidth, "Enter a non-zero, postive number", new { @class = "text-danger" })
 					</div>
                 </div>
                 <div class="button">
