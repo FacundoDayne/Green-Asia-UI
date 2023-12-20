@@ -1391,7 +1391,7 @@ namespace Green_Asia_UI.Controllers
 				model.roles = GetUserRolesFromDB();
 				return View(model);
 			}
-			return RedirectToAction("adminAdminDash", "Admin");
+			//return RedirectToAction("adminAdminDash", "Admin");
 			bool error = false;
 			using (SqlConnection conn = new SqlConnection(connectionstring))
 			{
